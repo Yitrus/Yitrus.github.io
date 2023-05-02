@@ -38,6 +38,8 @@
     <link rel="stylesheet" type="text/css" href="/css/matery.css">
     <link rel="stylesheet" type="text/css" href="/css/my.css">
 
+    <link type='text/css' rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" media='all'/>
+
     <script src="/libs/jquery/jquery.min.js"></script>
 
 <meta name="generator" content="Hexo 5.4.2">
@@ -439,6 +441,10 @@
                                 <span class="chip bg-color">Algorithm</span>
                             </a>
                         
+                            <a href="/tags/Advanced-Mathematics/">
+                                <span class="chip bg-color">Advanced Mathematics</span>
+                            </a>
+                        
                     </div>
                     
                 </div>
@@ -505,7 +511,7 @@
 <li>指数阶：$9^{n/2}$,  $2^n$</li>
 <li>多项式阶：$n^3$,   $n*log(n)$, $n^{1/2}$</li>
 <li>对数阶：$log^2(n)$, $log(n)$, $log(log(n))$</li>
-<li>常数阶：100, 1<br>下题需要保留阶最高的部分：<img src="https://img-blog.csdnimg.cn/20210605220748744.jpg"></li>
+<li>常数阶：100, 1<br>下题需要保留阶最高的部分：<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210605220748744.jpg"></li>
 </ul>
 <h2 id="二、算法复杂性估计函数"><a href="#二、算法复杂性估计函数" class="headerlink" title="二、算法复杂性估计函数"></a>二、算法复杂性估计函数</h2>
 $$
@@ -519,17 +525,17 @@ $$
 $$
 
 
-<p>可以发现都是针对f(n)在讨论，很容易得出下题答案：<img src="https://img-blog.csdnimg.cn/20210605220628312.jpg"></p>
+<p>可以发现都是针对f(n)在讨论，很容易得出下题答案：<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210605220628312.jpg"></p>
 <h2 id="三、几个常用替换的式子"><a href="#三、几个常用替换的式子" class="headerlink" title="三、几个常用替换的式子"></a>三、几个常用替换的式子</h2><h3 id="1-Stirling公式："><a href="#1-Stirling公式：" class="headerlink" title="1.Stirling公式："></a>1.Stirling公式：</h3>
 $$n! \approx {(2 \pi n)}^{1/2}{(n/e)}^n$$
 
 
-<p><img src="https://img-blog.csdnimg.cn/20210605222019202.jpg"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210605222019202.jpg"></p>
 <h3 id="2-阶乘和二项式系数"><a href="#2-阶乘和二项式系数" class="headerlink" title="2.阶乘和二项式系数"></a>2.阶乘和二项式系数</h3>
 $$C_n^k = C_n^{n-k} \\ C_n^n = C_n^0 = 1 \\C_n^k = C_{n-1}^k +C_{n-1}^{k-1} $$
 
 
-<p>帕斯卡三角形可以辅助记二项式系数：<img src="https://img-blog.csdnimg.cn/2021060522532381.jpg"></p>
+<p>帕斯卡三角形可以辅助记二项式系数：<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2021060522532381.jpg"></p>
 
 $$\sum_{j=0}^{n}{C_{n}^j}x^j= {(1+x)}^n $$
 
@@ -545,7 +551,7 @@ $$\int_m^{n+1} f(x) dx  \le \sum_{j=m}^nf(j) \le \int_{m-1}^nf(x)dx 递减函数
 \int_{m-1}^{n} f(x) dx  \le \sum_{j=m}^nf(j) \le \int_{m}^{n+1}f(x)dx  递增函数$$
 
 
-<p>可以采用画图的方法辅助记忆它的上下界：<br>以一个递增的函数为例，我们要求1（m）~6（n）他的面积，每一个小矩形$1*f(j)$如果我们积分每个点左边的矩形，那么总面积就是偏小的，积分右边矩形就会稍微偏大，这就找到了上下界，当函数平行于X轴时就会有等号。递减也是一个道理。<img src="https://img-blog.csdnimg.cn/20210606094351964.jpg"><br>但是，如果是logn等函数会遇到定义域不存在的情况。我们应该从和式中把（在积分中）没有定义的点先拿出来，再去积分。<img src="https://img-blog.csdnimg.cn/2021060610042349.jpg"></p>
+<p>可以采用画图的方法辅助记忆它的上下界：<br>以一个递增的函数为例，我们要求1（m）~6（n）他的面积，每一个小矩形$1*f(j)$如果我们积分每个点左边的矩形，那么总面积就是偏小的，积分右边矩形就会稍微偏大，这就找到了上下界，当函数平行于X轴时就会有等号。递减也是一个道理。<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210606094351964.jpg"><br>但是，如果是logn等函数会遇到定义域不存在的情况。我们应该从和式中把（在积分中）没有定义的点先拿出来，再去积分。<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2021060610042349.jpg"></p>
 <p>用代数方法证明就是放大缩小去求，用积分方法证明就是用上面那个公式。可以看到积分方法求时等式左边按公式应该为$\int_0^n jlogj !\ dj$定义域<br>不存在，所以对于右边：</p>
 
 $$\sum_{j=1}^njlogj=\sum_{j=2}^njlogj+1log1=\int_{2-1}^njlogj \!\ dj+1log1$$
@@ -661,7 +667,7 @@ for (int i=1; i&lt;n; i++){		// c1   n(比较语句)
 </tr>
 </tbody></table>
 <p>还有种特殊情况：$x_1=x_2=x$时$f(n)=c_1nx^n+c_2x^n$</p>
-<h3 id="2-非齐次递推式"><a href="#2-非齐次递推式" class="headerlink" title="2.非齐次递推式"></a>2.非齐次递推式</h3><h4 id="2-1-f-n-f-n-1-g-n"><a href="#2-1-f-n-f-n-1-g-n" class="headerlink" title="2.1  f(n)=f(n-1)+g(n)"></a>2.1  f(n)=f(n-1)+g(n)</h4><p>对于这一类g(n)是一个已知的函数，推导可得：<br>$$f(n) = f(n-1)+g(n) = \big(f(n-2)+g(n-1)\big)+g(n) = f(0)+ \sum_{j=1}^ng(j)$$<br><img src="https://img-blog.csdnimg.cn/20210606120205290.jpg"><br>这道题麻烦点在于怎么把前面的系数3搞没了。由1我们知道，这种递推式是$f(n)=x^n$变形令$f(n)=3^nq(n), f(0)=q(0)=3$于是乎原式变为：</p>
+<h3 id="2-非齐次递推式"><a href="#2-非齐次递推式" class="headerlink" title="2.非齐次递推式"></a>2.非齐次递推式</h3><h4 id="2-1-f-n-f-n-1-g-n"><a href="#2-1-f-n-f-n-1-g-n" class="headerlink" title="2.1  f(n)=f(n-1)+g(n)"></a>2.1  f(n)=f(n-1)+g(n)</h4><p>对于这一类g(n)是一个已知的函数，推导可得：<br>$$f(n) = f(n-1)+g(n) = \big(f(n-2)+g(n-1)\big)+g(n) = f(0)+ \sum_{j=1}^ng(j)$$<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210606120205290.jpg"><br>这道题麻烦点在于怎么把前面的系数3搞没了。由1我们知道，这种递推式是$f(n)=x^n$变形令$f(n)=3^nq(n), f(0)=q(0)=3$于是乎原式变为：</p>
 
 $$3^nq(n)=3*3^{n-1}q(n-1)+2^n \\ q(n)=q(n-1)+{(2/3)}^n\\ q(n)=q(0)+\sum_{j=1}^n{{(2/3)}^n}\\ f(n)=3^n*\big(3+{(2/3)(1-{(2/3)}^n) \over {1-(2/3)}}\big) \\ f(n)=5*3^n+2^{n+1}$$
 
@@ -677,8 +683,8 @@ $$f(n)=\begin{cases} d&amp; \text{n=1}\\af({n\over c})+bn^x&amp; \text{n &gt;= 2
 $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}}\big)n^{log_ca}-\big({{bc^x}\over{a-c^x}}\big)n^x&amp; {a\neq c^x} \end{cases}$$
 
 
-<p><img src="https://img-blog.csdnimg.cn/20210606123724891.jpg"><br>这道题就没有为难菜鸡，直接把方向给了。这种做法在遇到f(n/2)的情况下叫做<strong>更换变元法</strong><br>$$f(2^k)=f(2^{k-1})+2^k=f(2^0)+\sum_{i=1}^k2^i=2^{k+1}-1 =2n-1\<br>g(2^k)=2g(2^{k-1})+1=\sum_{i=0}^k2^i=2^{k+1}-1=2n-1$$<br>也可以直接套公式:<br>对于f   $d=1,a=1,c=2,b=1$<br>对于g  $a=2,c=2,b=1,d=1$<br>这些公式太惨绝人寰了，其他还有一些和2.4一样复杂的，等遇到了再补充上去。</p>
-<h2 id="六、p、np、np-hard、np-complete问题"><a href="#六、p、np、np-hard、np-complete问题" class="headerlink" title="六、p、np、np-hard、np-complete问题"></a>六、p、np、np-hard、np-complete问题</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/birduncle/article/details/94646993">p、np、np-hard、np-complete问题</a>这篇文章讲的很清晰，附上一张从文章里拿的<img src="https://img-blog.csdnimg.cn/20210704092654261.png"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210606123724891.jpg"><br>这道题就没有为难菜鸡，直接把方向给了。这种做法在遇到f(n/2)的情况下叫做<strong>更换变元法</strong><br>$$f(2^k)=f(2^{k-1})+2^k=f(2^0)+\sum_{i=1}^k2^i=2^{k+1}-1 =2n-1\<br>g(2^k)=2g(2^{k-1})+1=\sum_{i=0}^k2^i=2^{k+1}-1=2n-1$$<br>也可以直接套公式:<br>对于f   $d=1,a=1,c=2,b=1$<br>对于g  $a=2,c=2,b=1,d=1$<br>这些公式太惨绝人寰了，其他还有一些和2.4一样复杂的，等遇到了再补充上去。</p>
+<h2 id="六、p、np、np-hard、np-complete问题"><a href="#六、p、np、np-hard、np-complete问题" class="headerlink" title="六、p、np、np-hard、np-complete问题"></a>六、p、np、np-hard、np-complete问题</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/birduncle/article/details/94646993">p、np、np-hard、np-complete问题</a>这篇文章讲的很清晰，附上一张从文章里拿的<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210704092654261.png"></p>
 
                 
             </div>
@@ -747,6 +753,10 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
                                     <span class="chip bg-color">Algorithm</span>
                                 </a>
                             
+                                <a href="/tags/Advanced-Mathematics/">
+                                    <span class="chip bg-color">Advanced Mathematics</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -792,31 +802,31 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/04/30/this-is-a-test-for-my-first-blog/">
+                <a href="/2023/02/06/MULTI-CLOCK-Dynamic-Tiering-for-Hybrid-Memory-Systems/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="this is a test for my first blog">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems">
                         
-                        <span class="card-title">this is a test for my first blog</span>
+                        <span class="card-title">MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            一些很喜欢的话，作为第一篇博客发在这里
+                            在内核上修改代码，不需要其他程序有什么修改。使用升级列表和频率可以很好的利用层级友好页面的局部性。
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-04-30
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-02-06
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Markdown/" class="post-category">
-                                    Markdown
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
                                 </a>
                             
                             
@@ -826,12 +836,12 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Perspective/">
-                        <span class="chip bg-color">Perspective</span>
+                    <a href="/tags/CCFA/">
+                        <span class="chip bg-color">CCFA</span>
                     </a>
                     
-                    <a href="/tags/Markdown/">
-                        <span class="chip bg-color">Markdown</span>
+                    <a href="/tags/Tierd-Memory/">
+                        <span class="chip bg-color">Tierd Memory</span>
                     </a>
                     
                 </div>
@@ -882,6 +892,10 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
                     
                     <a href="/tags/Algorithm/">
                         <span class="chip bg-color">Algorithm</span>
+                    </a>
+                    
+                    <a href="/tags/Advanced-Mathematics/">
+                        <span class="chip bg-color">Advanced Mathematics</span>
                     </a>
                     
                 </div>
@@ -1037,7 +1051,7 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">3.7k</span>&nbsp;字
+                class="white-color">24.3k</span>&nbsp;字
             
             
             
