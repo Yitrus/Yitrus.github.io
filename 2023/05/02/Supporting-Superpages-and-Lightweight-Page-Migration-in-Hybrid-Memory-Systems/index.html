@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -526,6 +526,18 @@
 <blockquote>
 <p>However, page migration at the superpage granularity (e.g., 2MB) can incur unbearable performance overhead due to a vast waste of DRAM capacity and bandwidth if most memory references are distributed in a small region ofthe superpage (see Section 2.2). The cost may be even larger than the benefit of superpage migration. This presents a dilemma for the use of superpages,<br>since the lightweight page migration can outweigh the benefits of extended TLB coverage.</p>
 </blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bea989a85a31">累积分布函数图怎么看</a><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/6d3b808800554ed3b2d0a153353c4e26.png" alt="2MB超级页的累积分布函数与给定区间(108个周期)内一个超级页中被触及的4KB小页的数量"><br>从图中可以看到，很大一部分工作负载有80%以上的概率：2MB的页面中被访问的4kb页面只有12.5%。<br>还有一张表格来说明问题：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/abbbcb642622478cb35fd087610a7f69.png" alt="4kb热页访问统计"><br>使用的工作负载：</p>
+<ul>
+<li>SPEC CPU2006</li>
+<li>Parsec</li>
+<li>Problem Based Benchmarks Suit（PBBS）</li>
+<li>WhiteDB</li>
+<li>Redis</li>
+<li>Graph500</li>
+<li>Linpack</li>
+<li>NPB-CG</li>
+<li>HPC Challenge Benchmark GUPS</li>
+</ul>
 <ol start="2">
 <li><strong>轻量级热页的标识</strong>：为了支持轻量级页迁移，大量工作提倡通过内存控制器监视内存访问。 然而，当<strong>主存容量变大时</strong>，以每页粒度（即4KB）使用<strong>访问计数器会导致高得令人望而却步的存储开销</strong>。</li>
 </ol>
@@ -672,30 +684,29 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/">
+                <a href="/2023/05/04/Supporting-Dynamic-Translation-Granularity-for-Hybrid-Memory-Systems/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems">
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="Supporting Dynamic Translation Granularity for Hybrid Memory Systems">
                         
-                        <span class="card-title">Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems</span>
+                        <span class="card-title">Supporting Dynamic Translation Granularity for Hybrid Memory Systems</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            提出了一种称为Rainbow的新的内存管理机制来弥合超级页面和轻量级页面迁移之间的根本冲突
+                            
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-05-02
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-05-04
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -708,13 +719,8 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
-                    
-                    <a href="/tags/CCF-A-Paper/">
-                        <span class="chip bg-color">CCF-A Paper</span>
-                    </a>
                     
                     <a href="/tags/Tierd-Memory/">
                         <span class="chip bg-color">Tierd Memory</span>
@@ -722,6 +728,10 @@
                     
                     <a href="/tags/Page-Migration/">
                         <span class="chip bg-color">Page Migration</span>
+                    </a>
+                    
+                    <a href="/tags/CCF-B-Paper/">
+                        <span class="chip bg-color">CCF-B Paper</span>
                     </a>
                     
                 </div>
@@ -930,7 +940,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">25.8k</span>&nbsp;字
+                class="white-color">26.1k</span>&nbsp;字
             
             
             
