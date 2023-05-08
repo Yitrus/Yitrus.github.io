@@ -4,6 +4,58 @@
   
     
     <entry>
+      <title>Ubuntu安装完后找不到网卡</title>
+      <link href="/2023/05/07/Ubuntu%E5%AE%89%E8%A3%85%E5%AE%8C%E5%90%8E%E6%89%BE%E4%B8%8D%E5%88%B0%E7%BD%91%E5%8D%A1/"/>
+      <url>/2023/05/07/Ubuntu%E5%AE%89%E8%A3%85%E5%AE%8C%E5%90%8E%E6%89%BE%E4%B8%8D%E5%88%B0%E7%BD%91%E5%8D%A1/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mem Alloc for C++ Server Workloads</title>
+      <link href="/2023/05/07/Mem-Alloc-for-C-Server-Workloads/"/>
+      <url>/2023/05/07/Mem-Alloc-for-C-Server-Workloads/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Trident all page size</title>
+      <link href="/2023/05/07/Trident-all-page-size/"/>
+      <url>/2023/05/07/Trident-all-page-size/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Supporting Superpages in Non-Contiguous Physical Memory</title>
+      <link href="/2023/05/07/Supporting-Superpages-in-Non-Contiguous-Physical-Memory/"/>
+      <url>/2023/05/07/Supporting-Superpages-in-Non-Contiguous-Physical-Memory/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Tailored Page Sizes</title>
       <link href="/2023/05/04/Tailored-Page-Sizes/"/>
       <url>/2023/05/04/Tailored-Page-Sizes/</url>
@@ -105,9 +157,9 @@
             
             <tag> Tierd Memory </tag>
             
-            <tag> Page Migration </tag>
-            
             <tag> CCF-B Paper </tag>
+            
+            <tag> Page Migration </tag>
             
         </tags>
       
@@ -120,7 +172,7 @@
       <link href="/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/"/>
       <url>/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自ACM Transactions on Architecture and Code Optimization, (TACO), 2019</div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>XIAOYUAN WANG, HAIKUN LIU, XIAOFEI LIAO, JI CHEN, HAI JIN, YU ZHANG, and LONG ZHENG, 华中科技大学</li><li>BINGSHENG HE, 新加坡国立大学</li><li>SONG JIANG, 德克萨斯大学阿灵顿分校(UTA)</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>在大内存系统中，<strong>超级页一直被用来减轻地址转换开销</strong>。 然而，在由DRAM和NVM组成的混合存储系统中，<strong>超页面往往会阻碍轻量级页面迁移，而轻量级页面迁移对性能和能量效率至关重要</strong>。 </p><blockquote><p>Superpages have long been used to mitigate address translation overhead in large-memory systems. However, superpages often preclude lightweight page migration, which is crucial for performance and energy efficiency in hybrid memory systems composed of DRAM and NVM.</p></blockquote><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><ol><li>如果大多数内存引用<strong>分布在超级页的一个小区域中</strong>，那么以超级页粒度（例如2MB）进行的页迁移会导致DRAM容量和带宽的巨大浪费，从而导致无法承受的性能开销。 成本可能比超级页面迁移的好处还要大。 这给超级页面的使用带来了一个困境，因为<strong>轻量级页面迁移可能会超过扩展TLB覆盖的好处</strong>。 </li></ol><blockquote><p>However, page migration at the superpage granularity (e.g., 2MB) can incur unbearable performance overhead due to a vast waste of DRAM capacity and bandwidth if most memory references are distributed in a small region ofthe superpage (see Section 2.2). The cost may be even larger than the benefit of superpage migration. This presents a dilemma for the use of superpages,<br>since the lightweight page migration can outweigh the benefits of extended TLB coverage.</p></blockquote><p><a href="https://www.jianshu.com/p/bea989a85a31">累积分布函数图怎么看</a><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/6d3b808800554ed3b2d0a153353c4e26.png" alt="2MB超级页的累积分布函数与给定区间(108个周期)内一个超级页中被触及的4KB小页的数量"><br>从图中可以看到，很大一部分工作负载有80%以上的概率：2MB的页面中被访问的4kb页面只有12.5%。<br>还有一张表格来说明问题：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/abbbcb642622478cb35fd087610a7f69.png" alt="4kb热页访问统计"><br>使用的工作负载：</p><ul><li>SPEC CPU2006</li><li>Parsec</li><li>Problem Based Benchmarks Suit（PBBS）</li><li>WhiteDB</li><li>Redis</li><li>Graph500</li><li>Linpack</li><li>NPB-CG</li><li>HPC Challenge Benchmark GUPS</li></ul><ol start="2"><li><strong>轻量级热页的标识</strong>：为了支持轻量级页迁移，大量工作提倡通过内存控制器监视内存访问。 然而，当<strong>主存容量变大时</strong>，以每页粒度（即4KB）使用<strong>访问计数器会导致高得令人望而却步的存储开销</strong>。</li></ol><blockquote><p>Identification oflightweight hot pages: to support lightweight page migration, a large body of work advocates monitoring memory accesses through the memory controller [55, 63]. However, using access counters at per-page granularity (i.e., 4KB) leads to prohibitively high storage overhead when the capacity of main memory becomes large.</p></blockquote><ol start="3"><li>轻量级页面迁移对TLB覆盖率的影响：页面迁移通常会<strong>分割超级页面</strong>，从而<strong>破坏物理地址的连续性</strong>。 </li></ol><blockquote><p>Impact oflightweight page migration on TLB coverage: page migrations often fragment superpages and thus break the physical address continuity.</p></blockquote><ol start="4"><li>热页寻址效率：由于热页占应用程序内存引用的主要部分，因此必须进一步<strong>减少DRAM中那些热页的地址转换开销</strong>。 </li></ol><blockquote><p>Efficiency of hot pages addressing:ashot pages<br>contribute to a major portion of applications’ memory references, it is essential to further reduce<br>the overhead of address translation for those hot pages in the DRAM.</p></blockquote><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>以前的工作主张分割超级页面以实现轻量级内存管理，如页面迁移和共享，同时牺牲地址转换的性能[37,58]当<strong>超级页面中的热小页面迁移到DRAM时，保持改进的TLB覆盖率</strong>仍然是一个挑战。</p><blockquote><p>Previous work has advocated splintering superpages to enable lightweight memory management such as page migration and sharing, while sacrificing the performance of address translation [37,58]. It is still a challenge to retain the improved TLB coverage when the hot small pages within superpages are migrated to the DRAM.</p></blockquote><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>针对上述问题，提出了一种新的内存管理机制Rainbow, Rainbow在Superpage粒度上管理NVM，并使用DRAM在每个Superpage内缓存频繁访问（热）的小页面。相应地，Rainbow利用拆分TLB[2,7,30,52]的可用硬件特性来支持不同的页面大小，其中一个TLB用于寻址超级页面，另一个TLB用于寻址小页面。 Rainbow将SuperPage中的热小页迁移到DRAM中，而不会损害SuperPage TLB的完整性。 因此，Rainbow实际上将DRAM架构为NVM的缓存。</p><ul><li>为了减少细粒度页面访问计数的存储开销，分两个阶段进行计数。在<strong>给定的时间间隔内</strong>，Rainbow<strong>首先计算Superpage粒度下的NVM内存访问</strong>，然后选择<strong>前N个热门Superpage作为目标</strong>。 在第二阶段，我们<strong>只监视那些小页面</strong>(4KB)粒度的热点超页面，以识别热点小页面。 这种基于历史的策略避免了监视大量冷超页中的子块（4KB页），从而显著降低了热页识别的开销。 </li><li>我们采用<strong>拆分TLB</strong>来加速DRAM和NVM引用的地址转换性能。当一些小页迁移到DRAM时，为了保持SuperPages TLB的完整性，我们在内存控制器中使用位图来识别迁移的热页，而<strong>不会分裂SuperPages</strong>。</li><li>我们提出了一种<strong>物理地址重映射机制来访问DRAM中迁移的热页</strong>，而不必为寻址DRAM页而遭受昂贵的页表遍历。为了实现这一目标，我们将迁移的热点页面的目的地址存储在其原始住所（超级页面）中。 一旦热页对应的TLB未命中，DRAM页寻址应求助于对超级页的间接访问。这种设计在逻辑上利用了SuperPage TLBS作为4KB页面TLB的下一级缓存。 因为Superpage TLB命中率通常很高，所以Rainbow可以显著加快DRAM页面寻址的速度。 </li></ul><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>实验结果表明，与现有的内存迁移策略相比，在没有Superpage支持的情况下，Rainbow可以将应用程序的TLB丢失率降低99.9%，并将应用程序的性能（以OFIPC为标准）平均提高2.9×(45.3%)。</p><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自ACM Transactions on Architecture and Code Optimization, (TACO), 2019</div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>XIAOYUAN WANG, HAIKUN LIU, XIAOFEI LIAO, JI CHEN, HAI JIN, YU ZHANG, and LONG ZHENG, 华中科技大学</li><li>BINGSHENG HE, 新加坡国立大学</li><li>SONG JIANG, 德克萨斯大学阿灵顿分校(UTA)</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>在大内存系统中，<strong>超级页一直被用来减轻地址转换开销</strong>。 然而，在由DRAM和NVM组成的混合存储系统中，<strong>超页面往往会阻碍轻量级页面迁移，而轻量级页面迁移对性能和能量效率至关重要</strong>。 </p><blockquote><p>Superpages have long been used to mitigate address translation overhead in large-memory systems. However, superpages often preclude lightweight page migration, which is crucial for performance and energy efficiency in hybrid memory systems composed of DRAM and NVM.</p></blockquote><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><ol><li>如果大多数内存引用<strong>分布在超级页的一个小区域中</strong>，那么以超级页粒度（例如2MB）进行的页迁移会导致DRAM容量和带宽的巨大浪费，从而导致无法承受的性能开销。 成本可能比超级页面迁移的好处还要大。 这给超级页面的使用带来了一个困境，因为<strong>轻量级页面迁移可能会超过扩展TLB覆盖的好处</strong>。 </li></ol><blockquote><p>However, page migration at the superpage granularity (e.g., 2MB) can incur unbearable performance overhead due to a vast waste of DRAM capacity and bandwidth if most memory references are distributed in a small region ofthe superpage (see Section 2.2). The cost may be even larger than the benefit of superpage migration. This presents a dilemma for the use of superpages,<br>since the lightweight page migration can outweigh the benefits of extended TLB coverage.</p></blockquote><p><a href="https://www.jianshu.com/p/bea989a85a31">累积分布函数图怎么看</a><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/6d3b808800554ed3b2d0a153353c4e26.png" alt="2MB超级页的累积分布函数与给定区间(108个周期)内一个超级页中被触及的4KB小页的数量"><br>从图中可以看到，很大一部分工作负载有80%以上的概率：2MB的页面中被访问的4kb页面只有12.5%。<br>还有一张表格来说明问题：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/abbbcb642622478cb35fd087610a7f69.png" alt="4kb热页访问统计"><br>使用的工作负载：</p><ul><li><a href="https://www.spec.org/cpu2006">SPEC CPU2006</a></li><li><a href="http://parsec.cs.princeton.edu/index.htm">Parsec</a></li><li><a href="http://www.cs.cmu.edu/%E2%88%BCpbbs/">Problem Based Benchmarks Suit（PBBS）</a></li><li><a href="http://whitedb.org/">WhiteDB</a></li><li>[Redis](from <a href="https://redis.io/">https://redis.io/</a>)</li><li><a href="http://graph500.org/">Graph500</a></li><li><a href="http://www.netlib.org/benchmark/">Linpack</a></li><li><a href="https://www.nas.nasa.gov/publications/npb.html">NPB-CG</a></li><li><a href="http://icl.cs.utk.edu/hpcc/">HPC Challenge Benchmark GUPS</a></li></ul><ol start="2"><li><strong>轻量级热页的标识</strong>：为了支持轻量级页迁移，大量工作提倡通过内存控制器监视内存访问。 然而，当<strong>主存容量变大时</strong>，以每页粒度（即4KB）使用<strong>访问计数器会导致高得令人望而却步的存储开销</strong>。</li></ol><blockquote><p>Identification oflightweight hot pages: to support lightweight page migration, a large body of work advocates monitoring memory accesses through the memory controller [55, 63]. However, using access counters at per-page granularity (i.e., 4KB) leads to prohibitively high storage overhead when the capacity of main memory becomes large.</p></blockquote><ol start="3"><li>轻量级页面迁移对TLB覆盖率的影响：页面迁移通常会<strong>分割超级页面</strong>，从而<strong>破坏物理地址的连续性</strong>。 </li></ol><blockquote><p>Impact oflightweight page migration on TLB coverage: page migrations often fragment superpages and thus break the physical address continuity.</p></blockquote><ol start="4"><li>热页寻址效率：由于热页占应用程序内存引用的主要部分，因此必须进一步<strong>减少DRAM中那些热页的地址转换开销</strong>。 </li></ol><blockquote><p>Efficiency of hot pages addressing:ashot pages<br>contribute to a major portion of applications’ memory references, it is essential to further reduce<br>the overhead of address translation for those hot pages in the DRAM.</p></blockquote><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>以前的工作主张分割超级页面以实现轻量级内存管理，如页面迁移和共享，同时牺牲地址转换的性能[37,58]当<strong>超级页面中的热小页面迁移到DRAM时，保持改进的TLB覆盖率</strong>仍然是一个挑战。</p><blockquote><p>Previous work has advocated splintering superpages to enable lightweight memory management such as page migration and sharing, while sacrificing the performance of address translation [37,58]. It is still a challenge to retain the improved TLB coverage when the hot small pages within superpages are migrated to the DRAM.</p></blockquote><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>针对上述问题，提出了一种新的内存管理机制Rainbow, Rainbow在Superpage粒度上管理NVM，并使用DRAM在每个Superpage内缓存频繁访问（热）的小页面。相应地，Rainbow利用拆分TLB[2,7,30,52]的可用硬件特性来支持不同的页面大小，其中一个TLB用于寻址超级页面，另一个TLB用于寻址小页面。 Rainbow将SuperPage中的热小页迁移到DRAM中，而不会损害SuperPage TLB的完整性。 因此，Rainbow实际上将DRAM架构为NVM的缓存。</p><ul><li>为了减少细粒度页面访问计数的存储开销，分两个阶段进行计数。在<strong>给定的时间间隔内</strong>，Rainbow<strong>首先计算Superpage粒度下的NVM内存访问</strong>，然后选择<strong>前N个热门Superpage作为目标</strong>。 在第二阶段，我们<strong>只监视那些小页面</strong>(4KB)粒度的热点超页面，以识别热点小页面。 这种基于历史的策略避免了监视大量冷超页中的子块（4KB页），从而显著降低了热页识别的开销。 </li><li>我们采用<strong>拆分TLB</strong>来加速DRAM和NVM引用的地址转换性能。当一些小页迁移到DRAM时，为了保持SuperPages TLB的完整性，我们在内存控制器中使用位图来识别迁移的热页，而<strong>不会分裂SuperPages</strong>。</li><li>我们提出了一种<strong>物理地址重映射机制来访问DRAM中迁移的热页</strong>，而不必为寻址DRAM页而遭受昂贵的页表遍历。为了实现这一目标，我们将迁移的热点页面的目的地址存储在其原始住所（超级页面）中。 一旦热页对应的TLB未命中，DRAM页寻址应求助于对超级页的间接访问。这种设计在逻辑上利用了SuperPage TLBS作为4KB页面TLB的下一级缓存。 因为Superpage TLB命中率通常很高，所以Rainbow可以显著加快DRAM页面寻址的速度。 </li></ul><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>实验结果表明，与现有的内存迁移策略相比，在没有Superpage支持的情况下，Rainbow可以将应用程序的TLB丢失率降低99.9%，并将应用程序的性能（以OFIPC为标准）平均提高2.9×(45.3%)。</p><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2>]]></content>
       
       
       <categories>

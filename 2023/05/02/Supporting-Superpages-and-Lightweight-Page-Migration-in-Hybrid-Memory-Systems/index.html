@@ -528,15 +528,15 @@
 </blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bea989a85a31">累积分布函数图怎么看</a><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/6d3b808800554ed3b2d0a153353c4e26.png" alt="2MB超级页的累积分布函数与给定区间(108个周期)内一个超级页中被触及的4KB小页的数量"><br>从图中可以看到，很大一部分工作负载有80%以上的概率：2MB的页面中被访问的4kb页面只有12.5%。<br>还有一张表格来说明问题：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/abbbcb642622478cb35fd087610a7f69.png" alt="4kb热页访问统计"><br>使用的工作负载：</p>
 <ul>
-<li>SPEC CPU2006</li>
-<li>Parsec</li>
-<li>Problem Based Benchmarks Suit（PBBS）</li>
-<li>WhiteDB</li>
-<li>Redis</li>
-<li>Graph500</li>
-<li>Linpack</li>
-<li>NPB-CG</li>
-<li>HPC Challenge Benchmark GUPS</li>
+<li><a target="_blank" rel="noopener" href="https://www.spec.org/cpu2006">SPEC CPU2006</a></li>
+<li><a target="_blank" rel="noopener" href="http://parsec.cs.princeton.edu/index.htm">Parsec</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cs.cmu.edu/%E2%88%BCpbbs/">Problem Based Benchmarks Suit（PBBS）</a></li>
+<li><a target="_blank" rel="noopener" href="http://whitedb.org/">WhiteDB</a></li>
+<li>[Redis](from <a target="_blank" rel="noopener" href="https://redis.io/">https://redis.io/</a>)</li>
+<li><a target="_blank" rel="noopener" href="http://graph500.org/">Graph500</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.netlib.org/benchmark/">Linpack</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.nas.nasa.gov/publications/npb.html">NPB-CG</a></li>
+<li><a target="_blank" rel="noopener" href="http://icl.cs.utk.edu/hpcc/">HPC Challenge Benchmark GUPS</a></li>
 </ul>
 <ol start="2">
 <li><strong>轻量级热页的标识</strong>：为了支持轻量级页迁移，大量工作提倡通过内存控制器监视内存访问。 然而，当<strong>主存容量变大时</strong>，以每页粒度（即4KB）使用<strong>访问计数器会导致高得令人望而却步的存储开销</strong>。</li>
@@ -726,12 +726,12 @@
                         <span class="chip bg-color">Tierd Memory</span>
                     </a>
                     
-                    <a href="/tags/Page-Migration/">
-                        <span class="chip bg-color">Page Migration</span>
-                    </a>
-                    
                     <a href="/tags/CCF-B-Paper/">
                         <span class="chip bg-color">CCF-B Paper</span>
+                    </a>
+                    
+                    <a href="/tags/Page-Migration/">
+                        <span class="chip bg-color">Page Migration</span>
                     </a>
                     
                 </div>
