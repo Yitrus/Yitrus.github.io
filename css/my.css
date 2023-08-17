@@ -76,31 +76,25 @@
 }
   
 .label.default{
-  background-color: #bbbbbb;
-  opacity: 0.25;
+  background: rgba(187, 187, 187, 0.5);
 }
 
 .label.primary{
-  background-color: #b7a0e0;
-  opacity: 0.25;
+  background: rgba(183, 160, 224, 0.5);
 }
 
 .label.info{
-  background-color: #a0c5e4;
-  opacity: 0.25;
+  background-color: rgba(160, 197, 228, 0.5); 
 }
 
 .label.success{
-  background-color: #aedcae;
-  opacity: 0.25;
+  background-color: rgba(174, 220, 174, 0.5);
 }
 
 .label.warning{
-  background-color: #f8d6a6;
-  opacity: 0.25;
+  background-color: rgba(248, 214, 166, 0.5);
 }
 
 .label.danger{
-  background-color: #eca9a7;
-  opacity: 0.25;
+  background-color: rgba(236, 169, 167, 0.5);
 }
