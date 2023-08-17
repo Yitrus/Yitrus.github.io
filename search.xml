@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>P2Cache An Application-Directed Page Cache for Improving Performance of Data-Intensive Applications</title>
+      <link href="/2023/08/17/P2Cache-An-Application-Directed-Page-Cache-for-Improving-Performance-of-Data-Intensive-Applications/"/>
+      <url>/2023/08/17/P2Cache-An-Application-Directed-Page-Cache-for-Improving-Performance-of-Data-Intensive-Applications/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> O </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Coalescing for Multi-Grained Page Migration</title>
       <link href="/2023/05/20/Coalescing-for-Multi-Grained-Page-Migration/"/>
       <url>/2023/05/20/Coalescing-for-Multi-Grained-Page-Migration/</url>
@@ -20,160 +47,9 @@
       
         <tags>
             
-            <tag> Multi-grained </tag>
+            <tag> O </tag>
             
-            <tag> Hybrid Memory </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Mem Alloc for C++ Server Workloads</title>
-      <link href="/2023/05/07/Mem-Alloc-for-C-Server-Workloads/"/>
-      <url>/2023/05/07/Mem-Alloc-for-C-Server-Workloads/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Trident all page size</title>
-      <link href="/2023/05/07/Trident-all-page-size/"/>
-      <url>/2023/05/07/Trident-all-page-size/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Supporting Superpages in Non-Contiguous Physical Memory</title>
-      <link href="/2023/05/07/Supporting-Superpages-in-Non-Contiguous-Physical-Memory/"/>
-      <url>/2023/05/07/Supporting-Superpages-in-Non-Contiguous-Physical-Memory/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Tailored Page Sizes</title>
-      <link href="/2023/05/04/Tailored-Page-Sizes/"/>
-      <url>/2023/05/04/Tailored-Page-Sizes/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自International Symposium on Computer Architecture, (ISCA), 2020 </div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Faruk Guvenilir, The University of Texas at Austin</li><li>Yale N. Patt, 德克萨斯州大学奥斯汀分校</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Paper </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> CCF-A Paper </tag>
-            
-            <tag> XXX </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Perforated Page: Supporting Fragmented Memory Allocation for Large Pages</title>
-      <link href="/2023/05/04/Perforated-Page-Supporting-Fragmented-Memory-Allocation-for-Large-Pages/"/>
-      <url>/2023/05/04/Perforated-Page-Supporting-Fragmented-Memory-Allocation-for-Large-Pages/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自International Symposium on Computer Architecture, (ISCA), 2020 </div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Chang Hyun Park∗, Sanghoon Cha†, Bokyeong Kim†, Youngjin Kwon†, David Black-Schaffer∗, Jaehyuk Huh†</li><li>∗Department of Information Technology, Uppsala University</li><li>†School of Computing, KAIST</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Paper </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> CCF-A Paper </tag>
-            
-            <tag> XXX </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Thermostat: Application-transparent Page Management for Two-tiered Main Memory</title>
-      <link href="/2023/05/04/Thermostat-Application-transparent-Page-Management-for-Two-tiered-Main-Memory/"/>
-      <url>/2023/05/04/Thermostat-Application-transparent-Page-Management-for-Two-tiered-Main-Memory/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自Architectural Support for Programming Languages and Operating Systems, (ASPLOS), 2017 </div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Neha Agarwal, 密歇根大学</li><li>Thomas F. Wenisch, University of Michigan</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Paper </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> CCF-A Paper </tag>
-            
-            <tag> Tierd Memory </tag>
-            
-            <tag> Page Migration </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Supporting Dynamic Translation Granularity for Hybrid Memory Systems</title>
-      <link href="/2023/05/04/Supporting-Dynamic-Translation-Granularity-for-Hybrid-Memory-Systems/"/>
-      <url>/2023/05/04/Supporting-Dynamic-Translation-Granularity-for-Hybrid-Memory-Systems/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自IEEE 40th International Conference on Computer Design, (ICCD), 2022 </div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Bokyeong Kim∗, Soojin Hwang†, Sanghoon Cha‡, Chang Hyun Park§, Jongse Park†, Jaehyuk Huh†</li><li>Samsung Research, †School of Computing, KAIST, ‡Samsung Advanced Institute of Technology, §Uppsala Universit bokyeong</li><li></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Paper </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Tierd Memory </tag>
-            
-            <tag> CCF-B Paper </tag>
-            
-            <tag> Page Migration </tag>
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -198,11 +74,9 @@
       
         <tags>
             
-            <tag> CCF-A Paper </tag>
+            <tag> Hybrid Memory Systems </tag>
             
-            <tag> Tierd Memory </tag>
-            
-            <tag> Page Migration </tag>
+            <tag> A </tag>
             
         </tags>
       
@@ -227,9 +101,9 @@
       
         <tags>
             
-            <tag> CCF-A Paper </tag>
+            <tag> Hybrid Memory Systems </tag>
             
-            <tag> Tierd Memory </tag>
+            <tag> A </tag>
             
         </tags>
       
@@ -242,7 +116,7 @@
       <link href="/2023/05/01/Object-Level-Memory-Allocation-and-Migration-in-Hybrid-Memory-Systems/"/>
       <url>/2023/05/01/Object-Level-Memory-Allocation-and-Migration-in-Hybrid-Memory-Systems/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><blockquote><p><strong>文章来自IEEE(H)2022属于CCF-A</strong> </p></blockquote><h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>A, Haikun Liu, Renshan Liu, Xiaofei Liao, Hai Jin, and Yu ZhangBig Data Technology and<br>System, Service Computing Technology and System Lab, Cluster and Grid<br>Computing Lab, Huazhong<br>University of Science and Technology.<br>Bingsheng He is National University of Singapore</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>充分利用NVM和DRAM混合系统的优势，主要目标是将应用程序数据正确放置在混合存储器上。</p><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>于是提出混合内存系统编程接口，<strong>对象粒度迁移，减少迁移开销</strong>。同时提高应用性能。</p><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>以前的研究主要集中在页面迁移方案上，以实现更高的性能和能源效率。但是，这些方案都依赖于在线页面访问监控成本高。并且还会由于多核时维护缓存/TLB一致性和dram带宽争用产生更多页粒度迁移的开销。</p><p>依赖于页面访问的recency and frequency来决定数据在DRAM或NVM上的位置。1一些用硬件辅助页迁移的方案由于目前硬件不支持页面访问技术，需要对硬件架构进行大量修改[5][6][11]。2用操作系统监控内存访问只能引用1个访问位不足以表达页面冷热度[12][Thermostat13]。3页面迁移通常需要一段时间来检测热页。4预测的页面访问模式可能与未来的访问行为不一致，导致不必要的页面迁移。5大页（huge page）已被越来越多地用于大数据应用和虚拟化平台[13][14]，由于对DRAM容量和带宽的低效利用，粗粒度的页面迁移甚至会降低系统性能。</p><p>采用离线剖析工具，应用对象的粒度来描述内存访问模式，然后指导它们在DRAM或NVM上的静态放置[15]。这个方案只考虑了内存访问行为的整体观点，而忽略了内存访问模式的潜在变化，即对象的访问频率(热度)可能在不同的执行阶段动态变化。</p><p>另一项工作将静态对象放置与选定页面的动态迁移相结合[16]，以处理这些波动。然而，它仍然依赖于内存控制器的硬件扩展来执行在线页面访问监控和迁移。</p><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>OAM利用离线剖析方法来捕获对象级内存访问模式，并采用性能/能量模型来指导对象内存分配和迁移。更具体地说，我们分析每个对象的细粒度时间段的内存痕迹，并采用我们的性能/能量模型来识别对象内存访问模式变化的不同执行阶段。我们在应用程序的源代码中找出未来执行阶段会发生变化的位置，并通过静态代码工具自动注入对象迁移指令。当修改后的程序运行时，它通过考虑DRAM的使用和数据迁移的净收益，自己执行对象迁移。</p><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>“有效的静态内存分配：在于2pp执行时间和性能差不多的情况下，与只使用DRAM的系统相比，””OAM w/o migration “”能够平均减少51%的内存能量消耗。这些结果表明，我们最初的OAM数据放置策略对提高混合内存系统的性能和能源效率是有效的。</p><p>在线内存迁移的有效性：与静态内存分配方案相比，对象迁移可以进一步提高应用性能，平均提高11%。没有迁移的OAM平均可以实现51%的EDP减少，而有迁移的OAM平均可以进一步减少10%的EDP</p><p>与一些页面迁移算法相比较：与CLOCK-DWF和2PP相比，OAM可以显著减少迁移流量，平均分别为42%和22%。开销也比他们都小。</p><p>适应不同数据和规模：执行时间都比不使用该方案要节省时间。</p><p>对不同NVM性能的敏感性：测试了目前的产品，对于Optance是由读密集引起的迁移，因为写延迟是差不多的。”</p><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>聚焦于更低的迟延和能耗。减少迁移性能开销</p><p>而我们的机制只为用C++编写的应用程序提供对象级迁移接口。</p><p>page-interleaving貌似是模拟和算法的基础。</p><p>也没有考虑断电后数据怎么办，而且会存在一致性问题。</p><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>提供了一个离线剖析工具来详细描述应用程序的内存访问模式，并提出了一个<strong>性能/能源模型</strong>来指导应用程序对象的初始内存分配和动态迁移<strong>从能源消耗上解决了读写不均衡</strong>，而不需要任何硬件修改和操作系统干预的在线内存监控。一个静态代码工具，用于自动转换应用程序源代码中的对象级内存分配和迁移，而不会给应用程序的程序员带来负担。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><blockquote><p><strong>文章来自IEEE(H)2022属于CCF-A</strong> </p></blockquote><h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>A, Haikun Liu, Renshan Liu, Xiaofei Liao, Hai Jin, and Yu ZhangBig Data Technology and<br>System, Service Computing Technology and System Lab, Cluster and Grid<br>Computing Lab, Huazhong<br>University of Science and Technology.<br>Bingsheng He is National University of Singapore</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>充分利用NVM和DRAM混合系统的优势，主要目标是将应用程序数据正确放置在混合存储器上。观察发现很多都是小粒度的热数据：</p><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>于是提出混合内存系统编程接口，<strong>对象粒度迁移，减少迁移开销</strong>。同时提高应用性能。</p><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>以前的研究主要集中在页面迁移方案上，以实现更高的性能和能源效率。但是，这些方案都依赖于在线页面访问监控成本高。并且还会由于多核时维护缓存/TLB一致性和dram带宽争用产生更多页粒度迁移的开销。</p><p>依赖于页面访问的recency and frequency来决定数据在DRAM或NVM上的位置。1一些用硬件辅助页迁移的方案由于目前硬件不支持页面访问技术，需要对硬件架构进行大量修改[5][6][11]。2用操作系统监控内存访问只能引用1个访问位不足以表达页面冷热度[12][Thermostat13]。3页面迁移通常需要一段时间来检测热页。4预测的页面访问模式可能与未来的访问行为不一致，导致不必要的页面迁移。5大页（huge page）已被越来越多地用于大数据应用和虚拟化平台[13][14]，由于对DRAM容量和带宽的低效利用，粗粒度的页面迁移甚至会降低系统性能。</p><p>采用离线剖析工具，应用对象的粒度来描述内存访问模式，然后指导它们在DRAM或NVM上的静态放置[15]。这个方案只考虑了内存访问行为的整体观点，而忽略了内存访问模式的潜在变化，即对象的访问频率(热度)可能在不同的执行阶段动态变化。</p><p>另一项工作将静态对象放置与选定页面的动态迁移相结合[16]，以处理这些波动。然而，它仍然依赖于内存控制器的硬件扩展来执行在线页面访问监控和迁移。</p><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>OAM利用离线剖析方法来捕获对象级内存访问模式，并采用性能/能量模型来指导对象内存分配和迁移。更具体地说，我们分析每个对象的细粒度时间段的内存痕迹，并采用我们的性能/能量模型来识别对象内存访问模式变化的不同执行阶段。我们在应用程序的源代码中找出未来执行阶段会发生变化的位置，并通过静态代码工具自动注入对象迁移指令。当修改后的程序运行时，它通过考虑DRAM的使用和数据迁移的净收益，自己执行对象迁移。<br>![]<a href="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png">https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png</a></p><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>“有效的静态内存分配：在于2pp执行时间和性能差不多的情况下，与只使用DRAM的系统相比，””OAM w/o migration “”能够平均减少51%的内存能量消耗。这些结果表明，我们最初的OAM数据放置策略对提高混合内存系统的性能和能源效率是有效的。</p><p>在线内存迁移的有效性：与静态内存分配方案相比，对象迁移可以进一步提高应用性能，平均提高11%。没有迁移的OAM平均可以实现51%的EDP减少，而有迁移的OAM平均可以进一步减少10%的EDP</p><p>与一些页面迁移算法相比较：与CLOCK-DWF和2PP相比，OAM可以显著减少迁移流量，平均分别为42%和22%。开销也比他们都小。</p><p>适应不同数据和规模：执行时间都比不使用该方案要节省时间。</p><p>对不同NVM性能的敏感性：测试了目前的产品，对于Optance是由读密集引起的迁移，因为写延迟是差不多的。”</p><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>聚焦于更低的迟延和能耗。减少迁移性能开销</p><p>而我们的机制只为用C++编写的应用程序提供对象级迁移接口。</p><p>page-interleaving貌似是模拟和算法的基础。</p><p>也没有考虑断电后数据怎么办，而且会存在一致性问题。</p><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>提供了一个离线剖析工具来详细描述应用程序的内存访问模式，并提出了一个<strong>性能/能源模型</strong>来指导应用程序对象的初始内存分配和动态迁移<strong>从能源消耗上解决了读写不均衡</strong>，而不需要任何硬件修改和操作系统干预的在线内存监控。一个静态代码工具，用于自动转换应用程序源代码中的对象级内存分配和迁移，而不会给应用程序的程序员带来负担。</p>]]></content>
       
       
       <categories>
@@ -254,9 +128,11 @@
       
         <tags>
             
-            <tag> CCF-A Paper </tag>
+            <tag> Hybrid Memory Systems </tag>
             
-            <tag> Tierd Memory </tag>
+            <tag> A </tag>
+            
+            <tag> 细粒度 </tag>
             
         </tags>
       
@@ -335,11 +211,11 @@
       
         <tags>
             
-            <tag> CCF-B Paper </tag>
+            <tag> Hybrid Memory Systems </tag>
+            
+            <tag> B </tag>
             
             <tag> Review </tag>
-            
-            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -364,9 +240,9 @@
       
         <tags>
             
-            <tag> CCF-A Paper </tag>
+            <tag> Hybrid Memory Systems </tag>
             
-            <tag> Tierd Memory </tag>
+            <tag> A </tag>
             
         </tags>
       
