@@ -63,3 +63,44 @@
     content: "\f056";
     color: #d9534f;
 }
+
+/* label样式移植来自Fluid */ 
+.label{
+    display: inline-block;
+    border-radius: 3px;
+    font-size: 85%;
+    margin: 0;
+    padding: .2em .4em;
+    color: #000000;
+    transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+  
+.label.default{
+  background-color: #bbbbbb;
+  opacity: 0.25;
+}
+
+.label.primary{
+  background-color: #b7a0e0;
+  opacity: 0.25;
+}
+
+.label.info{
+  background-color: #a0c5e4;
+  opacity: 0.25;
+}
+
+.label.success{
+  background-color: #aedcae;
+  opacity: 0.25;
+}
+
+.label.warning{
+  background-color: #f8d6a6;
+  opacity: 0.25;
+}
+
+.label.danger{
+  background-color: #eca9a7;
+  opacity: 0.25;
+}
