@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -321,7 +321,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems</h1>
+                    <!-- <h1 class="description center-align post-title">MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems</h1> -->
                 </div>
             </div>
         </div>
@@ -505,7 +505,11 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自IEEE International Symposium on High-Performance Computer Architecture, (HPCA), 2022</div> 
+                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
+
+<ul>
+<li>文章来自IEEE International Symposium on High-Performance Computer Architecture, (HPCA), 2022</li>
+<li>‘MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems’</li></ul></div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
 <li>Adnan Maruf, 佛罗里达国际大学(FIU)奈特基金会计算与信息科学学院</li>
@@ -682,7 +686,7 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            非易失性主存储器技术综述:技术发展最新水平、实践和未来方向。综述翻译，搬运自从前。
+                            非易失性主存储器技术综述:技术发展最新水平、实践和未来方向。综述翻译。
                         
                     </div>
                     <div class="publish-info">

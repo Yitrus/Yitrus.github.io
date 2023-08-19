@@ -551,8 +551,8 @@ header .go-back i {
 }
 
 .bg-cover:after {
-    -webkit-animation: rainbow 60s infinite;
-    animation: rainbow 60s infinite;
+    /* -webkit-animation: rainbow 60s infinite;
+    animation: rainbow 60s infinite; */
 }
 
 .bg-cover:before,
@@ -584,7 +584,9 @@ header .go-back i {
     font-weight: 300;
     font-size: 1.25rem;
     line-height: 1.4em;
-    color: #eee;
+    background-color: rgba(238,238,238,0.85) ;
+    color: #03b203;
+    border-radius: 15px;
 }
 
 .bg-cover .post-title {
@@ -814,6 +816,7 @@ header .go-back i {
 
 .recommend .post-card a {
     color: #fff;
+    /* color: #006400; */
 }
 
 .recommend .post-card .post-title {
@@ -1468,8 +1471,8 @@ thead {
         left: 50%;
         margin-left: -20px;
         /* Force Hardware Acceleration in WebKit */
-        -webkit-transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
+        /* -webkit-transform: translateZ(0);
+        -webkit-backface-visibility: hidden; */
     }
 
     .cssanimations .cd-timeline-img.is-hidden {

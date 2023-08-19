@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -321,7 +321,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Object-Level Memory Allocation and Migration in Hybrid Memory Systems</h1>
+                    <!-- <h1 class="description center-align post-title">Object-Level Memory Allocation and Migration in Hybrid Memory Systems</h1> -->
                 </div>
             </div>
         </div>
@@ -509,9 +509,14 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><blockquote>
-<p><strong>文章来自IEEE(H)2022属于CCF-A</strong> </p>
-</blockquote>
+                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
+
+<ul>
+<li>文章来自HPCA 2022属于CCF-A</li>
+<li>Object-Level Memory Allocation and Migration in Hybrid Memory Systems</li>
+</ul>
+</div> 
+
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
 <li>A, Haikun Liu, Renshan Liu, Xiaofei Liao, Hai Jin, and Yu ZhangBig Data Technology and<br>System, Service Computing Technology and System Lab, Cluster and Grid<br>Computing Lab, Huazhong<br>University of Science and Technology.<br>Bingsheng He is National University of Singapore</li>
 </ul>
@@ -521,7 +526,8 @@
 <p>依赖于页面访问的recency and frequency来决定数据在DRAM或NVM上的位置。1一些用硬件辅助页迁移的方案由于目前硬件不支持页面访问技术，需要对硬件架构进行大量修改[5][6][11]。2用操作系统监控内存访问只能引用1个访问位不足以表达页面冷热度[12][Thermostat13]。3页面迁移通常需要一段时间来检测热页。4预测的页面访问模式可能与未来的访问行为不一致，导致不必要的页面迁移。5大页（huge page）已被越来越多地用于大数据应用和虚拟化平台[13][14]，由于对DRAM容量和带宽的低效利用，粗粒度的页面迁移甚至会降低系统性能。</p>
 <p>采用离线剖析工具，应用对象的粒度来描述内存访问模式，然后指导它们在DRAM或NVM上的静态放置[15]。这个方案只考虑了内存访问行为的整体观点，而忽略了内存访问模式的潜在变化，即对象的访问频率(热度)可能在不同的执行阶段动态变化。</p>
 <p>另一项工作将静态对象放置与选定页面的动态迁移相结合[16]，以处理这些波动。然而，它仍然依赖于内存控制器的硬件扩展来执行在线页面访问监控和迁移。</p>
-<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>OAM利用离线剖析方法来捕获对象级内存访问模式，并采用性能/能量模型来指导对象内存分配和迁移。更具体地说，我们分析每个对象的细粒度时间段的内存痕迹，并采用我们的性能/能量模型来识别对象内存访问模式变化的不同执行阶段。我们在应用程序的源代码中找出未来执行阶段会发生变化的位置，并通过静态代码工具自动注入对象迁移指令。当修改后的程序运行时，它通过考虑DRAM的使用和数据迁移的净收益，自己执行对象迁移。<br>![]<a target="_blank" rel="noopener" href="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png">https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png</a></p>
+<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>OAM利用离线剖析方法来捕获对象级内存访问模式，并采用性能/能量模型来指导对象内存分配和迁移。更具体地说，我们分析每个对象的细粒度时间段的内存痕迹，并采用我们的性能/能量模型来识别对象内存访问模式变化的不同执行阶段。我们在应用程序的源代码中找出未来执行阶段会发生变化的位置，并通过静态代码工具自动注入对象迁移指令。当修改后的程序运行时，它通过考虑DRAM的使用和数据迁移的净收益，自己执行对象迁移。</p>
+<p>![]<a target="_blank" rel="noopener" href="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png">https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png</a></p>
 <h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>“有效的静态内存分配：在于2pp执行时间和性能差不多的情况下，与只使用DRAM的系统相比，””OAM w/o migration “”能够平均减少51%的内存能量消耗。这些结果表明，我们最初的OAM数据放置策略对提高混合内存系统的性能和能源效率是有效的。</p>
 <p>在线内存迁移的有效性：与静态内存分配方案相比，对象迁移可以进一步提高应用性能，平均提高11%。没有迁移的OAM平均可以实现51%的EDP减少，而有迁移的OAM平均可以进一步减少10%的EDP</p>
 <p>与一些页面迁移算法相比较：与CLOCK-DWF和2PP相比，OAM可以显著减少迁移流量，平均分别为42%和22%。开销也比他们都小。</p>

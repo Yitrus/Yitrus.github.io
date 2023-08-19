@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -321,7 +321,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">A Survey of Non-Volatile Main Memory Technologies:State-of-the-Arts, Practices, and Future Direction</h1>
+                    <!-- <h1 class="description center-align post-title">A Survey of Non-Volatile Main Memory Technologies:State-of-the-Arts, Practices, and Future Direction</h1> -->
                 </div>
             </div>
         </div>
@@ -479,7 +479,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    16.2k
+                    16.3k
                 </div>
                 
 
@@ -512,7 +512,13 @@
                 <blockquote>
 <p>非易失性内存最近几年能在web of science查到的综述是寥寥无几的，虽然这篇的有些引用也是十多年前的数据，但是作为学习一个阶段的总结，和大佬对比一下在知识结构上的完整度，还有什么是不清楚的。还是挺有用的，不过这里没有写第三章节。欢迎大家分享批评指正这篇翻译。</p>
 </blockquote>
-<div class="note primary">文章来自Journal of Computer Science and Technology, (JCST), 2021</div> 
+<div class="note primary">
+
+<ul>
+<li>文章来自Journal of Computer Science and Technology, (JCST), 2021</li>
+<li>A Survey of Non-Volatile Main Memory Technologies:State-of-the-Arts,<br>Practices, and Future Direction</li>
+</ul>
+</div> 
 
 
 
@@ -530,7 +536,8 @@
 <p><strong>关键词</strong>：非易失性存储器、持久性存储器、混合存储器系统、存储器层次结构<br>non-volatile memory, persistent memory, hybrid memory systems, memory hierarchy</p>
 <hr>
 <h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><p>在大数据时代，内存计算越来越受到数据密集型应用的青睐。内存子系统对现代计算系统的功能和性能具有越来越大的影响。使用DRAM (动态随机存取存储器)的传统大内存系统[1 ,2]在功率和密度方面面临严峻的可扩展性挑战[3]。尽管DRAM规模从2013年的28nm持续到2016年的10+ nm[4，5] ，扩展已经放缓，变得越来越困难。此外,最近的研究[6-10]表明，基于DRAM的主存储器约占物理服务器总能耗的30%-40%。新兴的非易失性主存储器(NVMM )技术，如相变存储器(PCM)、自旋转移扭矩存储器(STT-RAM )和3D XPoint[11]通常提供比DRAM更高的内存密度、更低的每的比特成本和待机功耗。NVMM技术的出现有可能弥合慢速持久存储(即磁盘和SSD)与DRAM之间的差距，并将从根本上改变存储系统的格局。</p>
-<p>表1显示了闪存SSD、DRAM、PCM、STT-RAM、ReRAM和Intel Optane DC持久内存模块(DCPMM)的不同内存特点，包括读/写延迟、写耐久性和待机功耗[7，12，13]。尽管NVMM在密度和能耗方面具有各种优势，但其写入延迟比DRAM高约6倍-30倍， 写入功耗比DRAM高约5倍- 10倍。此外，NVMM的写入耐久性非常有限(约$10^8$倍) ，而DRAM能够承受约$10^{16}$次的写入操作。这些缺点使得很难直接替代DRAM。使用NVMM的一种更实用的方法是混合内存架构，由DRAM和NVMM组成[15,16]。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519ae688bfd74036bb3b66ae451bbc86.png"></p>
+<p>表1显示了闪存SSD、DRAM、PCM、STT-RAM、ReRAM和Intel Optane DC持久内存模块(DCPMM)的不同内存特点，包括读/写延迟、写耐久性和待机功耗[7，12，13]。尽管NVMM在密度和能耗方面具有各种优势，但其写入延迟比DRAM高约6倍-30倍， 写入功耗比DRAM高约5倍- 10倍。此外，NVMM的写入耐久性非常有限(约$10^8$倍) ，而DRAM能够承受约$10^{16}$次的写入操作。这些缺点使得很难直接替代DRAM。使用NVMM的一种更实用的方法是混合内存架构，由DRAM和NVMM组成[15,16]。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519ae688bfd74036bb3b66ae451bbc86.png"></p>
 <p>为了充分发挥两者在混合内存系统中的优势，在性能提升、节能降耗、磨损均衡、数据持久性等方面存在许多开放的研究问题。为了解决这些问题，已经有许多关于内存层次结构的设计[15-18]、内存管理[19-21]和内存分配方案[22-24]的研究。这些研究成果导致了混合内存架构、操作系统和编程模型的创新。尽管学术界和工业界已经做出了大量工作来将新兴NVMM集成到存储器层次结构中，但仍有许多挑战需要解决。</p>
 <p>另一方面，先前对NVMM技术的研究大多基于模拟/仿真NVMM器件，与真正非易失性(双列直插式内存模块Dual In-line Memory Modules)DIMM相比，NVMM设备承诺的性能可能存在各种偏差。最近宣布推出的Intel Optane DCPMM终于将NVMM DIMM商业化。真正的Intel Optane DCPMM与之前的研究预期承诺的功能相比，表现明显不同[18，20，26，28]。例如，如表1所示，Intel Optane DCPMM的读取延迟比DRAM高2倍-3倍,而其写入延迟甚至低于DRAM。单个Optane DCPMM DIMM的最大读写带宽分别为6.6GB/s和2.3 GB/s，而DRAM的读写带宽之间的差距要小得多(1.3x)。此外，随着系统中并行线程数量的增加，读/写性能是非单调的[25]。在他们的实验中，1个到4个线程之间达到了峰值性能，然后逐渐下降。由于Optane DCPMM DIMM的这些关键特性，以前关于持久性内存系统的研究应该重新审视和优化，以适应真正的NVMM DIMM。</p>
 <p><strong>贡献</strong>。本文首先回顾关于混合内存架构、操作系统级混合内存管理和混合内存编程模型的最新研究现状。表2显示了NVMM技术的最新研究分类。我们根据不同维度对这些研究进行分类，包括内存架构、持久内存(PM)管理、性能改进、节能、磨损均衡、编程模型和应用程序。我们还讨论了它们的相似性和差异，以突出设计挑战和机遇。其次，为了展示构建NVMM系统的最佳实践，我们<strong>从架构、系统和应用的维度展示了我们在混合存储系统设计方面的努力</strong>。最后，我们提出了在实际应用场景中使用NVMM的未来研究方向，并对研究领域的设计挑战和机遇进行了一些说明。</p>
@@ -538,7 +545,8 @@
 <p>本文的其余部分组织如下。第2节描述了现有的由DRAM和nvmm组成的混合内存架构。第3节介绍了NVMM中数据持久性保证的挑战和当前解决方案。4节介绍了混合存储器系统中性能优化和节能的最新研究。第5节介绍NVMM写耐久性的研究。第6节介绍了研究NVMM技术所做的努力和实践。在第7节中，我们讨论了NVMM的未来研究方向。我们在第8节结束本文。</p>
 <h1 id="2-Hybrid-Memory-Architectures混合内存架构"><a href="#2-Hybrid-Memory-Architectures混合内存架构" class="headerlink" title="2. Hybrid Memory Architectures混合内存架构"></a>2. Hybrid Memory Architectures混合内存架构</h1><p>已经有很多关于混合存储器架构的研究。通常，主要有两种混合存储器架构，即水平和分层[18]，如图1所示。</p>
 <h2 id="2-1-Horizontal-Hybrid-Memory-Architectures水平混合存储器体系结构"><a href="#2-1-Horizontal-Hybrid-Memory-Architectures水平混合存储器体系结构" class="headerlink" title="2.1 Horizontal Hybrid Memory Architectures水平混合存储器体系结构"></a>2.1 Horizontal Hybrid Memory Architectures水平混合存储器体系结构</h2><p>许多DRAM/NVMM混合存储器系统[14 ,15 ,31]通过OS在平面(单个)存储器地址空间中管理DRAM和NVMM，并将它们两者用作主存储器[31 ,32]。为了提高数据访问性能，这些混合内存系统需要通过将频繁访问的(热)NVMM页面迁移到DRAM来克服NVMM的缺点，如图1 (a )所示。需要开发内存访问监控机制来指导页面迁移。</p>
-<p><strong>内存访问监控</strong>。Zhang和Li[31]使用多队列算法对页面的热度进行分类，并将热页面和冷页面分别放置在DRAM和NVMM中。Park等人[32]也主张用于管理DRAM和NVMM的水平混合存储架构。此外，他们还提出了三种优化策略来降低混合存储系统的能耗。他们以非常细的 DRAM 行粒度监视内存数据，并定期检查每个DRAM行中的访问计数器。根据计数器将数据写回NVMM，以减少DRAM刷新的能耗。在再次访问数据之前，数据不会从NVMM缓存到DRAM。脏数据尽可能长时间地保存在DRAM中，以减少DRAM和NVMM之间的数据交换开销以及NVMM的昂贵写操作。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e565e90afda244f6a8dcfbe3081068c1.png"></p>
+<p><strong>内存访问监控</strong>。Zhang和Li[31]使用多队列算法对页面的热度进行分类，并将热页面和冷页面分别放置在DRAM和NVMM中。Park等人[32]也主张用于管理DRAM和NVMM的水平混合存储架构。此外，他们还提出了三种优化策略来降低混合存储系统的能耗。他们以非常细的 DRAM 行粒度监视内存数据，并定期检查每个DRAM行中的访问计数器。根据计数器将数据写回NVMM，以减少DRAM刷新的能耗。在再次访问数据之前，数据不会从NVMM缓存到DRAM。脏数据尽可能长时间地保存在DRAM中，以减少DRAM和NVMM之间的数据交换开销以及NVMM的昂贵写操作。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e565e90afda244f6a8dcfbe3081068c1.png"></p>
 <p><strong>页面迁移</strong>。针对不同的优化目标，已经提出了许多页面迁移算法。Soyoon等人[33]认为，在识别热页时，NVMM写入的频率比数据访问的最近性更重要，并提出了一种称为CLOCK with Dirty bits and Write frequency (CLOCK-DWF )的页替换算法。对于每个NVMM写入操作, CLOCK-DWF需要首先将相应的页面提取到DRAM，然后在DRAM中执行写入。这种方法可能会导致许多不必要的页面迁移，从而给NVMM带来更多的能耗和写回操作。Salkhordeh和Asadi[34]考虑了内存写入和读取，以迁移有利于性能和节能的热页面，并使用两个最近最少使用的(LRU)队列分别选择DRAM和NVM中的受害页面。Yoon等人基于行缓冲区位置进行了页面迁移，其中行缓冲区命中率低的页面被迁移到DRAM，而行缓冲区点击率高的页面仍保留在NVMM中。Li等人提出了一种实用模型，用于基于实用程序定义来指导页面迁移，该实用程序定义基于许多因素，如页面热性、内存级别并行性和行缓冲区位置。Khouzani等人考虑了程序的内存布局和内存级并行性，以迁移混合内存系统中的页面。</p>
 <p><strong>架构限制</strong>。在水平混合存储器架构中管理NVMM和DRAM有几个挑战。</p>
 <p>首先,页面级内存监控成本高昂。一方面，由于当今的商品x86系统不支持页面粒度的内存访问监控，因此硬件支持的页面迁移方案需要大量的硬件修改来监控内存访问统计[14,15,33]。另一方面, OS层的内存访问监控通常会导致显著的性能开销。许多操作系统在页面表条目(PTE)中为每个页面维护一个“已访问”位，以标识该页面是否被访问。然而，该位不能真实地反映页面访问的最近性和频率。因此，一些基于软件的方法将禁用Translation Lookaside Buffer (TLB )[102]来跟踪每个内存引用。这种页面访问监控机制通常会导致显著的性能开销，甚至抵消混合内存系统中页面迁移的好处。</p>
@@ -603,7 +611,8 @@
 <p>据我们所知,我们是第一个探索混合存储系统中K-V存储的对象级数据管理的人。我们基于Memcached实现HMCached并打开源代码。我们发现，后来的研究(如flatstore[90] )也有类似的想法来解耦KV存储的数据结构。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b20aefdd545644598b482229209b0f46.png"></p>
 <p>今天,我们已经看到了许多内存中的图形处理系统,其中应用程序的性能与主内存的容量高度相关。高密度和低成本NVMM技术对于降低图形处理的I/O成本至关重要。如图11所示, 与基于SSD的存储系统相比,混合存储系统可以显著提高应用程序性能。图12显示了混合存储器系统和仅DRAM系统之间的应用程序性能差距。我们提出了NGraph，一种新的图形处理框架，专门设计用于更好地利用混合存储器。我们基于不同图形数据的访问模式开发混合内存感知数据放置策略,以减轻对NVMM的随机和频繁访问。通常，图形结构数据占总图形数据的大部分。NGraph根据目标顶点划分图形数据,并采用任务分解机制来避免多个处理器之间的数据争用。此外,NGraph采用了工作窃取机制，以最小化多核系统上并行图形数据处理的最大时间。我们称为ReRAM技术的。</p>
-<p>基于图形处理框架Ligra[123]实现NGraph。与最先进的Ligra相比,NGraph可以将应用程序性能提高48%。从这项工作中获得的经验教训[91]可用于在配备真实PM设备的图形处理平台中进一步提高大规模图形分析的性能。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/76462968db584a9c8136d9c88d89346e.png"></p>
+<p>基于图形处理框架Ligra[123]实现NGraph。与最先进的Ligra相比,NGraph可以将应用程序性能提高48%。从这项工作中获得的经验教训[91]可用于在配备真实PM设备的图形处理平台中进一步提高大规模图形分析的性能。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/76462968db584a9c8136d9c88d89346e.png"></p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/21935e2720af4afeae966b3ce6e3724d.png"></p>
 <h1 id="7-Research-Directions研究方向"><a href="#7-Research-Directions研究方向" class="headerlink" title="7 Research Directions研究方向"></a>7 Research Directions研究方向</h1><p>NVMM技术的出现在材料、微电子、计算机架构、系统软件、编程模型和大数据应用领域引起了许多有趣的研究课题。随着IntelOptaneDCPMM等真正的NVMM设备越来越多地应用于数据中心环境,NVMM可能会改变数据中心的存储环境。我们的经<br>验和做法进行了一些初步和有趣的研究。在下文中,我们分享了NVMM未来研究方向的愿景,并分析了研究挑战和新机遇。图13说明了不同维度NVMM技术的未来趋势。</p>
 <ol>

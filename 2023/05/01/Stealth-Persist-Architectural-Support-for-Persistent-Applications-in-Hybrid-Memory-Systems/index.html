@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -321,7 +321,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems</h1>
+                    <!-- <h1 class="description center-align post-title">Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems</h1> -->
                 </div>
             </div>
         </div>
@@ -475,7 +475,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    773
+                    783
                 </div>
                 
 
@@ -505,8 +505,11 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">文章来自IEEE, (H), 2021</div> 
+                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
+<ul>
+<li>文章来自HPCA, 2021</li>
+<li>Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems</li></ul></div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
 <li>A, Mazen Alwadi1, Vamsee Reddy Kommareddy1, Clayton Hughes2, Simon David Hammond2, Amro Awad3<br>University of Central Florida1, Sandia National Laboratories2, North Carolina State University3</li>
