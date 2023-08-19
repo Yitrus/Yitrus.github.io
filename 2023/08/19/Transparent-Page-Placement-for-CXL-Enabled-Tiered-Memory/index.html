@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems, Yi&#39;s Blog">
+    <meta name="keywords" content="Transparent Page Placement for CXL Enabled Tiered Memory, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems | Yi&#39;s Blog</title>
+    <title>Transparent Page Placement for CXL Enabled Tiered Memory | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/85597fd358cb4e0882741b4808f25738.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems</h1> -->
+                    <!-- <h1 class="description center-align post-title">Transparent Page Placement for CXL Enabled Tiered Memory</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Rxiv/">
-                                <span class="chip bg-color">Rxiv</span>
-                            </a>
-                        
                             <a href="/tags/Hybrid-Memory-Systems/">
                                 <span class="chip bg-color">Hybrid Memory Systems</span>
+                            </a>
+                        
+                            <a href="/tags/A/">
+                                <span class="chip bg-color">A</span>
                             </a>
                         
                     </div>
@@ -466,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-08-18
+                    2023-08-19
                 </div>
                 
 
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    3 分
                 </div>
                 
 
@@ -507,50 +507,45 @@
             <div id="articleContent">
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
-<p><strong>文章来自23年7月TechRxiv</strong><br>Performance, Energy and NVM Lifetime-Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems</p>
-</div> 
+<ul>
+<li>文章来自ASPLOS，2023，CCFA</li>
+<li>TPP: Transparent Page Placement for CXL-Enabled Tiered-Memory</li></ul></div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Manolis Katsaragakis,微处理器和数字系统实验室国立雅典理工大学(NTUA)电气与计算机工程学院,鲁汶大学(KU Leuven)比利时</li>
-<li>Christos Baloukas, Lazaros Papadopoulos, 微处理器和数字系统实验室国立雅典理工大学(NTUA)电气与计算机工程学院</li>
-<li>Francky Catthoor,鲁汶大学微电子研究中心</li>
+<li>Hasan Al Maruf，Mosharaf Chowdhury – University of Michigan密歇根大学</li>
+<li>Hao Wang，Niket Agarwal，Pallab Bhattacharya – NVIDIA</li>
+<li>Abhishek Dhanotia，Johannes Weiner，Chris Petersen，Shobhit Kanaujia，Prakash Chauhan – Meta Inc.脸书</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>为了有效利用 DRAM/NVM 异构内存系统，多年来已经提出了几种数据放置算法 [15]、[16]。尽管数据放置算法通常很复杂，并且能够有效地利用正在执行的应用程序的复杂内存层次结构，但它们的结果通常受到以下事实的限制：<span class="label info">原始应用程序通常是为 DRAM 而不是为异构内存设计的</span></p>
-<p>作者通过一些实验展示了数据组织改进的应用程序级方法对异构 DRAM/NVM 系统上数据放置算法结果的影响（作为整个论文的动机）。其中有两个新的概念（这两个概念也对后续设计有很大影响，但是这两个概念并不常见）：</p>
-<ul>
-<li><span class="label danger">动态数据类型细化方法 Dynamic Data Type Refinement methodology（DDTR）</span>（D. A. Alonso, S. Mamagkakis, C. Poucet etc. Dynamic memory management for embedded systems. Springer, 2015）</li>
-<li><span class="label danger">帕累托最优 Pareto Optimal</span></li>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><ul>
+<li>CXL [7] 是一种基于 PCI Express (PCIe) 接口的开放式、业界支持的互连。<br>它支持主机处理器和设备（例如加速器、内存缓冲区、智能 I/O 设备等）之间的高速、低延迟通信.</li>
+<li>CXL 在同一物理地址空间中提供字节可寻址内存，并允许使用标准内存分配 API 进行透明内存分配。</li>
+<li>CXL-Memory 访问延迟也与 NUMA 访问延迟类似。</li>
 </ul>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>异构内存中可以从数据组织的角度改进数据放置，所提出的方法旨在满足三个主要目标：<br>(i) 展示通过应用程序级优化实现的数据放置算法的改进结果。<br>(ii) 基于多个目标（性能、能耗、对 NVM 寿命的影响）评估布局解决方案。<br>(iii) 提供可用性、可扩展性和可扩展性特征（例如，即使对于相对较大的设计空间，也有合理的探索时间，并支持各种应用领域、数据放置算法和真实或模拟的 NVM 技术）。</p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><ul>
-<li>几种数据放置算法 [15]、[16]</li>
-<li>应用级数据优化方法[18]、[19]</li>
-<li>库支持 [13]、[17] </li>
-<li>根据布局粒度级别进行分类：数据结构、内存对象或内存页 [23] [15] [24] [25][23] 的作者提出了一种在线配置文件引导的数据分层解决方案，涉及异构内存系统的页面粒度放置，旨在提高 HPC 应用程序的性能。其他指示性方法包括静态代码检测工具，用于自动执行内存对象放置以实现性能和能源优化[15]。在数据结构放置粒度上，[24]中提出了缓存和非缓存 NVM 的写感知数据结构放置。 [25] 中提出了基于人工智能的页面粒度数据放置。</li>
-<li>异构 DRAM/NVM 系统上的应用程序域特定布局：最近还研究了应用程序域特定布局方法，目标是与领域无关的布局算法相比获得更好的结果。这些领域包括与数据库相关的工作负载[26]、大数据应用程序[27]、[28]、基于图的[29]、[30]、[31]和基于深度神经网络的应用程序[32]、[33]。</li>
-</ul>
-<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/85597fd358cb4e0882741b4808f25738.png"></p>
-<p>图2显示了所提出的方法的概述。该方法的输入是目标应用程序的源代码。它由三个步骤组成：</p>
+<p>这篇文章将直接附加到 CPU 的内存称为本地内存，将 CXL 附加内存称为CXL-内存。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/5aac1cd90eef40299199fc6d08e7b1f0.png"></p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>现实实践中面对的问题：<br><strong>数据中心应用程序的内存需求增加</strong>在META公司中每一代硬件内存消耗的能源和总花费占比都在不停增长。</p>
+<p><strong>同类服务器设计中的扩展挑战</strong>内存控制器仅支持单代内存技术，这限制了不同技术的混合搭配，具有不同的每 GB 成本和带宽与延迟配置。大内存容量都是2的几次方。限制了细粒度；每一代服务器的带宽和容量都有限制。图4</p>
+<p><strong>数据中心应用程序的轻量级表征</strong>现有的工具会导致较高的 CPU 开销（每个核心超过 15%），并且通常会减慢应用程序的速度。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/149d075453ee4bfb9e5e3e7214a92947.png"></p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p><strong>首先是构建了一个收集采样数据的工具</strong>：<br>Chameleon 的主要用例是了解应用程序的内存访问行为，即应用程序内存的哪一部分保持热-温-冷状态、页面在特定温度层上存活多长时间、访问它们的频率等等。长期内存。</p>
+<p>收集器做两类采样，放入hash表，定时唤醒。<br>收集器唤醒工作线程以处理当前哈希表中的数据，并移动到另一个哈希表以存储下一个间隔的采样数据<br>工作器处理哈希表里的数据，统计每个页面的位图大小是64位，生成报告后休眠。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/5c874a20c38e4191b939a5ef0ca59536.png"></p>
+<p>我们使用 Chameleon 来分析我们生产中运行的跨不同服务域的各种大型内存绑定应用程序，并进行以下观察。 </p>
 <ol>
-<li><p><strong>数据组织的优化</strong>，此步骤的主要目标是有效选择应用程序的数据结构实现，以最大限度地减少数据访问次数和内存占用。实现方式是源代码的原始数据结构被库的数据结构替换。（仅限于基于列表的数据结构实现的 C++ 标准模板库 (STL) 兼容变体。）<span class="label default">这一步生成一组帕累托最优解</span>,每一个都对应于正在优化的应用程序的数据结构实现的不同组合。</p>
-</li>
-<li><p><strong>内存对象分析</strong>，基于内存跟踪和分析工具，<span class="label default">分析上一步提供的应用程序的帕累托最优版本</span>。通过平台感知采样和分析 (2b)，我们收集每个对象的内存跟踪，包括：加载和存储操作、对象大小和 LLC 未命中。还可以根据所选数据放置算法的输入要求来监视其他指标。</p>
-</li>
-<li><p><strong>异构内存系统上的放置和评估</strong>，模型接收（i）每个内存页、对象或数据结构的分析信息和（ii）内存规格作为输入，例如读/写延迟、读/写能耗和内存容量（3b）。每个应用程序版本都根据所选的数据放置算法部署在异构内存系统上，并执行。为了监控执行时间、能耗和NVM写入次数，需要实时监控（3e）。应用程序版本在真实或模拟的异构存储器系统上放置和执行。开发人员可以在性能、能耗和 NVM 写入访问次数之间进行权衡，并选择满足设计约束的帕累托最优解决方案。</p>
-</li>
+<li>访问的内存的很大一部分在几分钟内保持冷状态。我们可以将其卸载到慢速层内存，而不会对性能产生重大影响。 </li>
+<li>大部分匿名内存（为程序的堆栈、堆和/或 mmap 调用创建）往往更热，而大部分文件支持的内存往往相对更冷。</li>
+<li>页面访问模式在有意义的持续时间（分钟到小时）内保持相对稳定。这足以观察应用程序行为并在内核空间中做出页面放置决策。 </li>
+<li>工作负载对不同页面类型具有不同程度的敏感度，并且随着时间的推移而变化.(文件和匿名页面的占比)</li>
+<li>冷页重新访问时间因工作负载而异。分层内存系统上的页面放置应该意识到这一点，并主动将热页移动到较低的内存节点，以避免高内存访问延迟。于Web而言，几乎80%的页面会在 10 分钟内被重新访问。</li>
 </ol>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>所提出的方法根据以下标准进行评估：<br>● DDTR 等高级数据组织优化方法对数据放置结果的影响，包括性能、能耗和对 NVM 寿命的影响。<br>● 该方法可以在多大程度上有效地集成具有不同优化目标的各种数据放置算法以及各种内存技术（模拟的或真实的硬件）。<br>● 当应用于具有相对大量数据结构的应用程序时，该方法在探索时间方面的可扩展性。</p>
-<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><ul>
-<li>相当于需要人工干预去做这个优化。</li>
-<li>而且优化过程依赖帕累托（来自财经领域）最优和DDTR（15年一篇论文），这是以前没有过的应该，那么到底有多可靠呢？审稿方对这些态度咋样呢？</li>
-<li>评估方面，没有和其他的工作比较，也看不出什么优势emmm。</li>
-</ul>
-<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>没有任何相关工作研究应用级数据优化和异构内存系统上的数据放置之间的相互作用，以提高性能、能耗和对 NVM 寿命结果的影响。提出了一种内存管理方法，该方法结合了动态数据结构细化步骤以及异构内存系统上的放置算法。</p>
-<h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><ul>
-<li>最开始对程序数据组织优化应该是离线完成的，<a target="_blank" rel="noopener" href="https://github.com/mkatsa/DDTR-DRAM-NVM">可能可以作为参考</a>。</li>
-<li>可以考虑的workload：从 Shark ML 库 [42] 和 Chrono 物理引擎 [43] 中选择了五个代表性应用程序。</li>
-</ul>
-
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ec7f0938b1844787b423dbe944b29744.png"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/927aa0606137423b80bc79092b10fdca.png"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/f7c7b158461d442ea37c3eb4d5b9d7f9.png"></p>
+<p><strong>其次针对观察到的特点进行架构设计</strong></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png"></p>
+<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>但是你换了环境就没这个效果了，可能也就自己家用用。</p>
+<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>是根据工作负载来设计架构的，关注的问题点比较小，也就容易做到很细致出色吧。</p>
+<h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
                 
             </div>
             <hr/>
@@ -576,7 +571,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/08/18/Aware-Data-Structure-Refinement-and-Placement-for-Heterogeneous-Memory-Systems/">http://ytirus.github.io/2023/08/18/Aware-Data-Structure-Refinement-and-Placement-for-Heterogeneous-Memory-Systems/</a>
+                    <a href="http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -614,12 +609,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Rxiv/">
-                                    <span class="chip bg-color">Rxiv</span>
-                                </a>
-                            
                                 <a href="/tags/Hybrid-Memory-Systems/">
                                     <span class="chip bg-color">Hybrid Memory Systems</span>
+                                </a>
+                            
+                                <a href="/tags/A/">
+                                    <span class="chip bg-color">A</span>
                                 </a>
                             
                         </div>
@@ -667,18 +662,18 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">
+                <a href="/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png" class="responsive-img" alt="Transparent Page Placement for CXL Enabled Tiered Memory">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/03757318787c480091970cfc3d2290a2.png" class="responsive-img" alt="Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness">
                         
-                        <span class="card-title">Transparent Page Placement for CXL Enabled Tiered Memory</span>
+                        <span class="card-title">Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            针对自己公司数据中心的工作负载的特点，修改内核页面放置策略
+                            在高性能并行计算中研究异构内存数据放置问题。
                         
                     </div>
                     <div class="publish-info">
@@ -719,23 +714,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/08/17/P2Cache-An-Application-Directed-Page-Cache-for-Improving-Performance-of-Data-Intensive-Applications/">
+                <a href="/2023/08/18/Aware-Data-Structure-Refinement-and-Placement-for-Heterogeneous-Memory-Systems/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1392a78bce7340b886bd89b864b1e283.png" class="responsive-img" alt="P2Cache An Application-Directed Page Cache for Improving Performance of Data-Intensive Applications">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/85597fd358cb4e0882741b4808f25738.png" class="responsive-img" alt="Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems">
                         
-                        <span class="card-title">P2Cache An Application-Directed Page Cache for Improving Performance of Data-Intensive Applications</span>
+                        <span class="card-title">Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            发现一些特殊的I/O现有的缓存策略无法适用。设计应用程序导向的页面缓存，用于提高数据密集型应用程序的性能。
+                            提出了一种内存管理方法，该方法结合了动态数据结构细化步骤以及异构内存系统上的放置算法
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-17
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-18
                             </span>
                         <span class="publish-author">
                             
@@ -752,12 +747,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/O/">
-                        <span class="chip bg-color">O</span>
+                    <a href="/tags/Rxiv/">
+                        <span class="chip bg-color">Rxiv</span>
                     </a>
                     
-                    <a href="/tags/Cache/">
-                        <span class="chip bg-color">Cache</span>
+                    <a href="/tags/Hybrid-Memory-Systems/">
+                        <span class="chip bg-color">Hybrid Memory Systems</span>
                     </a>
                     
                 </div>
