@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Transparent Page Placement for CXL Enabled Tiered Memory, Yi&#39;s Blog">
+    <meta name="keywords" content="Data Center Ethernet and RDMA Issues at Hyperscale, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Transparent Page Placement for CXL Enabled Tiered Memory | Yi&#39;s Blog</title>
+    <title>Data Center Ethernet and RDMA Issues at Hyperscale | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '';
+        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Transparent Page Placement for CXL Enabled Tiered Memory</h1> -->
+                    <!-- <h1 class="description center-align post-title">Data Center Ethernet and RDMA Issues at Hyperscale</h1> -->
                 </div>
             </div>
         </div>
@@ -435,17 +435,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
-                            </a>
-                        
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -466,7 +458,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-08-19
+                    2023-08-22
                 </div>
                 
 
@@ -475,14 +467,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.1k
+                    3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    10 分
                 </div>
                 
 
@@ -508,61 +500,96 @@
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
 <ul>
-<li>文章来自ASPLOS，2023，CCFA</li>
-<li>TPP: Transparent Page Placement for CXL-Enabled Tiered-Memory</li></ul></div> 
+<li>文章来自xx’</li>
+<li>Data Center Ethernet and Remote Direct Memory Access: Issues at Hyperscale</li>
+</ul>
+</div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Hasan Al Maruf，Mosharaf Chowdhury – University of Michigan密歇根大学</li>
-<li>Hao Wang，Niket Agarwal，Pallab Bhattacharya – NVIDIA</li>
-<li>Abhishek Dhanotia，Johannes Weiner，Chris Petersen，Shobhit Kanaujia，Prakash Chauhan – Meta Inc.脸书</li>
+<li>Torsten Hoefler , ETH Zürich</li>
+<li>Duncan Roweth, Keith Underwood, and Robert Alverson, Hewlett Packard Enterprise</li>
+<li>Mark Griswold, Vahid Tabatabaee, Mohan Kalkunte, and Surendra Anubolu, Broadcom</li>
+<li>Siyuan Shen, ETH Zürich</li>
+<li>Moray McLaren, Google</li>
+<li>Abdul Kabbani and Steve Scott, Microsoft</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><ul>
-<li>CXL [7] 是一种基于 PCI Express（PCIe）接口的开放式、业界支持的互连。<br>它支持主机处理器和设备（例如加速器、内存缓冲区、智能 I/O 设备等）之间的高速、低延迟通信。</li>
-<li>CXL 在同一物理地址空间中提供字节可寻址内存，并允许使用标准内存分配 API 进行透明内存分配。</li>
-<li>CXL-Memory 访问延迟也与 NUMA 访问延迟类似。</li>
-</ul>
-<p>这篇文章将直接附加到 CPU 的内存称为本地内存，将 CXL 附加内存称为CXL-内存。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/5aac1cd90eef40299199fc6d08e7b1f0.png"></p>
+<p>使服务器应用程序可以直接操作远程服务器的内存,不需要经过操作系统和CPU。</p>
+<p>Fabric，就是支持RDMA的局域网(LAN)。</p>
+<p>怎样才能对内存进行传输，注册。 因为RDMA硬件对用来做数据传输的内存是有特殊要求的。</p>
+<p>在数据传输过程中，应用程序不能修改数据所在的内存。<br>操作系统不能对数据所在的内存进行page out操作————物理地址和虚拟地址的映射必须是固定不变的。<br>注意无论是DMA或者RDMA都要求物理地址连续，这是由DMA引擎所决定的。</p>
+<p>几十年来，以太网一直在有线局域网领域占据主导地位，范围从私人住宅的部署到最大的数据中心。数据中心经历了巨大的增长在过去的十年中，联网机器的数量超过了当今最大的超级计算机的规模。尽管仍存在一些差异，但此类超大规模数据中心和超级计算机的网络要求非常相似。[1]然而，超级计算机传统上使用专用互连进行连接，而数据中心则建立在以太网上。由于类似需求和规模经济，随着每一代新技术的产生，两者的结合不断紧密。我们认为现在是重新思考融合互连的基本假设和架构的最佳时机。</p>
+<h3 id="数据中心以太网的新环境"><a href="#数据中心以太网的新环境" class="headerlink" title="数据中心以太网的新环境"></a>数据中心以太网的新环境</h3><p>多种技术趋势正在加速高性能互连的融合。首先，不断增长的网络性能要求推动了可支持TB级带宽的更高效的主机堆栈的发展，每秒数亿美元的交易以及新兴数据密集型应用程序（例如人工智能（AI））所需的单位微秒延迟。[2]这些极端要求迫使所有协议和硬件都尽可能高效，以至于尽可能有效排除许多传统上驱动数据中心网络的TCP/ IP状堆栈远程直接内存访问（RDMA）是大约三十年前用于高性能计算（HPC）工作负载的远程内存访问（RDMA），后来又将其扩展到InfiniBand(IB) verbs RDMA的目标存储。RDMA可以通过网络启用CPU释放的硬件加速DMA。在过去的10年中，它事实上已成为低开销和高速网络的标准。</p>
 <blockquote>
-<p><strong>补充：</strong>现在CXL同时支持多种内存的应用案例都是DRAM和HBM（是一种高带宽内存 High Bandwidth Memory）。HBM更适用于对带宽要求极高的场景,如高端GPU、AI加速卡等。HBM单片容量较小(4-16GB),但带宽巨大(超过500GB/s)。</p>
+<p>InfiniBand verbs 是InfiniBand架构中定义的一套编程接口(verbs),用于应用程序访问InfiniBand网络资源并利用RDMA(远程直接内存访问)技术进行通信。</p>
 </blockquote>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>现实实践中面对的问题：<br><strong>数据中心应用程序的内存需求增加</strong>在META公司中每一代硬件内存消耗的能源和总花费占比都在不停增长。</p>
-<p><strong>同类服务器设计中的扩展挑战</strong>内存控制器仅支持单代内存技术，这限制了不同技术的混合搭配，具有不同的每 GB 成本和带宽与延迟配置。大内存容量都是2的几次方。限制了细粒度；每一代服务器的带宽和容量都有限制。图4</p>
-<p><strong>数据中心应用程序的轻量级表征</strong>现有的工具会导致较高的 CPU 开销（每个核心超过 15%），并且通常会减慢应用程序的速度。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/149d075453ee4bfb9e5e3e7214a92947.png"></p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h3 id="5-1采样数据工具"><a href="#5-1采样数据工具" class="headerlink" title="5.1采样数据工具"></a>5.1采样数据工具</h3><p>Chameleon 的主要用例是了解应用程序的内存访问行为，即应用程序内存的哪一部分保持热-温-冷状态、页面在特定温度层上存活多长时间、访问它们的频率等等。长期内存。</p>
-<p>收集器做两类采样，放入hash表，定时唤醒。<br>收集器唤醒工作线程以处理当前哈希表中的数据，并移动到另一个哈希表以存储下一个间隔的采样数据<br>工作器处理哈希表里的数据，统计每个页面的位图大小是64位，生成报告后休眠。</p>
 <blockquote>
-<p>load是从内存读取数据到处理器的寄存器中的指令,而store则是将寄存器中的数据写入内存的指令。两者都是与内存打交道的指令,但方向不同,load是内存到寄存器,而store是寄存器到内存。</p>
+<p>在数据中心网络中排除传统TCP/IP栈的主要原因有:</p>
 </blockquote>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/5c874a20c38e4191b939a5ef0ca59536.png"></p>
-<p>我们使用 Chameleon 来分析我们生产中运行的跨不同服务域的各种大型内存绑定应用程序，并进行以下观察。 </p>
 <ol>
-<li>访问的内存的很大一部分在几分钟内保持冷状态。我们可以将其卸载到慢速层内存，而不会对性能产生重大影响。 </li>
-<li>大部分匿名内存（为程序的堆栈、堆和/或 mmap 调用创建）往往更热，而大部分文件支持的内存往往相对更冷。</li>
-<li>页面访问模式在有意义的持续时间（分钟到小时）内保持相对稳定。这足以观察应用程序行为并在内核空间中做出页面放置决策。 </li>
-<li>工作负载对不同页面类型（文件和匿名页面）具有不同程度的敏感度，并且随着时间的推移而变化。</li>
-<li>冷页重新访问时间因工作负载而异。分层内存系统上的页面放置应该意识到这一点，并主动将热页移动到较低的内存节点，以避免高内存访问延迟。于Web而言，几乎80%的页面会在 10 分钟内被重新访问。</li>
+<li>TCP/IP栈开销大。TCP/IP栈在主机内核中运行,每次网络IO都需要经过完整的网络协议处理,包括缓冲拷贝、上下文切换、校验计算等,增加延迟和CPU使用。</li>
+<li>不必要的内存复制。数据在应用、内核、NIC间多次缓冲拷贝,影响吞吐量和延迟。</li>
+<li>CPU利用率高。网络栈处理占用大量CPU资源,对计算密集型应用影响很大。</li>
+<li>通信堆栈长。TCP/IP通信堆栈包含过多层,每个层在主机内核和NIC都要处理,增大延迟。</li>
+<li>难以实现kernel bypass。 TCP/IP难以实现应用直接控制网络硬件,无法实现kernel bypass架构。</li>
+<li>可扩展性差。TCP难以实现应用级的可扩展性和负载均衡。 </li>
+<li>缺乏数据中心网络特性。TCP/IP缺乏RDMA、RoCE、sr-iov、overlay网络等数据中心特性。）所以数据中心采用RDMA、userspace network stack、overlay network等技术,可以获得更高性能、弹性和效率）。</li>
 </ol>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ec7f0938b1844787b423dbe944b29744.png"></p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/927aa0606137423b80bc79092b10fdca.png"></p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/f7c7b158461d442ea37c3eb4d5b9d7f9.png"></p>
-<h3 id="5-2架构设计"><a href="#5-2架构设计" class="headerlink" title="5.2架构设计"></a>5.2架构设计</h3><p>TPP 将“较热”页面放置在本地内存中，并将“较冷”页面移动到 CXL 内存中。<br>TPP 的设计空间可分为四个主要区域：</p>
+<p>如今，几乎所有超级计算机架构以及领先的数据中心提供商都在生产中使用 RDMA。几十年前对负载平衡、拥塞控制和错误处理的简单假设并不适用于当今带宽提高100倍、消息速率提高10倍以上的网络。此外，简单的RDMA网络接口卡（NIC）通常会通过附加功能进行增强。由此产生的“智能网卡”通常会减轻大量负载。服务并实施专门的网络协议。现代网络交换机还具有改进的功能，从先进的网内遥测和网内计算功能到网内负载平衡和拥塞控制。3我们认为，当前现有的标准和部署的基础设施存在根本差距必须在不久的将来解决这个问题，以支持高效的高性能网络。</p>
+<blockquote>
+<p>遥测数据(Telemetry Data)是指从网络设备中采集、汇报的与网络运行状态相关的数据。它通过实时反映网络的运行情况来帮助网络管理和运维。常见的网络遥测数据包括:</p>
+</blockquote>
 <ul>
-<li>(a) 轻量级降级到 CXL-Memory，</li>
-<li>(b) 解耦分配和回收路径，</li>
-<li>(c) 热页升级到本地节点，</li>
-<li>(d) 页面类型感知内存分配。</li>
+<li>基础信息:设备型号、配置、软件版本等静态信息。</li>
+<li>流量数据:接口流量速率、总流量、流量方向等。</li>
+<li>QoS数据:接口队列长度、延迟、丢包、拥塞情况等。 </li>
+<li>路由信息:路由表、下一跳等动态路由信息。</li>
+<li>会话信息:活动的会话连接数、来源/目的地等。</li>
+<li>资源利用率:CPU使用率、内存使用率、链接利用率等。</li>
+<li>环境数据:设备温度、风扇速度等环境信息。</li>
+<li>事件和警报:设备故障、链路中断等事件信息。<br>遥测数据可以通过SNMP、NETCONF等管理协议获取,也可以通过流式遥测技术像gRPC Streaming、 Kafka等机制订阅获取。收集到的遥测数据可以用于网络状态分析、事件检测、容量规划、流量工程等。</li>
 </ul>
-<p> 一般来所NUMA系统的回收顺序是：首先回收本地节点上不活跃的页面；然后回收远程节点上不活跃的页面；如果还不够,才考虑回收本地节点上最近最少使用的页面。所以在图的上面①会将本地回收候选页面迁移到XCL节点的降级列表中，除非本地节点的容量小于工作集大小的热部分，否则在回收期间热页面迁移到 CXL 节点的机会非常低。如果降级期间的迁移失败（例如，由于 CXL 节点上的内存不足），我们将回退到该失败页面的默认回收机制。</p>
-<p> Linux为节点内的每个内存区域维护三个watermakes（最小、低、高）。如果节点的空闲页面总数低于low_watermark，Linux会认为该节点面临内存压力并启动该节点的页面回收。在我们的例子中，TPP将它们降级为CXL节点。对本地节点的新分配将停止，直到回收器释放足够的内存以满足high_watermark。<span class="label info">由于分配率较高，回收可能无法跟上</span>，本地内存分配频繁停止，<span class="label info">更多页面最终出现在CXL节点中</span>，最终降低应用程序性能。所以现在将回收和分配化为不同的门槛②，回收和驱逐会提早发生，而禁止页面分配会在内存饱和度更高一步的时候。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png"></p>
-<p>NUMA系统中CPU访问另一节点页面时,生成缺页异常提醒内核进行页面迁移。不常访问的页面产生的升级流量很容易填满本地节点的空闲空间，并为CXL节点产生更高的降级流量。于是通过页面在LRU列表中的位置来检查页面的年龄。如果故障页面处于非活动LRU状态，我们不会立即考虑该页面进行升级，因为它可能是不经常访问的页面。仅当在活动 LRU 中找到故障页面（图13中的①）时，我们才将其视为升级候选页面。这大大减少了升级流量。</p>
-<p>然而，操作系统使用LRU列表进行回收。如果内存节点没有压力并且回收没有启动，则非活动LRU列表中的页面不会自动移动到活动LRU列表。由于CXL节点可能并不总是处于压力之下，因此经常可以在非活动LRU列表中找到缺页的页面，又会没法向上迁移。为了解决这个问题，每当我们在非活动LRU列表中发现缺页异常时，我们都会将该页面标记为已访问，并立即将其移至活动LRU列表（图13中的②）。如果在下一次NUMA提示缺页异常，则它将处于活动LRU中，并提升到本地节点（图13中的③）。</p>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>因为工作负载就这些特性，那就直接对症下药，效果都挺明显的。</p>
-<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>但是换了workload就没这个效果了。按照这种方式，每家都得自己去设计啰。</p>
-<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>是根据工作负载来设计架构的，关注的问题点比较小，也就容易做到很细致出色吧。</p>
-<h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><p>一个奇怪的现象，虽然大家可能观察值不同，但是最后系统设计都比较像，好像这两部分可以分裂一样。<br>那个Chameleon工具，说是开源但是并没有，之后可以再去看看。<br>TMO: Transparent memory offloading in datacenters. In ASPLOS, 2022.可以看看。</p>
+<blockquote>
+<p>网内遥测(In-band Telemetry, INT)是一种网络遥测技术,它可以在网络数据包中携带遥测数据,并随着数据包传递通过网络。网内遥测的主要特征和优势包括:</p>
+</blockquote>
+<ul>
+<li>遥测数据直接嵌入数据包中,不需要额外的控制消息,更加高效。</li>
+<li>可以提供数据包在网络中的实时状态,如延迟、丢包等信息。</li>
+<li>可以细粒度地反映网络状态,每一个数据包都是探针。</li>
+<li>可以快速发现网络热点,进行负载均衡和故障定位。</li>
+<li>无需专用监控网络,不会占用额外带宽。</li>
+<li>可以配合软件定义网络(SDN)实现可编程的遥测控制。<blockquote>
+<p>网内遥测通常需要数据平面支持,在交换机或网卡中实现遥测头插入和解析。通过网内遥测技术,可以极大地增强网络的可观测性, 一些主流的网内遥测技术包括: </p>
+</blockquote>
+</li>
+<li>INT: IETF正在推进的INT标准。</li>
+<li>IOAM: In-situ OAM,由Cisco推出。</li>
+<li>P4INT: 基于P4语言的可编程INT实现。</li>
+<li>iOAM: IOAM的衍生协议。</li>
+</ul>
+<h3 id="RoCE：融合还是胶带"><a href="#RoCE：融合还是胶带" class="headerlink" title="RoCE：融合还是胶带"></a>RoCE：融合还是胶带</h3><p>RoCE（RDMA over Converged Ethernet）是可以在Ethernet网络上运行RDMA的网络协议。其主要特点如下:</p>
+<ul>
+<li>RoCE在Ethernet上实现了RDMA功能,使RDMA不再只局限在专用的InfiniBand网络上。</li>
+<li>在IP/Ethernet网络基础设施上,通过对数据平面进行改进来实现RDMA。</li>
+<li>支持两种传输方式:RoCEv1使用UDP封装;RoCEv2使用一种特殊的以太网帧格式。</li>
+<li>RoCEv1依赖数据中心级别的Lossless Ethernet技术来实现可靠传输。RoCEv2新增了自身的流控机制。</li>
+<li>RoCE可以获得与InfiniBand接近的低延迟和高吞吐性能。</li>
+<li>与iWARP相比,RoCE更加依赖硬件卸载,实现CPU利用率更低。<br>RoCE的优势在于兼容现有的以太网网络,使RDMA应用更易于部署,不再需要专门的IB交换机网络。RoCE已得到广泛支持,是数据中心采用RDMA的主流选择之一。</li>
+</ul>
+<p>传统上，当交换机缓冲区已满时，以太网会丢弃数据包，并依赖于端到端重传。为了支持RoCE，CE引入优先流控制（PFC）来实现链路级无损操作。PFC重新利用以太网中存在的以太网暂停帧来支持具有不同链路传输速率的网络。PFC增强暂停帧以停止（或限制）特定优先级上的流量，以避免数据包丢失。不幸的是，这套复杂的协议会干扰网络中的不同层，并降低当今一些最重要工作负载的效率。</p>
+<p>RoCE的语义、负载平衡和拥塞控制机制继承自InfiniBand。这意味着所有消息都应该按顺序出现在目的地，就好像它们是通过静态路由传输一样，本质上不允许许多数据包级负载平衡机制。对于人工智能训练工作负载（长期存在的流），多路径机制可以大大缩短作业完成时间。此外，RoCE v2使用基于IP显式拥塞通知（ECN）的简单拥塞控制机制。当检测到拥塞时，兼容 ECN 的交换机会对数据包进行标记，接收方会将该信息转发回发送方，从而在单个参数的引导下降低其注入率。无拥塞期后，使用第二个配置参数再次自动提高速率。</p>
+<h3 id="下一代高性能网络"><a href="#下一代高性能网络" class="headerlink" title="下一代高性能网络"></a>下一代高性能网络</h3><p>对于某些工作负载，消息延迟（有时是消息速率）起着核心作用。其中一些属于 OBS 类别，但其他一些具有复杂的数据相关消息链，形成应用程序中的关键性能路径。这些通常是强大的扩展工作负载，解决问题的时间很重要，并且必须容忍低效的执行。具有严格期限的大规模模拟（例如天气预报和石油勘探）属于这一类，但一些事务处理和搜索/推理工作负载也属于这一类。在这里，通常具有严格的（个位数微秒）延迟要求。</p>
+<p>除了流量类型之外，部署环境也在发生变化。新出现的机密计算理念要求所有流量在线路上进行加密。理想情况下，流量在安全飞地中进行端到端加密和解密，并且没有网络设备（NIC 或交换机）值得信任。此外，相关的新兴多租户场景需要管理来自单个主机的数万个连接。这些通常由智能 NIC 提供支持，通过管理资源（例如带宽和安全性）虽然有速率限制和过滤。此外，需要更先进的负载平衡和路由的新的经济高效、小直径和专用拓扑成为极端带宽部署的必要条件。2,8 这些要求的许多组合对下一代高性能网络。</p>
+<h3 id="RoCE存在的问题"><a href="#RoCE存在的问题" class="headerlink" title="RoCE存在的问题"></a>RoCE存在的问题</h3><p> 关于论文中提出RoCE需要改进的8个方面的问题,我总结如下:</p>
+<ol>
+<li> congestion control (拥塞控制)。RoCEv1没有拥塞控制机制,需要依赖DCQCN。RoCEv2虽有拥塞控制但需要进一步完善。</li>
+<li>physical layer (物理层) 。RoCE对PHY层时钟同步和链路断开检测还需改进。</li>
+<li>path MTU (路径MTU)。RoCE需要更好处理不同MTU路径的情况。</li>
+<li> flow steering (流导向)。需要更好的QoS和流量工程能力来导向不同优先级的RoCE流量。</li>
+<li> resilience (弹性) 。如何改善RoCE的故障恢复能力需要进一步研究。</li>
+<li> labeling (标签)。RoCE当前还不支持MPLS等标签交换技术。</li>
+<li> standards (标准)。需要更多针对RoCE在数据中心使用的标准化工作。</li>
+<li> debugging (调试) 。RoCE网络故障定位和性能诊断工具需要加强。</li>
+</ol>
 
                 
             </div>
@@ -589,7 +616,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/</a>
+                    <a href="http://ytirus.github.io/2023/08/22/Data-Center-Ethernet-and-RDMA-Issues-at-Hyperscale/">http://ytirus.github.io/2023/08/22/Data-Center-Ethernet-and-RDMA-Issues-at-Hyperscale/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -626,15 +653,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
-                                </a>
-                            
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -676,28 +695,70 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/">
+                <a href="/2023/08/22/Data-Center-Ethernet-and-RDMA-Issues-at-Hyperscale/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/03757318787c480091970cfc3d2290a2.png" class="responsive-img" alt="Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness">
+                        <img src="https://images.weserv.nl/?url=" class="responsive-img" alt="Data Center Ethernet and RDMA Issues at Hyperscale">
                         
-                        <span class="card-title">Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness</span>
+                        <span class="card-title">Data Center Ethernet and RDMA Issues at Hyperscale</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在高性能并行计算中研究异构内存数据放置问题。
+                            数据中心以太网和远程直接内存访问:亚毫秒级的问题
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-19
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
+                                </a>
+                            
+                            
                         </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/">
+                    <div class="card-image">
+                        
+                        <img src="https://images.weserv.nl/?url=" class="responsive-img" alt="Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale">
+                        
+                        <span class="card-title">Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            探索通过用成本较低但速度较慢的辅助层存储介质替换一小部分传统DRAM主层来降低部署内存的成本。面向仓库级内存分层的自适应系统体系结构。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-20
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -719,58 +780,6 @@
                     
                     <a href="/tags/A/">
                         <span class="chip bg-color">A</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2023/08/18/Aware-Data-Structure-Refinement-and-Placement-for-Heterogeneous-Memory-Systems/">
-                    <div class="card-image">
-                        
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/85597fd358cb4e0882741b4808f25738.png" class="responsive-img" alt="Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems">
-                        
-                        <span class="card-title">Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            提出了一种内存管理方法，该方法结合了动态数据结构细化步骤以及异构内存系统上的放置算法
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-18
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Rxiv/">
-                        <span class="chip bg-color">Rxiv</span>
-                    </a>
-                    
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
                     </a>
                     
                 </div>

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Transparent Page Placement for CXL Enabled Tiered Memory, Yi&#39;s Blog">
+    <meta name="keywords" content="Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Transparent Page Placement for CXL Enabled Tiered Memory | Yi&#39;s Blog</title>
+    <title>Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Transparent Page Placement for CXL Enabled Tiered Memory</h1> -->
+                    <!-- <h1 class="description center-align post-title">Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale</h1> -->
                 </div>
             </div>
         </div>
@@ -466,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-08-19
+                    2023-08-20
                 </div>
                 
 
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.1k
+                    1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    3 分
                 </div>
                 
 
@@ -508,62 +508,25 @@
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
 <ul>
-<li>文章来自ASPLOS，2023，CCFA</li>
-<li>TPP: Transparent Page Placement for CXL-Enabled Tiered-Memory</li></ul></div> 
+<li>文章来自ASPLOS, 2022</li>
+<li>Towards an Adaptable Systems Architecture for Memory Tiering<br>at Warehouse-Scale</li></ul></div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Hasan Al Maruf，Mosharaf Chowdhury – University of Michigan密歇根大学</li>
-<li>Hao Wang，Niket Agarwal，Pallab Bhattacharya – NVIDIA</li>
-<li>Abhishek Dhanotia，Johannes Weiner，Chris Petersen，Shobhit Kanaujia，Prakash Chauhan – Meta Inc.脸书</li>
+<li>all Google. Padmapriya Duraisamy, Wei Xu, Scott Hare etc.</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><ul>
-<li>CXL [7] 是一种基于 PCI Express（PCIe）接口的开放式、业界支持的互连。<br>它支持主机处理器和设备（例如加速器、内存缓冲区、智能 I/O 设备等）之间的高速、低延迟通信。</li>
-<li>CXL 在同一物理地址空间中提供字节可寻址内存，并允许使用标准内存分配 API 进行透明内存分配。</li>
-<li>CXL-Memory 访问延迟也与 NUMA 访问延迟类似。</li>
-</ul>
-<p>这篇文章将直接附加到 CPU 的内存称为本地内存，将 CXL 附加内存称为CXL-内存。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/5aac1cd90eef40299199fc6d08e7b1f0.png"></p>
-<blockquote>
-<p><strong>补充：</strong>现在CXL同时支持多种内存的应用案例都是DRAM和HBM（是一种高带宽内存 High Bandwidth Memory）。HBM更适用于对带宽要求极高的场景,如高端GPU、AI加速卡等。HBM单片容量较小(4-16GB),但带宽巨大(超过500GB/s)。</p>
-</blockquote>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>现实实践中面对的问题：<br><strong>数据中心应用程序的内存需求增加</strong>在META公司中每一代硬件内存消耗的能源和总花费占比都在不停增长。</p>
-<p><strong>同类服务器设计中的扩展挑战</strong>内存控制器仅支持单代内存技术，这限制了不同技术的混合搭配，具有不同的每 GB 成本和带宽与延迟配置。大内存容量都是2的几次方。限制了细粒度；每一代服务器的带宽和容量都有限制。图4</p>
-<p><strong>数据中心应用程序的轻量级表征</strong>现有的工具会导致较高的 CPU 开销（每个核心超过 15%），并且通常会减慢应用程序的速度。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/149d075453ee4bfb9e5e3e7214a92947.png"></p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h3 id="5-1采样数据工具"><a href="#5-1采样数据工具" class="headerlink" title="5.1采样数据工具"></a>5.1采样数据工具</h3><p>Chameleon 的主要用例是了解应用程序的内存访问行为，即应用程序内存的哪一部分保持热-温-冷状态、页面在特定温度层上存活多长时间、访问它们的频率等等。长期内存。</p>
-<p>收集器做两类采样，放入hash表，定时唤醒。<br>收集器唤醒工作线程以处理当前哈希表中的数据，并移动到另一个哈希表以存储下一个间隔的采样数据<br>工作器处理哈希表里的数据，统计每个页面的位图大小是64位，生成报告后休眠。</p>
-<blockquote>
-<p>load是从内存读取数据到处理器的寄存器中的指令,而store则是将寄存器中的数据写入内存的指令。两者都是与内存打交道的指令,但方向不同,load是内存到寄存器,而store是寄存器到内存。</p>
-</blockquote>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/5c874a20c38e4191b939a5ef0ca59536.png"></p>
-<p>我们使用 Chameleon 来分析我们生产中运行的跨不同服务域的各种大型内存绑定应用程序，并进行以下观察。 </p>
-<ol>
-<li>访问的内存的很大一部分在几分钟内保持冷状态。我们可以将其卸载到慢速层内存，而不会对性能产生重大影响。 </li>
-<li>大部分匿名内存（为程序的堆栈、堆和/或 mmap 调用创建）往往更热，而大部分文件支持的内存往往相对更冷。</li>
-<li>页面访问模式在有意义的持续时间（分钟到小时）内保持相对稳定。这足以观察应用程序行为并在内核空间中做出页面放置决策。 </li>
-<li>工作负载对不同页面类型（文件和匿名页面）具有不同程度的敏感度，并且随着时间的推移而变化。</li>
-<li>冷页重新访问时间因工作负载而异。分层内存系统上的页面放置应该意识到这一点，并主动将热页移动到较低的内存节点，以避免高内存访问延迟。于Web而言，几乎80%的页面会在 10 分钟内被重新访问。</li>
-</ol>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ec7f0938b1844787b423dbe944b29744.png"></p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/927aa0606137423b80bc79092b10fdca.png"></p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/f7c7b158461d442ea37c3eb4d5b9d7f9.png"></p>
-<h3 id="5-2架构设计"><a href="#5-2架构设计" class="headerlink" title="5.2架构设计"></a>5.2架构设计</h3><p>TPP 将“较热”页面放置在本地内存中，并将“较冷”页面移动到 CXL 内存中。<br>TPP 的设计空间可分为四个主要区域：</p>
-<ul>
-<li>(a) 轻量级降级到 CXL-Memory，</li>
-<li>(b) 解耦分配和回收路径，</li>
-<li>(c) 热页升级到本地节点，</li>
-<li>(d) 页面类型感知内存分配。</li>
-</ul>
-<p> 一般来所NUMA系统的回收顺序是：首先回收本地节点上不活跃的页面；然后回收远程节点上不活跃的页面；如果还不够,才考虑回收本地节点上最近最少使用的页面。所以在图的上面①会将本地回收候选页面迁移到XCL节点的降级列表中，除非本地节点的容量小于工作集大小的热部分，否则在回收期间热页面迁移到 CXL 节点的机会非常低。如果降级期间的迁移失败（例如，由于 CXL 节点上的内存不足），我们将回退到该失败页面的默认回收机制。</p>
-<p> Linux为节点内的每个内存区域维护三个watermakes（最小、低、高）。如果节点的空闲页面总数低于low_watermark，Linux会认为该节点面临内存压力并启动该节点的页面回收。在我们的例子中，TPP将它们降级为CXL节点。对本地节点的新分配将停止，直到回收器释放足够的内存以满足high_watermark。<span class="label info">由于分配率较高，回收可能无法跟上</span>，本地内存分配频繁停止，<span class="label info">更多页面最终出现在CXL节点中</span>，最终降低应用程序性能。所以现在将回收和分配化为不同的门槛②，回收和驱逐会提早发生，而禁止页面分配会在内存饱和度更高一步的时候。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png"></p>
-<p>NUMA系统中CPU访问另一节点页面时,生成缺页异常提醒内核进行页面迁移。不常访问的页面产生的升级流量很容易填满本地节点的空闲空间，并为CXL节点产生更高的降级流量。于是通过页面在LRU列表中的位置来检查页面的年龄。如果故障页面处于非活动LRU状态，我们不会立即考虑该页面进行升级，因为它可能是不经常访问的页面。仅当在活动 LRU 中找到故障页面（图13中的①）时，我们才将其视为升级候选页面。这大大减少了升级流量。</p>
-<p>然而，操作系统使用LRU列表进行回收。如果内存节点没有压力并且回收没有启动，则非活动LRU列表中的页面不会自动移动到活动LRU列表。由于CXL节点可能并不总是处于压力之下，因此经常可以在非活动LRU列表中找到缺页的页面，又会没法向上迁移。为了解决这个问题，每当我们在非活动LRU列表中发现缺页异常时，我们都会将该页面标记为已访问，并立即将其移至活动LRU列表（图13中的②）。如果在下一次NUMA提示缺页异常，则它将处于活动LRU中，并提升到本地节点（图13中的③）。</p>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>因为工作负载就这些特性，那就直接对症下药，效果都挺明显的。</p>
-<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>但是换了workload就没这个效果了。按照这种方式，每家都得自己去设计啰。</p>
-<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>是根据工作负载来设计架构的，关注的问题点比较小，也就容易做到很细致出色吧。</p>
-<h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><p>一个奇怪的现象，虽然大家可能观察值不同，但是最后系统设计都比较像，好像这两部分可以分裂一样。<br>那个Chameleon工具，说是开源但是并没有，之后可以再去看看。<br>TMO: Transparent memory offloading in datacenters. In ASPLOS, 2022.可以看看。</p>
-
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>当前的系统实现使用英特尔傲腾持久内存的变体在速度较慢、成本较低的第 2 层中提供 25% 的总内存 [2]。该设计点在性能下降的限制下最大限度地降低成本，并进一步受到离散 DIMM 容量产品的限制。即使是 25%，考虑到部署规模，上行空间也是巨大的。</p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>介绍了非常规分层内存系统的设计和实现及其管理，该系统在生产中实现了 &lt;5% 性能影响的目标，在多样化、高动态、多租户中用速度慢得多的层替换 25% 的 DRAM仓库规模设置。</p>
+<p>定义内存分层的机器级优化指标，用于自适应地平衡复杂的全机群应用性能和利用率目标（第 2 节）。</p>
+<p>引入了用于大规模实时复杂系统评估的强大 A/B 测试方法（第 4 节）。</p>
+<p>首次对生产仓库规模环境中可直接访问的分层内存系统进行全面分析，成功服务于不同的应用程序类别（第 5 节和第 7 节）。</p>
+<p>评估一系列政策并证明硬件辅助事件分析满足性能要求（第 6 节）的有效性，确定主动降级和快速检测晋升候选人的重要性。</p>
+<p>揭示了地址转换开销、干扰影响和页面大小问题如何在布局优化后成为关键挑战，并呼吁采用新的 malloc 级技术来减少 “访问碎片”，尤其是在使用 hugepages 时。</p>
+<p>利用实时 A/B 测试机制，以实证为导向开发自适应分层感知集群调度，在最大限度提高利用率的同时减少对性能的影响，以及应用指导下的分层感知巨大页面管理，以减少访问碎片并提高第 2 层的利用率（第 8 节）。</p>
+<p>我们的经验凸显了大规模管理内存层的复杂性，其中工作负载行为可能每天都会发生变化，或者稳定数周后突然发生变化。我们相信，这种系统设计和用于捕获大规模实时多样化工作负载的复杂交互影响的方法将开辟新的、日益重要的研究途径。</p>
+<p>与内存分层相关的应用服务可分为两类–高重要性延迟敏感型（HILS）和其他（非 HILS）。HILS 包括对响应时间有严格要求的面向用户的应用、处于其他 HILS 应用关键路径上的缓存应用以及数据处理任务（Production Tier，见 [48 ]）。非 HILS 包括面向吞吐量的应用、批处理、ML 训练管道和其他 SLO 要求较弱的应用。这些级别通常位于同一台机器上。Borg 调度器会根据观察到的性能在集群中主动管理作业，内存分层也会对性能产生影响。</p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>为了更好地分析分层堆栈，我们定义了两个直接连接到分层架构本身的代理指标： • 次要层驻留率(STRR)是驻留在第2层的已分配内存的比例。它提供了有关层使用情况的标准化视角。 STRR充当衡量对利用率影响的代理。<br>• 次要层访问率(STAR)是针对驻留在第2层的页面的应用程序的所有内存访问的比例。较低的STAR意味着较低的性能影响。STAR充当应用程序性能下降的代理。</p>
+<p>从用户空间驱动策略决策，并利用内核机制执行策略决策</p>
+<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
                 
             </div>
             <hr/>
@@ -589,7 +552,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/</a>
+                    <a href="http://ytirus.github.io/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/">http://ytirus.github.io/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -680,6 +643,46 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/2023/08/22/Data-Center-Ethernet-and-RDMA-Issues-at-Hyperscale/">
+                    <div class="card-image">
+                        
+                        <img src="https://images.weserv.nl/?url=" class="responsive-img" alt="Data Center Ethernet and RDMA Issues at Hyperscale">
+                        
+                        <span class="card-title">Data Center Ethernet and RDMA Issues at Hyperscale</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            数据中心以太网和远程直接内存访问:亚毫秒级的问题
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-22
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/">
                     <div class="card-image">
                         
@@ -695,9 +698,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -719,58 +722,6 @@
                     
                     <a href="/tags/A/">
                         <span class="chip bg-color">A</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2023/08/18/Aware-Data-Structure-Refinement-and-Placement-for-Heterogeneous-Memory-Systems/">
-                    <div class="card-image">
-                        
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/85597fd358cb4e0882741b4808f25738.png" class="responsive-img" alt="Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems">
-                        
-                        <span class="card-title">Aware Data Structure Refinement and Placement for Heterogeneous Memory Systems</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            提出了一种内存管理方法，该方法结合了动态数据结构细化步骤以及异构内存系统上的放置算法
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-18
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Rxiv/">
-                        <span class="chip bg-color">Rxiv</span>
-                    </a>
-                    
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
                     </a>
                     
                 </div>

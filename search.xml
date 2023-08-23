@@ -4,6 +4,52 @@
   
     
     <entry>
+      <title>Data Center Ethernet and RDMA Issues at Hyperscale</title>
+      <link href="/2023/08/22/Data-Center-Ethernet-and-RDMA-Issues-at-Hyperscale/"/>
+      <url>/2023/08/22/Data-Center-Ethernet-and-RDMA-Issues-at-Hyperscale/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>文章来自xx’</li><li>Data Center Ethernet and Remote Direct Memory Access: Issues at Hyperscale</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Torsten Hoefler , ETH Zürich</li><li>Duncan Roweth, Keith Underwood, and Robert Alverson, Hewlett Packard Enterprise</li><li>Mark Griswold, Vahid Tabatabaee, Mohan Kalkunte, and Surendra Anubolu, Broadcom</li><li>Siyuan Shen, ETH Zürich</li><li>Moray McLaren, Google</li><li>Abdul Kabbani and Steve Scott, Microsoft</li></ul><p>使服务器应用程序可以直接操作远程服务器的内存,不需要经过操作系统和CPU。</p><p>Fabric，就是支持RDMA的局域网(LAN)。</p><p>怎样才能对内存进行传输，注册。 因为RDMA硬件对用来做数据传输的内存是有特殊要求的。</p><p>在数据传输过程中，应用程序不能修改数据所在的内存。<br>操作系统不能对数据所在的内存进行page out操作————物理地址和虚拟地址的映射必须是固定不变的。<br>注意无论是DMA或者RDMA都要求物理地址连续，这是由DMA引擎所决定的。</p><p>几十年来，以太网一直在有线局域网领域占据主导地位，范围从私人住宅的部署到最大的数据中心。数据中心经历了巨大的增长在过去的十年中，联网机器的数量超过了当今最大的超级计算机的规模。尽管仍存在一些差异，但此类超大规模数据中心和超级计算机的网络要求非常相似。[1]然而，超级计算机传统上使用专用互连进行连接，而数据中心则建立在以太网上。由于类似需求和规模经济，随着每一代新技术的产生，两者的结合不断紧密。我们认为现在是重新思考融合互连的基本假设和架构的最佳时机。</p><h3 id="数据中心以太网的新环境"><a href="#数据中心以太网的新环境" class="headerlink" title="数据中心以太网的新环境"></a>数据中心以太网的新环境</h3><p>多种技术趋势正在加速高性能互连的融合。首先，不断增长的网络性能要求推动了可支持TB级带宽的更高效的主机堆栈的发展，每秒数亿美元的交易以及新兴数据密集型应用程序（例如人工智能（AI））所需的单位微秒延迟。[2]这些极端要求迫使所有协议和硬件都尽可能高效，以至于尽可能有效排除许多传统上驱动数据中心网络的TCP/ IP状堆栈远程直接内存访问（RDMA）是大约三十年前用于高性能计算（HPC）工作负载的远程内存访问（RDMA），后来又将其扩展到InfiniBand(IB) verbs RDMA的目标存储。RDMA可以通过网络启用CPU释放的硬件加速DMA。在过去的10年中，它事实上已成为低开销和高速网络的标准。</p><blockquote><p>InfiniBand verbs 是InfiniBand架构中定义的一套编程接口(verbs),用于应用程序访问InfiniBand网络资源并利用RDMA(远程直接内存访问)技术进行通信。</p></blockquote><blockquote><p>在数据中心网络中排除传统TCP/IP栈的主要原因有:</p></blockquote><ol><li>TCP/IP栈开销大。TCP/IP栈在主机内核中运行,每次网络IO都需要经过完整的网络协议处理,包括缓冲拷贝、上下文切换、校验计算等,增加延迟和CPU使用。</li><li>不必要的内存复制。数据在应用、内核、NIC间多次缓冲拷贝,影响吞吐量和延迟。</li><li>CPU利用率高。网络栈处理占用大量CPU资源,对计算密集型应用影响很大。</li><li>通信堆栈长。TCP/IP通信堆栈包含过多层,每个层在主机内核和NIC都要处理,增大延迟。</li><li>难以实现kernel bypass。 TCP/IP难以实现应用直接控制网络硬件,无法实现kernel bypass架构。</li><li>可扩展性差。TCP难以实现应用级的可扩展性和负载均衡。 </li><li>缺乏数据中心网络特性。TCP/IP缺乏RDMA、RoCE、sr-iov、overlay网络等数据中心特性。）所以数据中心采用RDMA、userspace network stack、overlay network等技术,可以获得更高性能、弹性和效率）。</li></ol><p>如今，几乎所有超级计算机架构以及领先的数据中心提供商都在生产中使用 RDMA。几十年前对负载平衡、拥塞控制和错误处理的简单假设并不适用于当今带宽提高100倍、消息速率提高10倍以上的网络。此外，简单的RDMA网络接口卡（NIC）通常会通过附加功能进行增强。由此产生的“智能网卡”通常会减轻大量负载。服务并实施专门的网络协议。现代网络交换机还具有改进的功能，从先进的网内遥测和网内计算功能到网内负载平衡和拥塞控制。3我们认为，当前现有的标准和部署的基础设施存在根本差距必须在不久的将来解决这个问题，以支持高效的高性能网络。</p><blockquote><p>遥测数据(Telemetry Data)是指从网络设备中采集、汇报的与网络运行状态相关的数据。它通过实时反映网络的运行情况来帮助网络管理和运维。常见的网络遥测数据包括:</p></blockquote><ul><li>基础信息:设备型号、配置、软件版本等静态信息。</li><li>流量数据:接口流量速率、总流量、流量方向等。</li><li>QoS数据:接口队列长度、延迟、丢包、拥塞情况等。 </li><li>路由信息:路由表、下一跳等动态路由信息。</li><li>会话信息:活动的会话连接数、来源/目的地等。</li><li>资源利用率:CPU使用率、内存使用率、链接利用率等。</li><li>环境数据:设备温度、风扇速度等环境信息。</li><li>事件和警报:设备故障、链路中断等事件信息。<br>遥测数据可以通过SNMP、NETCONF等管理协议获取,也可以通过流式遥测技术像gRPC Streaming、 Kafka等机制订阅获取。收集到的遥测数据可以用于网络状态分析、事件检测、容量规划、流量工程等。</li></ul><blockquote><p>网内遥测(In-band Telemetry, INT)是一种网络遥测技术,它可以在网络数据包中携带遥测数据,并随着数据包传递通过网络。网内遥测的主要特征和优势包括:</p></blockquote><ul><li>遥测数据直接嵌入数据包中,不需要额外的控制消息,更加高效。</li><li>可以提供数据包在网络中的实时状态,如延迟、丢包等信息。</li><li>可以细粒度地反映网络状态,每一个数据包都是探针。</li><li>可以快速发现网络热点,进行负载均衡和故障定位。</li><li>无需专用监控网络,不会占用额外带宽。</li><li>可以配合软件定义网络(SDN)实现可编程的遥测控制。<blockquote><p>网内遥测通常需要数据平面支持,在交换机或网卡中实现遥测头插入和解析。通过网内遥测技术,可以极大地增强网络的可观测性, 一些主流的网内遥测技术包括: </p></blockquote></li><li>INT: IETF正在推进的INT标准。</li><li>IOAM: In-situ OAM,由Cisco推出。</li><li>P4INT: 基于P4语言的可编程INT实现。</li><li>iOAM: IOAM的衍生协议。</li></ul><h3 id="RoCE：融合还是胶带"><a href="#RoCE：融合还是胶带" class="headerlink" title="RoCE：融合还是胶带"></a>RoCE：融合还是胶带</h3><p>RoCE（RDMA over Converged Ethernet）是可以在Ethernet网络上运行RDMA的网络协议。其主要特点如下:</p><ul><li>RoCE在Ethernet上实现了RDMA功能,使RDMA不再只局限在专用的InfiniBand网络上。</li><li>在IP/Ethernet网络基础设施上,通过对数据平面进行改进来实现RDMA。</li><li>支持两种传输方式:RoCEv1使用UDP封装;RoCEv2使用一种特殊的以太网帧格式。</li><li>RoCEv1依赖数据中心级别的Lossless Ethernet技术来实现可靠传输。RoCEv2新增了自身的流控机制。</li><li>RoCE可以获得与InfiniBand接近的低延迟和高吞吐性能。</li><li>与iWARP相比,RoCE更加依赖硬件卸载,实现CPU利用率更低。<br>RoCE的优势在于兼容现有的以太网网络,使RDMA应用更易于部署,不再需要专门的IB交换机网络。RoCE已得到广泛支持,是数据中心采用RDMA的主流选择之一。</li></ul><p>传统上，当交换机缓冲区已满时，以太网会丢弃数据包，并依赖于端到端重传。为了支持RoCE，CE引入优先流控制（PFC）来实现链路级无损操作。PFC重新利用以太网中存在的以太网暂停帧来支持具有不同链路传输速率的网络。PFC增强暂停帧以停止（或限制）特定优先级上的流量，以避免数据包丢失。不幸的是，这套复杂的协议会干扰网络中的不同层，并降低当今一些最重要工作负载的效率。</p><p>RoCE的语义、负载平衡和拥塞控制机制继承自InfiniBand。这意味着所有消息都应该按顺序出现在目的地，就好像它们是通过静态路由传输一样，本质上不允许许多数据包级负载平衡机制。对于人工智能训练工作负载（长期存在的流），多路径机制可以大大缩短作业完成时间。此外，RoCE v2使用基于IP显式拥塞通知（ECN）的简单拥塞控制机制。当检测到拥塞时，兼容 ECN 的交换机会对数据包进行标记，接收方会将该信息转发回发送方，从而在单个参数的引导下降低其注入率。无拥塞期后，使用第二个配置参数再次自动提高速率。</p><h3 id="下一代高性能网络"><a href="#下一代高性能网络" class="headerlink" title="下一代高性能网络"></a>下一代高性能网络</h3><p>对于某些工作负载，消息延迟（有时是消息速率）起着核心作用。其中一些属于 OBS 类别，但其他一些具有复杂的数据相关消息链，形成应用程序中的关键性能路径。这些通常是强大的扩展工作负载，解决问题的时间很重要，并且必须容忍低效的执行。具有严格期限的大规模模拟（例如天气预报和石油勘探）属于这一类，但一些事务处理和搜索/推理工作负载也属于这一类。在这里，通常具有严格的（个位数微秒）延迟要求。</p><p>除了流量类型之外，部署环境也在发生变化。新出现的机密计算理念要求所有流量在线路上进行加密。理想情况下，流量在安全飞地中进行端到端加密和解密，并且没有网络设备（NIC 或交换机）值得信任。此外，相关的新兴多租户场景需要管理来自单个主机的数万个连接。这些通常由智能 NIC 提供支持，通过管理资源（例如带宽和安全性）虽然有速率限制和过滤。此外，需要更先进的负载平衡和路由的新的经济高效、小直径和专用拓扑成为极端带宽部署的必要条件。2,8 这些要求的许多组合对下一代高性能网络。</p><h3 id="RoCE存在的问题"><a href="#RoCE存在的问题" class="headerlink" title="RoCE存在的问题"></a>RoCE存在的问题</h3><p> 关于论文中提出RoCE需要改进的8个方面的问题,我总结如下:</p><ol><li> congestion control (拥塞控制)。RoCEv1没有拥塞控制机制,需要依赖DCQCN。RoCEv2虽有拥塞控制但需要进一步完善。</li><li>physical layer (物理层) 。RoCE对PHY层时钟同步和链路断开检测还需改进。</li><li>path MTU (路径MTU)。RoCE需要更好处理不同MTU路径的情况。</li><li> flow steering (流导向)。需要更好的QoS和流量工程能力来导向不同优先级的RoCE流量。</li><li> resilience (弹性) 。如何改善RoCE的故障恢复能力需要进一步研究。</li><li> labeling (标签)。RoCE当前还不支持MPLS等标签交换技术。</li><li> standards (标准)。需要更多针对RoCE在数据中心使用的标准化工作。</li><li> debugging (调试) 。RoCE网络故障定位和性能诊断工具需要加强。</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale</title>
+      <link href="/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/"/>
+      <url>/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>文章来自ASPLOS, 2022</li><li>Towards an Adaptable Systems Architecture for Memory Tiering<br>at Warehouse-Scale</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>all Google. Padmapriya Duraisamy, Wei Xu, Scott Hare etc.</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>当前的系统实现使用英特尔傲腾持久内存的变体在速度较慢、成本较低的第 2 层中提供 25% 的总内存 [2]。该设计点在性能下降的限制下最大限度地降低成本，并进一步受到离散 DIMM 容量产品的限制。即使是 25%，考虑到部署规模，上行空间也是巨大的。</p><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>介绍了非常规分层内存系统的设计和实现及其管理，该系统在生产中实现了 &lt;5% 性能影响的目标，在多样化、高动态、多租户中用速度慢得多的层替换 25% 的 DRAM仓库规模设置。</p><p>定义内存分层的机器级优化指标，用于自适应地平衡复杂的全机群应用性能和利用率目标（第 2 节）。</p><p>引入了用于大规模实时复杂系统评估的强大 A/B 测试方法（第 4 节）。</p><p>首次对生产仓库规模环境中可直接访问的分层内存系统进行全面分析，成功服务于不同的应用程序类别（第 5 节和第 7 节）。</p><p>评估一系列政策并证明硬件辅助事件分析满足性能要求（第 6 节）的有效性，确定主动降级和快速检测晋升候选人的重要性。</p><p>揭示了地址转换开销、干扰影响和页面大小问题如何在布局优化后成为关键挑战，并呼吁采用新的 malloc 级技术来减少 “访问碎片”，尤其是在使用 hugepages 时。</p><p>利用实时 A/B 测试机制，以实证为导向开发自适应分层感知集群调度，在最大限度提高利用率的同时减少对性能的影响，以及应用指导下的分层感知巨大页面管理，以减少访问碎片并提高第 2 层的利用率（第 8 节）。</p><p>我们的经验凸显了大规模管理内存层的复杂性，其中工作负载行为可能每天都会发生变化，或者稳定数周后突然发生变化。我们相信，这种系统设计和用于捕获大规模实时多样化工作负载的复杂交互影响的方法将开辟新的、日益重要的研究途径。</p><p>与内存分层相关的应用服务可分为两类–高重要性延迟敏感型（HILS）和其他（非 HILS）。HILS 包括对响应时间有严格要求的面向用户的应用、处于其他 HILS 应用关键路径上的缓存应用以及数据处理任务（Production Tier，见 [48 ]）。非 HILS 包括面向吞吐量的应用、批处理、ML 训练管道和其他 SLO 要求较弱的应用。这些级别通常位于同一台机器上。Borg 调度器会根据观察到的性能在集群中主动管理作业，内存分层也会对性能产生影响。</p><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>为了更好地分析分层堆栈，我们定义了两个直接连接到分层架构本身的代理指标： • 次要层驻留率(STRR)是驻留在第2层的已分配内存的比例。它提供了有关层使用情况的标准化视角。 STRR充当衡量对利用率影响的代理。<br>• 次要层访问率(STAR)是针对驻留在第2层的页面的应用程序的所有内存访问的比例。较低的STAR意味着较低的性能影响。STAR充当应用程序性能下降的代理。</p><p>从用户空间驱动策略决策，并利用内核机制执行策略决策</p><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness</title>
       <link href="/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/"/>
       <url>/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/</url>
