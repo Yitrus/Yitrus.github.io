@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/B/">
-                                <span class="chip bg-color">B</span>
-                            </a>
-                        
                             <a href="/tags/Hybrid-Memory-Systems/">
                                 <span class="chip bg-color">Hybrid Memory Systems</span>
+                            </a>
+                        
+                            <a href="/tags/B/">
+                                <span class="chip bg-color">B</span>
                             </a>
                         
                             <a href="/tags/Review/">
@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    16.3k
+                    17.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    57 分
+                    61 分
                 </div>
                 
 
@@ -510,7 +510,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>非易失性内存最近几年能在web of science查到的综述是寥寥无几的，虽然这篇的有些引用也是十多年前的数据，但是作为学习一个阶段的总结，和大佬对比一下在知识结构上的完整度，还有什么是不清楚的。还是挺有用的，不过这里没有写第三章节。欢迎大家分享批评指正这篇翻译。</p>
+<p>非易失性内存最近几年能在web of science查到的综述是寥寥无几的，虽然这篇的有些引用也是十多年前的数据，但是作为学习一个阶段的总结，和大佬对比一下在知识结构上的完整度，还有什么是不清楚的。还是挺有用的。</p>
 </blockquote>
 <div class="note primary">
 
@@ -519,7 +519,6 @@
 <li>A Survey of Non-Volatile Main Memory Technologies:State-of-the-Arts,<br>Practices, and Future Direction</li>
 </ul>
 </div> 
-
 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
@@ -532,35 +531,51 @@
 <li>Yu Zhang, 华中科技大学计科院,集群和网格计算实验室,服务计算技术与系统实验室,国家大数据技术与系统工程技术研究中心</li>
 </ul>
 <hr>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>非易失性主存储器(NVMM )最近已成为未来存储系统的一种有前途的技术。通常，NVMM具有许多理想的属性，例如高密度、字节寻址、非易失性、低成本和能效，但代价是高写入延迟、高写入功耗和有限的写入耐用性(写寿命短)。NVMM已经成为动态随机存取存储器(DRAM )的强有力的替代品，并将从根本上改变内存系统的格局。它们在系统架构设计、操作系统内存管理以及混合内存系统的编程模型方面带来了许多研究机会和挑战。在本文中，我们首先回顾了新兴NVMM技术的概况，然后对NVMM技术的最新研究进展进行了综述。我们根据不同的维度(如内存架构、数据持久性、性能改进、节能和磨损均衡)对这些研究进行分类。其次，为了展示构建NVMM系统的最佳实践，我们从架构、系统和应用的维度介绍了我们最近的混合存储系统设计工作。最后，我们对NVMM的未来研究方向提出了展望，并对设计挑战和机遇进行了阐述。</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>非易失性主存储器（NVMM）最近已成为未来存储系统的一种有前途的技术。通常，NVMM具有许多理想的属性，例如高密度、字节寻址、非易失性、低成本和能效，但代价是高写入延迟、高写入功耗和有限的写入耐用性（写寿命短）。NVMM已经成为动态随机存取存储器（DRAM）的强有力的替代品，并将从根本上改变内存系统的格局。它们在系统架构设计、操作系统内存管理以及混合内存系统的编程模型方面带来了许多研究机会和挑战。在本文中，我们首先回顾了新兴NVMM技术的概况，然后对NVMM技术的最新研究进展进行了综述。我们根据不同的维度（如内存架构、数据持久性、性能改进、节能和磨损均衡）对这些研究进行分类。其次，为了展示构建NVMM系统的最佳实践，我们从架构、系统和应用的维度介绍了我们最近的混合存储系统设计工作。最后，我们对NVMM的未来研究方向提出了展望，并对设计挑战和机遇进行了阐述。</p>
 <p><strong>关键词</strong>：非易失性存储器、持久性存储器、混合存储器系统、存储器层次结构<br>non-volatile memory, persistent memory, hybrid memory systems, memory hierarchy</p>
 <hr>
-<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><p>在大数据时代，内存计算越来越受到数据密集型应用的青睐。内存子系统对现代计算系统的功能和性能具有越来越大的影响。使用DRAM (动态随机存取存储器)的传统大内存系统[1 ,2]在功率和密度方面面临严峻的可扩展性挑战[3]。尽管DRAM规模从2013年的28nm持续到2016年的10+ nm[4，5] ，扩展已经放缓，变得越来越困难。此外,最近的研究[6-10]表明，基于DRAM的主存储器约占物理服务器总能耗的30%-40%。新兴的非易失性主存储器(NVMM )技术，如相变存储器(PCM)、自旋转移扭矩存储器(STT-RAM )和3D XPoint[11]通常提供比DRAM更高的内存密度、更低的每的比特成本和待机功耗。NVMM技术的出现有可能弥合慢速持久存储(即磁盘和SSD)与DRAM之间的差距，并将从根本上改变存储系统的格局。</p>
-<p>表1显示了闪存SSD、DRAM、PCM、STT-RAM、ReRAM和Intel Optane DC持久内存模块(DCPMM)的不同内存特点，包括读/写延迟、写耐久性和待机功耗[7，12，13]。尽管NVMM在密度和能耗方面具有各种优势，但其写入延迟比DRAM高约6倍-30倍， 写入功耗比DRAM高约5倍- 10倍。此外，NVMM的写入耐久性非常有限(约$10^8$倍) ，而DRAM能够承受约$10^{16}$次的写入操作。这些缺点使得很难直接替代DRAM。使用NVMM的一种更实用的方法是混合内存架构，由DRAM和NVMM组成[15,16]。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519ae688bfd74036bb3b66ae451bbc86.png"></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><p>在大数据时代，内存计算越来越受到数据密集型应用的青睐。内存子系统对现代计算系统的功能和性能具有越来越大的影响。使用DRAM (动态随机存取存储器)的传统大内存系统[1 ,2]在功率和密度方面面临严峻的可扩展性挑战[3]。尽管DRAM规模从2013年的28nm持续到2016年的10+ nm[4，5] ，扩展已经放缓，变得越来越困难。此外,最近的研究[6-10]表明，基于DRAM的主存储器约占物理服务器总能耗的30%-40%。新兴的非易失性主存储器（NVMM）技术，如相变存储器（PCM）、自旋转移扭矩存储器（STT-RAM）和3D XPoint[11]通常提供比DRAM更高的内存密度、更低的每的比特成本和待机功耗。NVMM技术的出现有可能弥合慢速持久存储（即磁盘和SSD）与DRAM之间的差距，并将从根本上改变存储系统的格局。</p>
+<p>表1显示了闪存SSD、DRAM、PCM、STT-RAM、ReRAM和Intel Optane DC持久内存模块（DCPMM）的不同内存特点，包括读/写延迟、写耐久性和待机功耗[7，12，13]。尽管NVMM在密度和能耗方面具有各种优势，但其写入延迟比DRAM高约6倍-30倍， 写入功耗比DRAM高约5倍- 10倍。此外，NVMM的写入耐久性非常有限(约 $10^8$ 倍) ，而DRAM能够承受约 $10^{16}$ 次的写入操作。这些缺点使得很难直接替代DRAM。使用NVMM的一种更实用的方法是混合内存架构，由DRAM和NVMM组成[15,16]。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519ae688bfd74036bb3b66ae451bbc86.png" alt="不同内存硬件性能比较"></p>
 <p>为了充分发挥两者在混合内存系统中的优势，在性能提升、节能降耗、磨损均衡、数据持久性等方面存在许多开放的研究问题。为了解决这些问题，已经有许多关于内存层次结构的设计[15-18]、内存管理[19-21]和内存分配方案[22-24]的研究。这些研究成果导致了混合内存架构、操作系统和编程模型的创新。尽管学术界和工业界已经做出了大量工作来将新兴NVMM集成到存储器层次结构中，但仍有许多挑战需要解决。</p>
-<p>另一方面，先前对NVMM技术的研究大多基于模拟/仿真NVMM器件，与真正非易失性(双列直插式内存模块Dual In-line Memory Modules)DIMM相比，NVMM设备承诺的性能可能存在各种偏差。最近宣布推出的Intel Optane DCPMM终于将NVMM DIMM商业化。真正的Intel Optane DCPMM与之前的研究预期承诺的功能相比，表现明显不同[18，20，26，28]。例如，如表1所示，Intel Optane DCPMM的读取延迟比DRAM高2倍-3倍,而其写入延迟甚至低于DRAM。单个Optane DCPMM DIMM的最大读写带宽分别为6.6GB/s和2.3 GB/s，而DRAM的读写带宽之间的差距要小得多(1.3x)。此外，随着系统中并行线程数量的增加，读/写性能是非单调的[25]。在他们的实验中，1个到4个线程之间达到了峰值性能，然后逐渐下降。由于Optane DCPMM DIMM的这些关键特性，以前关于持久性内存系统的研究应该重新审视和优化，以适应真正的NVMM DIMM。</p>
+<p>另一方面，先前对NVMM技术的研究大多基于模拟/仿真NVMM器件，与真正非易失性（双列直插式内存模块Dual In-line Memory Modules）DIMM相比，NVMM设备承诺的性能可能存在各种偏差。最近宣布推出的Intel Optane DCPMM终于将NVMM DIMM商业化。真正的Intel Optane DCPMM与之前的研究预期承诺的功能相比，表现明显不同[18，20，26，28]。例如，如表1所示，Intel Optane DCPMM的读取延迟比DRAM高2倍-3倍,而其写入延迟甚至低于DRAM。单个Optane DCPMM DIMM的最大读写带宽分别为6.6GB/s和2.3GB/s，而DRAM的读写带宽之间的差距要小得多（1.3x）。此外，随着系统中并行线程数量的增加，读/写性能是非单调的[25]。在他们的实验中，1个到4个线程之间达到了峰值性能，然后逐渐下降。由于Optane DCPMM DIMM的这些关键特性，以前关于持久性内存系统的研究应该重新审视和优化，以适应真正的NVMM DIMM。</p>
 <p><strong>贡献</strong>。本文首先回顾关于混合内存架构、操作系统级混合内存管理和混合内存编程模型的最新研究现状。表2显示了NVMM技术的最新研究分类。我们根据不同维度对这些研究进行分类，包括内存架构、持久内存(PM)管理、性能改进、节能、磨损均衡、编程模型和应用程序。我们还讨论了它们的相似性和差异，以突出设计挑战和机遇。其次，为了展示构建NVMM系统的最佳实践，我们<strong>从架构、系统和应用的维度展示了我们在混合存储系统设计方面的努力</strong>。最后，我们提出了在实际应用场景中使用NVMM的未来研究方向，并对研究领域的设计挑战和机遇进行了一些说明。</p>
-<p>尽管有其他关于NVMM的研究，但鉴于NVMM的快速发展，这篇综述从一个独特的角度对 NVMM进行了回顾。在[97]中, 作者介绍了PCM技术的最新研究。以解决有限的写入耐久性、潜在的长延迟、高能量写入、功耗等问题以及一些对内存隐私的担忧。在[98]中，作者对PCM设备及其架构和软件进行了全面的调查和回顾。其他一些有趣的调查侧重于在架构上将四种NVM技术(PCM、MRAM、FeRAM和ReRAM )集成到现有存储层次结构[99]中，或将NVM用于存储和主存储器系统的软件优化[100]。我们的调查与那些调查有三个不同之处。首先，先前的研究[97 ,98]从计算机架构的角度关注PCM设计。相比之下，我们的论文主要从存储器层次、系统软件和应用的维度来研究使用混合存储器的系统。其次，我们的论文包含了更多新发表的期刊/会议论文的评论。特别是，我们对新发布的Intel Optane DCPMM设备进行了更多研究。第三，我们介绍了最近关于存储器系统的近期经验，以阐明未来混合存储器系统的挑战和机遇。</p>
-<p>本文的其余部分组织如下。第2节描述了现有的由DRAM和nvmm组成的混合内存架构。第3节介绍了NVMM中数据持久性保证的挑战和当前解决方案。4节介绍了混合存储器系统中性能优化和节能的最新研究。第5节介绍NVMM写耐久性的研究。第6节介绍了研究NVMM技术所做的努力和实践。在第7节中，我们讨论了NVMM的未来研究方向。我们在第8节结束本文。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9239e045ee11414cb228f4b752b13f86.png" alt="将相关工作分类"></p>
+<p>尽管有其他关于NVMM的研究，但鉴于NVMM的快速发展，这篇综述从一个独特的角度对NVMM进行了回顾。在[97]中, 作者介绍了PCM技术的最新研究。以解决有限的写入耐久性、潜在的长延迟、高能量写入、功耗等问题以及一些对内存隐私的担忧。在[98]中，作者对PCM设备及其架构和软件进行了全面的调查和回顾。其他一些有趣的调查侧重于在架构上将四种NVM技术(PCM、MRAM、FeRAM和ReRAM )集成到现有存储层次结构[99]中，或将NVM用于存储和主存储器系统的软件优化[100]。我们的调查与那些调查有三个不同之处。首先，先前的研究[97 ,98]从计算机架构的角度关注PCM设计。相比之下，我们的论文主要从存储器层次、系统软件和应用的维度来研究使用混合存储器的系统。其次，我们的论文包含了更多新发表的期刊、会议论文的评论。特别是，我们对新发布的Intel Optane DCPMM设备进行了更多研究。第三，我们介绍了最近关于存储器系统的近期经验，以阐明未来混合存储器系统的挑战和机遇。</p>
+<p>本文的其余部分组织如下。第2节描述了现有的由DRAM和NVMM组成的混合内存架构。第3节介绍了NVMM中数据持久性保证的挑战和当前解决方案。4节介绍了混合存储器系统中性能优化和节能的最新研究。第5节介绍NVMM写耐久性的研究。第6节介绍了研究NVMM技术所做的努力和实践。在第7节中，我们讨论了NVMM的未来研究方向。我们在第8节结束本文。</p>
 <h1 id="2-Hybrid-Memory-Architectures混合内存架构"><a href="#2-Hybrid-Memory-Architectures混合内存架构" class="headerlink" title="2. Hybrid Memory Architectures混合内存架构"></a>2. Hybrid Memory Architectures混合内存架构</h1><p>已经有很多关于混合存储器架构的研究。通常，主要有两种混合存储器架构，即水平和分层[18]，如图1所示。</p>
-<h2 id="2-1-Horizontal-Hybrid-Memory-Architectures水平混合存储器体系结构"><a href="#2-1-Horizontal-Hybrid-Memory-Architectures水平混合存储器体系结构" class="headerlink" title="2.1 Horizontal Hybrid Memory Architectures水平混合存储器体系结构"></a>2.1 Horizontal Hybrid Memory Architectures水平混合存储器体系结构</h2><p>许多DRAM/NVMM混合存储器系统[14 ,15 ,31]通过OS在平面(单个)存储器地址空间中管理DRAM和NVMM，并将它们两者用作主存储器[31 ,32]。为了提高数据访问性能，这些混合内存系统需要通过将频繁访问的(热)NVMM页面迁移到DRAM来克服NVMM的缺点，如图1 (a )所示。需要开发内存访问监控机制来指导页面迁移。</p>
-<p><strong>内存访问监控</strong>。Zhang和Li[31]使用多队列算法对页面的热度进行分类，并将热页面和冷页面分别放置在DRAM和NVMM中。Park等人[32]也主张用于管理DRAM和NVMM的水平混合存储架构。此外，他们还提出了三种优化策略来降低混合存储系统的能耗。他们以非常细的 DRAM 行粒度监视内存数据，并定期检查每个DRAM行中的访问计数器。根据计数器将数据写回NVMM，以减少DRAM刷新的能耗。在再次访问数据之前，数据不会从NVMM缓存到DRAM。脏数据尽可能长时间地保存在DRAM中，以减少DRAM和NVMM之间的数据交换开销以及NVMM的昂贵写操作。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e565e90afda244f6a8dcfbe3081068c1.png"></p>
-<p><strong>页面迁移</strong>。针对不同的优化目标，已经提出了许多页面迁移算法。Soyoon等人[33]认为，在识别热页时，NVMM写入的频率比数据访问的最近性更重要，并提出了一种称为CLOCK with Dirty bits and Write frequency (CLOCK-DWF )的页替换算法。对于每个NVMM写入操作, CLOCK-DWF需要首先将相应的页面提取到DRAM，然后在DRAM中执行写入。这种方法可能会导致许多不必要的页面迁移，从而给NVMM带来更多的能耗和写回操作。Salkhordeh和Asadi[34]考虑了内存写入和读取，以迁移有利于性能和节能的热页面，并使用两个最近最少使用的(LRU)队列分别选择DRAM和NVM中的受害页面。Yoon等人基于行缓冲区位置进行了页面迁移，其中行缓冲区命中率低的页面被迁移到DRAM，而行缓冲区点击率高的页面仍保留在NVMM中。Li等人提出了一种实用模型，用于基于实用程序定义来指导页面迁移，该实用程序定义基于许多因素，如页面热性、内存级别并行性和行缓冲区位置。Khouzani等人考虑了程序的内存布局和内存级并行性，以迁移混合内存系统中的页面。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e565e90afda244f6a8dcfbe3081068c1.png" alt="常见的架构，最近华科的工作也有混合的架构出现"></p>
+<h2 id="2-1-Horizontal-Hybrid-Memory-Architectures水平混合存储器体系结构"><a href="#2-1-Horizontal-Hybrid-Memory-Architectures水平混合存储器体系结构" class="headerlink" title="2.1 Horizontal Hybrid Memory Architectures水平混合存储器体系结构"></a>2.1 Horizontal Hybrid Memory Architectures水平混合存储器体系结构</h2><p>许多DRAM-NVMM混合存储器系统[14 ,15 ,31]通过OS在平面(单个)存储器地址空间中管理DRAM和NVMM，并将它们两者用作主存储器[31 ,32]。为了提高数据访问性能，这些混合内存系统需要通过将频繁访问的热NVMM页面迁移到DRAM来克服NVMM的缺点，如图1（a）所示。需要开发内存访问监控机制来指导页面迁移。</p>
+<p><strong>内存访问监控</strong>。Zhang和Li[31]使用多队列算法对页面的热度进行分类，并将热页面和冷页面分别放置在DRAM和NVMM中。Park等人[32]也主张用于管理DRAM和NVMM的水平混合存储架构。此外，他们还提出了三种优化策略来降低混合存储系统的能耗。他们以非常细的DRAM行粒度监视内存数据，并定期检查每个DRAM行中的访问计数器。根据计数器将数据写回NVMM，以减少DRAM刷新的能耗。在再次访问数据之前，数据不会从NVMM缓存到DRAM。脏数据尽可能长时间地保存在DRAM中，以减少DRAM和NVMM之间的数据交换开销以及NVMM的昂贵写操作。</p>
+<div class="note info no-icon"> 听起来监控成本比较高 </div>
+
+<p><strong>页面迁移</strong>。针对不同的优化目标，已经提出了许多页面迁移算法。Soyoon等人[33]认为，在识别热页时，NVMM写入的频率比数据访问的最近性更重要，并提出了一种称为CLOCK with Dirty bits and Write frequency（CLOCK-DWF）的页替换算法。对于每个NVMM写入操作, CLOCK-DWF需要首先将相应的页面提取到DRAM，然后在DRAM中执行写入。这种方法可能会导致许多不必要的页面迁移，从而给NVMM带来更多的能耗和写回操作。Salkhordeh和Asadi[34]考虑了内存写入和读取，以迁移有利于性能和节能的热页面，并使用两个最近最少使用的(LRU)队列分别选择DRAM和NVM中的要被驱逐的页面。Yoon[17]等人基于行缓冲区局部性进行了页面迁移，其中行缓冲区命中率低的页面被迁移到DRAM，而行缓冲区点击率高的页面仍保留在NVMM中。Li[101]等人提出了一种实用模型，用于基于实用程序定义来指导页面迁移，该实用程序定义基于许多因素，如页面热度、内存级并行性和行缓冲区局部性。Khouzani[35]等人考虑了程序的内存布局和内存级并行性，以迁移混合内存系统中的页面。</p>
 <p><strong>架构限制</strong>。在水平混合存储器架构中管理NVMM和DRAM有几个挑战。</p>
-<p>首先,页面级内存监控成本高昂。一方面，由于当今的商品x86系统不支持页面粒度的内存访问监控，因此硬件支持的页面迁移方案需要大量的硬件修改来监控内存访问统计[14,15,33]。另一方面, OS层的内存访问监控通常会导致显著的性能开销。许多操作系统在页面表条目(PTE)中为每个页面维护一个“已访问”位，以标识该页面是否被访问。然而，该位不能真实地反映页面访问的最近性和频率。因此，一些基于软件的方法将禁用Translation Lookaside Buffer (TLB )[102]来跟踪每个内存引用。这种页面访问监控机制通常会导致显著的性能开销，甚至抵消混合内存系统中页面迁移的好处。</p>
-<p>第二，页面迁移成本也很高。一次页迁移可能导致多次页读/写操作(代价高昂)。由于页面可能只包含一小部分热数据，因此由于内存带宽和DRAM容量的浪费，页面粒度的迁移成本相对较高。</p>
-<p>第三，热页面检测机制可能需要很长时间来预热页面，从而降低页面迁移的收益。此外，对于某些不规则的内存访问模式，热页面预测可能不准确，从而导致不必要的页面迁移。</p>
-<h2 id="2-2-Hierarchical-Hybrid-Memory-Architectures分层混合存储器体系结构"><a href="#2-2-Hierarchical-Hybrid-Memory-Architectures分层混合存储器体系结构" class="headerlink" title="2.2 Hierarchical Hybrid Memory Architectures分层混合存储器体系结构"></a>2.2 Hierarchical Hybrid Memory Architectures分层混合存储器体系结构</h2><p>许多研究建议通过分层缓存/内存架构来组织DRAM和NVMM[16,38,39]。他们使用DRAM作为NVMM的缓存，如图1 (b )所示。DRAM缓存对操作系统和应用程序是不可见的，完全由硬件管理。</p>
-<p>Qureshi等人[16]提出了一种由大尺寸PCM和小尺寸DRAM组成的分层混合存储系统。DRAM缓存包含最近访问的数据，以减少最昂贵的NVMM访问，而大容量NVMM存储大部分所需数据，以避免在应用程序执行期间进行昂贵的I/O操作。类似地，Mladenov[38]设计了一个具有小容量DRAM缓存和大容量NVMM的混合存储系统，并基于应用程序数据的空间位置对其进行管理。DRAM作为按需缓存进行管理，并通过LRU算法进行替换。Loh和Hill[39]以缓存行的粒度管理DRAM，以提高DRAM缓存的效率，并使用组连接方式将NVMM数据映射到DRAM缓存。他们将元数据(标记)和数据放在同一个存储行中，以便可以快速访问缓存命中的数据，并减少标记查询的性能开销。</p>
-<p>在这种内存结构中，由于DRAM被组织为N路集合关联缓存，因此需要额外的硬件来管理DRAM缓存。例如，需要SRAM存储器来存储DRAM高速缓存中数据块的元数据(即标签)，并且需要硬件查找电路来查找DRAM高速缓冲存储器中所请求的数据。因此，为了访问DRAM缓存中的数据，需要两个内存引用，一个用于访问元数据，另一个用于实际数据。为了加速元数据访问，Qureshi等人使用了高速SRAM来存储元数据。Meza等人[40]通过将元数据放在同一DRAM行中的数据块旁边，降低了标记存储的硬件成本。他们还建议使用片上元数据缓冲区将频繁访问的元数据缓存在小型SRAM中。</p>
-<p><strong>架构限制</strong>。尽管分层混合存储器架构通常比单独访问NVMM中的数据的场景提供更好的性能，但在运行具有较差局部性的工作负载时，它可能会导致性能显著下降[103]。原因是大多数硬件管理的分层DRAM/NVMM系统为了简化而利用基于按需的数据提取策略，因此DRAM缓存位于存储器分层的关键数据路径中。如果数据块未命中DRAM缓存，则无论页面热度如何，都必须将其从NVMM提取到DRAM。这种缓存填充策略可能会导致DRAM和NVMM之间频繁的数据交换(类似于缓存抖动问题)。另一方面，硬件管理的缓存架构不能充分利用DRAM容量。由于DRAM缓存被设置为关联的，因此每个NVMM数据块被映射到一个固定的集合。当集合已满时,它必须在将新的NVMM数据块提取到DRAM之前驱逐数据块，即使其他缓存集合为空。</p>
+<p>首先,<span class="label primary">页面级内存监控成本高昂</span>。一方面，由于当今的商品x86系统不支持页面粒度的内存访问监控，因此硬件支持的页面迁移方案需要大量的硬件修改来监控内存访问统计[14,15,33]。另一方面, OS层的内存访问监控通常会导致显著的性能开销。许多操作系统在页面表条目(PTE)中为每个页面维护一个“已访问”位，以标识该页面是否被访问。然而，该位不能真实地反映页面访问的最近性和频率。因此，一些基于软件的方法将禁用Translation Lookaside Buffer（TLB）[102]来跟踪每个内存引用。这种页面访问监控机制通常会导致显著的性能开销，甚至抵消混合内存系统中页面迁移的好处。</p>
+<p>第二，页面迁移成本也很高。<span class="label primary">一次页迁移可能导致多次页读/写操作（代价高昂）</span>。页面可能只包含一小部分热数据，因此由于内存带宽和DRAM容量的浪费，页面粒度的迁移成本相对较高。</p>
+<p>第三，热页面检测机制可能需要很长时间来预热页面，从而降低页面迁移的收益。此外，<span class="label primary">对于某些不规则的内存访问模式，热页面预测可能不准确，从而导致不必要的页面迁移</span>。</p>
+<h2 id="2-2-Hierarchical-Hybrid-Memory-Architectures分层混合存储器体系结构"><a href="#2-2-Hierarchical-Hybrid-Memory-Architectures分层混合存储器体系结构" class="headerlink" title="2.2 Hierarchical Hybrid Memory Architectures分层混合存储器体系结构"></a>2.2 Hierarchical Hybrid Memory Architectures分层混合存储器体系结构</h2><p>许多研究建议通过分层的缓存-内存架构来组织DRAM和NVMM[16,38,39]。他们使用DRAM作为NVMM的缓存，如图1（b）所示。DRAM缓存对操作系统和应用程序是不可见的，完全由硬件管理。</p>
+<p>Qureshi等人[16]提出了一种由大尺寸PCM和小尺寸DRAM组成的分层混合存储系统。DRAM缓存包含最近访问的数据，以减少最昂贵的NVMM访问，而大容量NVMM存储大部分所需数据，以避免在应用程序执行期间进行昂贵的I/O操作。类似地，Mladenov[38]设计了一个具有小容量DRAM缓存和大容量NVMM的混合存储系统，并基于应用程序数据的空间局部性对其进行管理。DRAM作为按需缓存进行管理，并通过LRU算法进行替换。Loh和Hill[39]以缓存行的粒度管理DRAM，以提高DRAM缓存的效率，并使用组连接方式将NVMM数据映射到DRAM缓存。他们将元数据tag和数据放在同一个存储行中，以便可以快速访问缓存命中的数据，并减少标记查询的性能开销。</p>
+<div class="note info no-icon"> 缓存是得把这个DRAM100%用起来的，水平就不好说了 </div>
+
+<p>在这种内存结构中，由于DRAM被组织为N路集合关联缓存，因此需要额外的硬件来管理DRAM缓存。例如，需要SRAM存储器来存储DRAM高速缓存中数据块的元数据tag，并且需要硬件查找电路来查找DRAM高速缓冲存储器中所请求的数据。因此，为了访问DRAM缓存中的数据，需要两个内存引用，一个用于访问元数据，另一个用于实际数据。为了加速元数据访问，Qureshi[16]等人使用了高速SRAM来存储元数据。Meza等人[40]通过将元数据放在同一DRAM行中的数据块旁边，降低了标记存储的硬件成本。他们还建议使用片上元数据缓冲区将频繁访问的元数据缓存在小型SRAM中。</p>
+<p><strong>架构限制</strong>。尽管分层混合存储器架构通常比单独访问NVMM中的数据的场景提供更好的性能，但在运行具有较差局部性的工作负载时，它可能会导致性能显著下降[103]。原因是大多数硬件管理的分层DRAM-NVMM系统为了简化而利用基于按需的数据预取策略，因此DRAM缓存位于存储器分层的关键数据路径中。如果数据块未命中DRAM缓存，则无论页面热度如何，都必须将其从NVMM提取到DRAM。这种缓存填充策略可能会导致DRAM和NVMM之间频繁的数据交换（类似于缓存抖动问题）。另一方面，硬件管理的缓存架构不能充分利用DRAM容量。由于DRAM缓存被设置为关联的，因此每个NVMM数据块被映射到一个固定的集合。当集合已满时,它必须在将新的NVMM数据块提取到DRAM之前驱逐数据块，即使其他缓存集合为空。</p>
 <h2 id="2-3-Intel-Optane-DCPMM的体系结构"><a href="#2-3-Intel-Optane-DCPMM的体系结构" class="headerlink" title="2.3 Intel Optane DCPMM的体系结构"></a>2.3 Intel Optane DCPMM的体系结构</h2><p>最近发布的Intel Optane DCPMM与DRAM结合使用时支持水平和分层混合内存结构。OptaneDCPMM DIMM目前有两种操作模式:内存模式和应用程序直接模式[25]。这些模式中的每一种对于特定的用例都有其优点。</p>
-<p><strong>内存模式</strong>。在这种模式下，DCPMM充当<strong>大容量的主存储器</strong>。操作系统(OS)将DCPMM识别为传统DRAM，<strong>并禁用DCPMM的持久性功能</strong>。如果将传统DRAM与DCPMM结合使用，它将隐藏在操作系统中，并充当DCPMM的缓存层。因此，DCPMM和DRAM实际上被组织在分层混合存储器架构中。内存模式的主要优点是提供在内存总线通道上使用的优越内存容量。这种模式强烈强调在不修改上层系统的情况下围绕内存空间构建大容量存储环境以及应用程序。推荐的用例是扩展主内存容量，以实现更好的基础设施扩展，例如用于大数据应用程序的并行计算平台(MapReduce、图形计算)。</p>
-<p><strong>AD模式</strong>。在这种模式下，DCPMM为操作系统和应用程序提供了所有持久性特性。操作系统将DRAM和DCPMM分别作为主存储器和持久存储向应用程序公开。与DCPMM混合的传统DRAM仍然充当应用程序的标准DRAM，而DCPMM也被分配到存储器总线以实现更快的存储器访问。DCPMM用作两种名称空间之一:直接访问存取(DAX)和块存储。以前的namespace是字节可寻址的持久存储，应用程序通过特殊的 api 直接访问 。因此，DCPMM 和 DRAM 在这种模式下被逻辑地组织在一个水平混合内存架构中。后一个命名空间将DCPMM 作为区块存储设备提供给应用程序，类似于SSD，但是可以通过更快的内存总线访问。应用程序直接模式强调减少延迟和提高带宽的优势，比NVMe快 2.7倍。推荐的用例适用于大型内存数据库，这些数据库需要满足数据持久性的要求。</p>
+<p><strong>内存模式</strong>。在这种模式下，DCPMM充当<strong>大容量的主存储器</strong>。操作系统将DCPMM识别为传统DRAM，<strong>并禁用DCPMM的持久性功能</strong>。如果将传统DRAM与DCPMM结合使用，它将隐藏在操作系统中，并充当DCPMM的缓存层。因此，DCPMM和DRAM实际上被组织在分层混合存储器架构中。内存模式的主要优点是提供在内存总线通道上提供优越内存容量。这种模式强烈强调在不修改上层系统的情况下围绕内存空间构建大容量存储环境以及应用程序。推荐的用例是扩展主内存容量，以实现更好的基础设施扩展，例如用于大数据应用程序的并行计算平台（MapReduce、图形计算）。</p>
+<div class="note info no-icon"> 这种用例应该是指DRAM很少很少，PM特别多的，数据仓库那种级别的缓存吧？通常一般服务器的比例拿去做缓存真的很浪费容量咦 </div>
+
+<p><strong>AD模式</strong>。在这种模式下，DCPMM为操作系统和应用程序提供了所有持久性特性。操作系统将DRAM和DCPMM分别作为主存储器和持久存储向应用程序公开。与DCPMM混合的传统DRAM仍然充当应用程序的标准DRAM，而DCPMM也被分配到存储器总线以实现更快的存储器访问。DCPMM用作两种namespace之一:直接访问存取（DAX）和块存储。前者的namespace是字节可寻址的持久存储，应用程序通过特殊的apis直接访问。因此，DCPMM和DRAM在这种模式下被逻辑地组织在一个水平混合内存架构中。后一个命名空间将DCPMM 作为区块存储设备提供给应用程序，类似于SSD，但是可以通过更快的内存总线访问。应用程序直接模式强调减少延迟和提高带宽的优势，比NVMe快2.7倍。推荐的用例适用于大型内存数据库，这些数据库需要满足数据持久性的要求。</p>
 <p>还有一种结合了内存模式和应用程序直接模式的混合内存模式。DCPMM的一部分容量用于内存模式操作,DCPMM剩余的容量用于应用程序直接模式操作。这种混合内存模式为管理不同应用场景的混合内存系统提供了一种更灵活的方法。</p>
-<h2 id="2-4-Summary总结"><a href="#2-4-Summary总结" class="headerlink" title="2.4  Summary总结"></a>2.4  Summary总结</h2><p>上述两种混合存储器架构对于不同的场景有各自的优缺点。通常，分层架构更适合具有良好数据局部性的应用程序，而平面可寻址架构更适用于延迟不敏感或占空间较大的应用程序。关于哪种架构比另一种架构更好，目前尚无定论。实际上，Intel Optane DCPMM支持分层和平面可寻址混合内存架构。当前DCPMM的一个限制是，在重新配置DCPMM模式后，系统需要重新启动。如果一个可重新配置的混合内存系统能够以及时有效的方式动态地适应不同的场景，对于应用程序来说可能是有益的和灵活的。这可能是NVMM器件的一个有趣的研究方向。</p>
+<div class="note info no-icon"> 这里没有说通过热插拔的dvdax模式，变成易失内存 </div>
+
+<h2 id="2-4-Summary总结"><a href="#2-4-Summary总结" class="headerlink" title="2.4  Summary总结"></a>2.4  Summary总结</h2><p>上述两种混合存储器架构对于不同的场景有各自的优缺点。<span class="label primary">通常，分层架构更适合具有良好数据局部性的应用程序，而平面可寻址架构更适用于延迟不敏感或占空间较大的应用程序。</span>关于哪种架构比另一种架构更好，目前尚无定论。实际上，Intel Optane DCPMM支持分层和平面可寻址混合内存架构。当前DCPMM的一个限制是，在重新配置DCPMM模式后，系统需要重新启动。如果一个可重新配置的混合内存系统能够以及时有效的方式动态地适应不同的场景，对于应用程序来说可能是有益的和灵活的。这可能是NVMM器件的一个有趣的研究方向。</p>
+<h1 id="3-Persistent-Memory-Management-持久内存管理"><a href="#3-Persistent-Memory-Management-持久内存管理" class="headerlink" title="3 Persistent Memory Management 持久内存管理"></a>3 Persistent Memory Management 持久内存管理</h1><p>数据持久性是NVMM的一个重要设计考虑因素。下面，我们首先介绍持久内存（PM）管理所面临的技术挑战，然后介绍有关持久内存管理的最新研究，包括持久内存的使用、持久内存访问模式、容错机制和持久对象。</p>
+<h1 id="3-1-Technical-Challenges-技术挑战"><a href="#3-1-Technical-Challenges-技术挑战" class="headerlink" title="3.1 Technical Challenges 技术挑战"></a>3.1 Technical Challenges 技术挑战</h1><p>在混合内存系统中，NVMM可以在运行应用程序时充当主内存，并在应用程序完成时充当持久存储。NVMM的字节寻址能力和非易失性特性消除了内存和外部存储的区别。然而，当NVMM中的数据需要持久化时，就需要对NVMM中的数据进行重新组织和重新定位。</p>
+<p>图2显示了持久内存（PM）的管理操作。NVMM区域是物理PM设备。NVMM区域可以像DRAM一样用作工作内存，也可以像磁盘一样用作持久存储。当程序完成时，工作内存中的数据应该刷新到持久存储中。此外，为了保证高可靠性，检查点机制被广泛利用来从电源故障或系统崩溃中恢复系统。Gao等人[104]开发了一种利用NVMM在混合内存系统中进行实时检查点的新颖方法。</p>
+<div class="note info no-icon">Checkpointing（检查点）用于在运行过程中定期保存系统的状态和数据快照。这些检查点允许系统在发生故障或需要恢复时，从之前的状态继续执行，而不是从头开始重新计算。</div>
+
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ba021f22f99b414582492752b9d4377a.png" alt="没看懂这个图"></p>
+<p>有效管理PM面临多项挑战。首先，持久存储以文件系统的形式被广泛管理。作为字节可寻址NVMM提供比传统块设备更好的随机访问性能，基于PM的文件系统的性能瓶颈已经从硬件转移到系统软件堆栈。缩短软件堆栈中的数据路径至关重要。其次，由于许多CPU使用回写式缓存来实现写操作的高性能，因此末级缓存（LLC）可能会改变写回PM的数据顺序。如果出现断电或者系统崩溃的情况，可能会导致数据不一致的问题。因此，为了保证PM中数据的一致性，需要写操作的顺序和写原子性模型来保证PM中数据的一致性。第三，与基于PM的文件系统相比，持久对象和数据结构对于PM编程更有前景，因为它们消除了文件系统中的复杂数据结构，包括i节点、元数据和数据。然而，这些持久对象和数据结构仍然面临着保证数据一致性的挑战。接下来，我们将回顾试图解决这些挑战的研究</p>
 <h1 id="4-Performance-Improvement-and-Energy-Saving性能改进和节能"><a href="#4-Performance-Improvement-and-Energy-Saving性能改进和节能" class="headerlink" title="4 Performance Improvement and Energy Saving性能改进和节能"></a>4 Performance Improvement and Energy Saving性能改进和节能</h1><p>由于NVMMs显示出更高的访问延迟和写入能耗，已经有很多关于NVMMs的性能改进和节能的研究[32-34 ,63 ,65 ,66] 。这些研究可分为三类:减少NVMM写入次数、减少NVM写入本身的能耗以及通过页面迁移减少DRAM的能耗。</p>
 <h2 id="4-1-NVMM-Write-Reduction-NVMM写入减少"><a href="#4-1-NVMM-Write-Reduction-NVMM写入减少" class="headerlink" title="4.1 NVMM Write Reduction NVMM写入减少"></a>4.1 NVMM Write Reduction NVMM写入减少</h2><p>为了减少NVMM写入,分层结构显然更合适,因为DRAM缓存减少了大量NVMM写入。为此,开发了两种主要技术,即页面迁移和绕过NVMM写入。</p>
 <p><strong>页面迁移</strong>。页面迁移[14 ,15 ,33 ,58 ,59]策略主要基于写入次数和每个页面的最近访问频率来选择要迁移的页面。它们的主要区别在于触发页面迁移的条件。</p>
@@ -624,6 +639,14 @@
 <p>3)基于NVMM的计算存储器集成计算机体系结构正在兴起。例如,新兴NVMM在存储器内处理(PIM)[95,96]和近数据处理(NDP)[128,129]架构中的应用正在兴起。PIM和NDP近年来已成为新的计算范式。NDP是指将处理器与存储器集成在单个芯片上,以便计算能够尽可能接近地访问存储器中的数据。NDP能够显著降低数据移动的成本。实现这一目标主要有两种方法。一种是将小型计算逻辑(如FPGA/ASIC)集成到存储器芯片中，以便在数据最终被提取到CPU之前对其进行预处理。另一种方法是将内存单元(HBM/HMC)集成到计算(CPU/GPGPU/FPGA)中。该模型通常用于许多处理器架构, 如IntelO Xeon PhiTM Knights Landing系列、NVIDIAO tesla V100和Google Tensor处理单元(TPU)。PIM指的是完全在计算机内存中处理数据。它通过在主存储器中执行计算,提供了高带宽、大规模并行性和高能量效率。使用NVMM (如ReRAM)的PIM通常可以并行计算两个或多个内存行的位逻辑, 并支持一步多行操作。该范例对于模拟计算方式中的矩阵向量乘法特别有效，并且可以实现极大程度的性能加速和节能。因此, PIM在加速机器学习算法(如卷积神经网络)中得到了广泛的研究(CNN)和深度神经网络(DNN)。尽管在PIM架构中.使用NVMM技术的兴趣越来越大[94-96 ,130]， 但目前的研究主要基于电模拟,没有一项研究可用于中型原型设计。</p>
 <p>4)除了传统应用之外, 一些使用NVMM的新应用正在出现。尽管NVMM技术已初步应用于许多大数据应用, 如K-V存储、图形计算和机器学习,但大多数编程框架/模型和运行时系统都是为磁盘设备和基于DRAM的主存储器而设计的, 它们在混合存储系统中并不有效。例如, 这些系统中广泛使用缓冲和延迟写入机制来隐藏I/O操作的高延迟。然而,混合存储器系统中可能不需要这些机制,甚至可能会损害应用程序性能。应重新设计Hadoop/Spark/GraphChi/Tensorflow等大数据处理平台,以适应NVMM技术的特点。除了这些传统应用之外,一些基于NVMM的新型应用正在出现。例如,有一些建议通过利用NVMM的切换过程的内在变化,将NVMM用作硬件安全原语, 如物理不可克隆函数(PUF)[131]。 PUF通常用于具有高安全性要求的应用,例如密码学。最近,已经提出了许多基于NVMM技术的逻辑电路并将其原型化[132-134]。例如，ReRAM技术被提议用作基于ReRAM的FPGA的可重构开关[133]。此外，STT-RAM技术被提出用于设计非易失性缓存或寄存器[135]。</p>
 <h1 id="8-Conclusions结论"><a href="#8-Conclusions结论" class="headerlink" title="8 Conclusions结论"></a>8 Conclusions结论</h1><p>与传统DRAM技术相比, 新兴的NVMM技术具有许多良好的特性。它们有可能从根本上改变存储系统的面貌，甚至为计算机系统添加新的功能和特性。现在有很多机会重新思考当今计算机系统的设计,以实现系统性能和能耗的数量级改进。本文从内存体系结构、操作系统级内存管理和应用程序优化的角度全面介绍了最新的工作和我们的实践。我们还分享了我们对NVMM技术未来研究方向的展望。通过利用NVMM的独特特性, 有巨大的机会来创新未来的计算范式, 开发NVMM的多种新颖应用。</p>
+<h2 id="积累"><a href="#积累" class="headerlink" title="积累"></a>积累</h2><p>一些可以进一步看一看的文献：</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519ae688bfd74036bb3b66ae451bbc86.png" alt="不同内存硬件性能比较"></p>
+<p>如表1所示，Intel Optane DCPMM的读取延迟比DRAM高2倍-3倍,而其写入延迟甚至低于DRAM。单个Optane DCPMM DIMM的最大读写带宽分别为6.6GB/s和2.3 GB/s，而DRAM的读写带宽之间的差距要小得多(1.3x)。此外，随着系统中并行线程数量的增加，读/写性能是非单调的[25]。在他们的实验中，1个到4个线程之间达到了峰值性能，然后逐渐下降。</p>
+<div class="note danger"> 但是这个可能不是我想要的CPU和内存的延迟带宽之类的，可能是针对做持久性时的数据 </div> 
+
+<p>Salkhordeh和Asadi[34]考虑了内存写入和读取，以迁移有利于性能和节能的热页面。</p>
+<p>Li[101]等人提出了一种实用模型，用于基于实用程序定义来指导页面迁移，该实用程序定义基于许多因素，如页面热度、内存级并行性和行缓冲区局部性.</p>
+<p>“如果一个可重新配置的混合内存系统能够以及时有效的方式动态地适应不同的场景，对于应用程序来说可能是有益的和灵活的。这可能是NVMM器件的一个有趣的研究方向。”看看华科廖小飞团队在这个方面最近的工作。</p>
 <hr>
 
                 
@@ -689,12 +712,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/B/">
-                                    <span class="chip bg-color">B</span>
-                                </a>
-                            
                                 <a href="/tags/Hybrid-Memory-Systems/">
                                     <span class="chip bg-color">Hybrid Memory Systems</span>
+                                </a>
+                            
+                                <a href="/tags/B/">
+                                    <span class="chip bg-color">B</span>
                                 </a>
                             
                                 <a href="/tags/Review/">
@@ -993,7 +1016,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">39.3k</span>&nbsp;字
+                class="white-color">40.5k</span>&nbsp;字
             
             
             
