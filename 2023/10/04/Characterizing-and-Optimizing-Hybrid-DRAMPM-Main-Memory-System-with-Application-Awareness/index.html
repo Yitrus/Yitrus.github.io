@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems, Yi&#39;s Blog">
+    <meta name="keywords" content="Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems | Yi&#39;s Blog</title>
+    <title>Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ca0046254e904f9991e9b0242696b89f.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b4675b4852e44b7cba5a23362663c62f.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems</h1> -->
+                    <!-- <h1 class="description center-align post-title">Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
+                            <a href="/tags/B/">
+                                <span class="chip bg-color">B</span>
                             </a>
                         
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
+                            <a href="/tags/Hybrid-Memory/">
+                                <span class="chip bg-color">Hybrid Memory</span>
                             </a>
                         
                     </div>
@@ -466,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-02-06
+                    2023-10-04
                 </div>
                 
 
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    2.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    9 分
                 </div>
                 
 
@@ -508,60 +508,49 @@
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
 <ul>
-<li>文章来自IEEE International Symposium on High-Performance Computer Architecture, (HPCA), 2022</li>
-<li>MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems</li></ul></div> 
+<li>文章来自Design, Automation &amp; Test in Europe(DATE), 2022</li>
+<li>Characterizing and Optimizing Hybrid DRAM-PM Main Memory System with Application Awareness</li>
+</ul>
+</div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Adnan Maruf, 佛罗里达国际大学(FIU)奈特基金会计算与信息科学学院</li>
-<li>Ashikee Ghosh, 佛罗里达国际大学(FIU)奈特基金会计算与信息科学学院</li>
-<li>Janki Bhimani, 佛罗里达国际大学(FIU)奈特基金会计算与信息科学学院</li>
-<li>Daniel Campello, Google</li>
-<li>Andy Rudoff, 英特尔公司</li>
-<li>Raju Rangaswami, 佛罗里达国际大学(FIU)奈特基金会计算与信息科学学院</li>
+<li>Yongfeng Wang, Yinjin Fu, Yubo Liu, Zhiguang Chen, Nong Xiao中山大学计算机科学与工程学院</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>将PM作为第二级内存直接暴露给CPU是目前比较有希望的一个做法：如何把数据在正确时间放入正确分层中去。于是面临一个是大家关注的问题。</p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>动机：通过四个工作负载，统计归类50个采样页面的访问模式，得出层级友好页面是需要迁移的对象（空间局部性）。<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b9a6c5150a4c455c9eca0fbbcd1aaf99.png" alt="热力图"><br>同时一段时间访问过的页面在下一段时间被访问概率也很大（时间局部性）<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cb7d1ef346b84032b6cae36568adf862.png" alt="相线图表示被访问的概率在不同时间窗口的变化"><br>然后说明了用frequency&amp;recency识别到的页面也具有层级友好的特征。相比于静态分层，说明了动态分层的必要。最后把整个比较模糊的大问题转化为：试图解决分层系统中：如何根据frequency&amp;recency来识别升级的热点页?如何在内核中设计一个简单、低开销而又高效的系统？</p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>这些都是分层技术上的对比：<br>静态分层即一个内存页一旦被映射到一个分层，在其生命周期内就不会被重新分配到不同的分层。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9b9a94f135544a11a3dfdb7aca8ed615.png" alt="现有内存分层技术的比较"><br>[11]Nimble：只根据recency来选择页面，这篇的作者为了解决frequency决定把工作负载执行期分为观察窗口和性能窗口。得出观察窗口频率高的，在性能窗口概率也高。专注于透明大页（THP）迁移。应用程序需要通过Nimble的启动器运行以利用其页面迁移技术。MC在内置内核实现的功能。Nimble需要一个额外的启动器来运行内核上的任何工作负载。</p>
-<p>[12]AutoTieringhint page fault的缺页异常来跟踪页面访问，并使用recency来识别热点页进行升级。尽管缺页异常可以提供高准确度的页面访问跟踪，但跟踪所有页面的成本很高，因为每一个页面故障都必须在访问页面之前进行处理。这是因为基于缺页的软件页面访问跟踪成本很高，而且跟踪页面历史位以识别冷页面的开销也很大。所以在后面工作负载测试中表现很差。</p>
-<p>[19]Thermostat源代码不可用没有评估，通过poisoning页表项（PTE）和触发缺页异常来跟踪巨大的页面，并将冷页面迁移到较低的内存层。</p>
-<p>[22]AMP（非统一内存访问架构NUMA，主板会分成不同的插槽，每一个插槽一组cpu，以及和这组cpu离得近的内存。）这在两个插座的NUMA机器中是不现实的，因为每个节点通常有自己的DRAM、PM和CPU。AMP使用一个节点，只用于DRAM的分配，其他节点只用于PM的分配。AMP是在Linux内核4.15版本上实现的，它不支持所需的KMEM DAX驱动（从内核v5.1开始提供），以便PM作为主内存在分层系统中使用。AMP的核心设计原则要求它扫描和剖析来自DRAM和PM层的所有内存页，这在实际系统的内核中是不现实的，因为在我们评估的工作负载中，内存页的数量可以增长到数亿。<br>对比于PM当前这款硬件的两种用法。</p>
-<p>[7]Memory-mode：数据不能持久化，dram作为缓存不透明。缓存是需要从高层获取数据的，而这里提出的分层是两层都能被直接访问的。</p>
-<p>[44]对象级需要改变应用程序API，而内核级别的修改不需要应用程序有何变化。</p>
-<p>[32]提出了一种有效使用持久性内存作为NUMA节点的设计。这个分层设计同时意识到了DRAM和PM节点 ,并且只通过NUMA平衡处理匿名页面的升级/移动。</p>
-<p>[33-36]不需要硬件，而且都是主存没有缓冲。</p>
-<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>设计MULTI-CLOCK的主要假设是，最近被访问过一次以上的页面，在不久的将来更有可能被访问。</p>
-<p>具体升级降级要求门槛就是那张图。（但是频繁程度不够吧？）及时更新页面引用状态的方式根据对内存页的访问模式不同而不同。无监督式：CPU在进程的页表入口中设置的页面引用位。 <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ca0046254e904f9991e9b0242696b89f.png" alt="文章的idea"></p>
-<p>与CLOCK类似，升级是由每次系统守护程序kpromoted去完成的。它定期被唤醒，以扫描列表，更新它们，并将最近由无监督访问产生的升级列表中页迁移到更高层的页。</p>
-<p>降级机制基于今天的虚拟内存系统中的页面驱逐技术。当内存达到内存压力时（该层与系统总内存量来计算）会去扫描每个列表。活动列表中的页面相对于非活动列表的比例超过了一个与该层可用内存量相关的阈值时，那么在活动列表中没有被标记为引用的页面将被移至非活动列表。最后，非活动列表被扫描，以寻找未被标记为引用的页面，并将其迁移到较低的层级。当没有更低层级列表可以迁移，就写回块存储。</p>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>评估的目的是确定MULTI-CLOCK是否、何时以及如何能够提高应用工作负载的性能。</p>
-<p>使用雅虎云服务基准（YCSB）[13]的六个不同的工作负载和GAP基准套件(GAPBS) [14] 的六个工作负载来讨论我们的结果。Memcached[3]，一个使用大量主内存来维护其数据的内存缓存服务，作为YCSB的键值存储后端。 配置时内存要被全部消耗，并且消耗一部分PM。</p>
-<p>MULTI-CLOCk在所有YSCB工作负载上都优于静态分层、Nimble、AT-CPM和AT-OPM。对GAPBS的执行时间也比其他方案减少。</p>
-<p>分析了MULT-CLOCK和Nimble所升级的页面数量。MULTI-CLOCK每次扫描平均升级758页，最多扫描1024。而N是把1024作为固定值。如果那些将来不会再被重新访问的页面被提升到DRAM中，那么提升这些页面的开销会损害系统性能。第二次再次被访问的百分比比N高15%</p>
-<p>实现了目标，低开销，特别是密集型应用。</p>
-<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><ol>
-<li>能耗方面摘要提了一下，后面也没说呀。</li>
-<li>作者源码有一些问题，在运行高性能计算用MIP的时候会内核崩溃。</li>
-<li>后面的性能评估对比了几种相关的工作，但是选择的workload也是比较局限的，GAPBS的论文都没有正式发出来。</li>
-</ol>
-<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><ol>
-<li>在内核上修改代码，不需要其他程序有什么修改。</li>
-<li>使用升级列表和频率可以很好的利用层级友好页面的局部性。</li>
-</ol>
-<h2 id="9-相关链接"><a href="#9-相关链接" class="headerlink" title="9. 相关链接"></a>9. 相关链接</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/sylab/multi-clock">作者公布的源码</a></li>
-<li><a target="_blank" rel="noopener" href="https://docs.pmem.io/ndctl-user-guide/">ndctl用户手册</a></li>
-<li><a target="_blank" rel="noopener" href="https://pmem.io/blog/2020/01/memkind-support-for-kmem-dax-option/">PM的AD模式下的kmem模式设置</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/brianfrankcooper/YCSB">YCSB工作负载源码</a></li>
-<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1004637">YCSB介绍与相关运行配置介绍</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/pmem/ndctl/tree/main/Documentation/daxctl">ndctl下的daxctl安装源码下载</a></li>
-<li><a target="_blank" rel="noopener" href="https://memark.io/index.php/2021/04/09/pmem_intro/">持久内存开发资料汇总</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37858386/article/details/78444168">Linux驱动编程中EXPORT_SYMBOL介绍（因为作者公布的源码里有这个报错）</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/pmem/ndctl/issues/108">daxctl fails to reconfigure to system-ram when DAX modules built-in</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.intel.com/content/www/us/en/developer/articles/guide/qsg-intro-to-provisioning-pmem.html">持久内存配置简介，快速入门</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/sbeamer/gapbs">GAPBS工作负载下载和使用</a></li>
-</ul>
-<h2 id="10-积累"><a href="#10-积累" class="headerlink" title="10. 积累"></a>10. 积累</h2><p> 当使用PM作为主存储器时，其持久性能力变得无关紧要（这里作者遵循原先的主存的设计，即易失性，抛弃了NVM数据持久的特点，后面提到的该产品Memory Mode，并且文献[10]说PMEP想要持久性靠的是<code>clflush</code>指令，这个指令由于要排序开销很大），从而完全避免了其最大的性能开销[10]</p>
-<p> 有开源内核好像有一个选项可以计数随时间变化页面在层级间迁移的数量。</p>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>PM大容量之后，<span class="label primary">多个应用程序工作负载并发执行的数据放置、内存并发和工作负载调度方面存在关键的管理挑战</span>作者总结在混合内存系统场景下讨论的3个问题：数据放置、优化线程分配、并发程序执行顺序如表1</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c2fd2e2f7b514331a1be9c6f6fe7fcb0.png"></p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>提出了一系列应用感知的操作策略，包括：应用感知的数据放置、自适应线程分配和避免应用间干扰，以提高混合存储器上多个应用的并发性能。</p>
+<p><span class="label primary">1)如何将应用工作负载分配到合适的内存设备上，以提高并发应用的整体系统性能?</span><br>2)如何通过为每个应用程序分配最佳的线程数来保证不同工作负载的并发执行的公平性?<br>3)什么样的应用工作负载调度方案可以避免或减轻两个或多个同时运行的应用之间的干扰，以实现更高的性能?</p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>但是这些方案没有去具体考虑并发应用的个别需求(应用感知)。</p>
+<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h3 id="1）将应用感知解释为带宽敏感或者延迟敏感。"><a href="#1）将应用感知解释为带宽敏感或者延迟敏感。" class="headerlink" title="1）将应用感知解释为带宽敏感或者延迟敏感。"></a>1）将应用感知解释为带宽敏感或者延迟敏感。</h3><p>根据系统资源需求的不同，我们可以将计算服务器的应用工作负载分为CPU绑定和内存绑定。为了将我们的工作重点放在内存资源管理上，绑定内存的应用被进一步分为对带宽敏感的应用和对延时敏感的应用。我们的分类使我们能够清楚地区分工作负载类别，因为每个工作负载类别都形成了自己独特的集群。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cddfdfc49de643f0b30cf713269f15c8.png"></p>
+<p>图1显示了所有工作负载的延迟和内存带宽需求的敏感性。当一个应用程序在x轴和y轴上的数值都很低时，它<br>就是一个受CPU约束的应用程序。对性能要求高的数据库工作负载对延迟最敏感，而对带宽的敏感度低。而大数据<br>分析的工作负载，如OLAP、Lu cb和facesim,对带宽和延迟的敏感性处于中间水平。HPCG、Graph500和一些数据密<br>集型工作负载对带宽的敏感性最高，对延迟的敏感性最低绑定CPU的工作负载，如HPL、swaptions和freqmine, 对<br>内存延迟或带宽的敏感性不高。</p>
+<div class="note info no-icon">不过，这个图是怎么得到的？</div> 
+
+<p>下图表示应用感知优化后达到的效果：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b4675b4852e44b7cba5a23362663c62f.png"><br>大致看起来是想说，第三节数据放置达到缩短运行时间的效果、第四节线程分配、第五节接口冲突。</p>
+<h3 id="2）数据放置策略"><a href="#2）数据放置策略" class="headerlink" title="2）数据放置策略"></a>2）数据放置策略</h3><p>在混合内存中，两种内存介质上的应用性能是完全不同的，而且这种影响的大小在很大程度上取决于应用的特性为了评估这一点，我们从PARSEC[16]、splash2x[17]和NPB[18]选择了几个测试。</p>
+<div class="note info no-icon">这里选择都是并发的程序，而且两种介质可以影响性能的差别就是延迟和带宽（还有其他什么吗？），程序又有不同的延迟带宽敏感。在纯PM上运行，这只说了物理机配置，所以这是怎么跑起来的？</div> 
+
+<p>图3显示了在PM上运行的8线程应用程序工作负载与DRAM上运行的应用程序工作负载的性能下降情况以及完成时间的比率。每个应用程序将分别在PM和DRAM上运行10次，我们记录它们的平均完成时间。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/8b9d7567cae24be79b422c66b5289d60.png"></p>
+<p><span class="label primary">持久性存储器的带宽比DRAM低，这使得应用程序在PM上运行的时间更长。以ocean_cp为例，它在计算的不同阶段流经其分割的许多不同的网格，随着问题大小的增加，会产生大量的容量和冲突失误[17]。当工作集超过高速缓存的<br>大小时，内存带宽就会成为这个应用的瓶颈。在这个实验中，ocean_cp在DRAM上的读和写分别消耗了40.9GB/s和<br>15.3GB/s的带宽，而在PM上由于其带宽较低，只消耗了2.45GB/s和0.8GB/s。这个17倍的带宽差距可以解释ocean_cp在PM上的减速。PM的有限带宽也是对带宽敏感的应用减速的主要原因，如canneal、radix、NPB/FT、NPB/MG和<br>NPB/SP。此外，其他应用工作负载在PM上的运行时间不到DRAM上的1.5倍，如freqmine和swaption。 它们都是与CPU绑定的应用，可以充分利用内存的局部性来减少高速缓存的miss。因此，内存不是这类应用的瓶颈。因此,在不同的内存介质上运行的应用程序对这些工作负载的执行时间有着难以察觉的影响。</span></p>
+<div class="note info no-icon">这里的意思是带宽敏感和数据放置关系更紧密，延迟敏感和之后要说的会比较相关。后面的分配策略完全也不考虑热页面迁移了，直接不是带宽敏感丢给PM。硬件性能计数器很多啊，带宽敏感是用啥表示？而且你在DRAM不够时怎么在分配之前知道这是不是带宽敏感的，那就是用户手动指定嘛，运行时硬件计数肯定不能提前知道；另一方面正在运行时的内存分配要按照不同workload做标记咯，要不你现在要分配的page你也不知道是哪个程序申请的，他自己是不是带宽敏感</div> 
+
+<p>当应用程序工作负载启动时，如果有足够的可用空间，它首先尝试将其分配到DRAM上。否则，我们必须判断应用程序是否对带宽敏感。对于带宽敏感的应用程序，它可以将CPU-Bound应用程序的一些占用的DRAM页面迁移到PM，然后为新应用程序分配这些DRAM页面。如果DRAM中的所有应用程序工作负载都是带宽敏感的，我们只需将新应用程序分配给PM即可。此外，我们还将对带宽不敏感的应用程序分配给性能下降较低的PM。为了使我们的应用程序感知策略切实可行，应用程序类型可以由用户定义或根据硬件性能计数器的信息自动分类。</p>
+<p>下面这个实验表示通过这种方法程序放置对了，而且节约了总的执行时间。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/23f0d575dd7547d4902c544be540cd3a.png"></p>
+<h3 id="3）线程分配（内存并发）"><a href="#3）线程分配（内存并发）" class="headerlink" title="3）线程分配（内存并发）"></a>3）线程分配（内存并发）</h3><p>在不同介质上，线程可扩展性不同，在PM上运行的对带宽敏感的应用程序的性能不能随着线程数的增加而同步提高。因此，有必要为运行在不同内存介质上的应用程序找到一个合适的并行参数。</p>
+<div class="note info no-icon">这个怎么还能放先验知识，而且the remain thread resources can be allocated to other applications这个资源是可以被量化的吗？</div> 
+
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/f9dbccacad674d3b8eb4008a6a6113cc.png"><br>在第1组中，左侧结果显示每个应用程序传统均匀分布的8个线程的持续时间。根据先验知识，我们发现PM上的最佳线程NPB/FT数量为4。</p>
+<h3 id="4）带宽争用"><a href="#4）带宽争用" class="headerlink" title="4）带宽争用"></a>4）带宽争用</h3><p>当两个或多个应用程序同时访问混合内存时，会出现带宽争用，这将导致严重的干扰和并发性能下降。而且混合内存中的这种干扰比纯DRAM内存系统中的干扰更为复杂。为了证明这一点，我们首先尝试遍历所有内存访问模式。我们的测试包括4种类型的内存访问模式（1）SR：顺序读取，（2）RR：随机读取，（3）SW：顺序写入，（4）RW：随机写入1、2、4、8和10DRAM和PM上运行的线程，将形成40种内存访问模式。然后，我们运行带宽基准测试并获得所有内存访问模式的带宽，没有任何干扰。最后，分别运行40种内存访问模式构建40种干扰，对每种内存访问模式重新进行基准测试，得到每种干扰下的带宽缩减率。结果如图7所示，概括为以下两个方面：</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a4f8361713864c139a2c9e25be08ccb5.png" alt="X轴代表干涉类型，Y轴代表基准类型。颜色越深意味着与没有干扰时相比，带宽减少得越多"></p>
+<p><span class="label primary">访问DRAM对PM的带宽影响很小，而PM的读或写会显着减少DRAM的带宽。</span> PM上10线程顺序读取的带宽为13GB/s，相对于10线程DRAM读写的干扰，最多可以降低15%（11GB/s）。相比之下，PM上有10个干扰线程进行顺序读取，DRAM上顺序读取的带宽可减少80%（94GB/s至18GB/s）。而且，对于DRAM的带宽来说，PM读写造成的干扰比DRAM上的干扰更为显着。</p>
+<p>其次，线程数量和内存访问模式对并发应用的干扰影响很大。随着线程数量的增加，干扰会变得更加严重。在具有1、2、4、8或10个线程的PM上随机写入将使具有10个线程的DRAM上的顺序写入的带宽减少33.8%、68.2%、89.9%、96.7%、97.6%（68GB/s 至 1.7GB/s）。对于内存访问模式来说，随机写入会对DRAM的写入性能产生最严重的干扰。考虑到PM上的密集写入会减少带宽95%以上在 DRAM 上运行的带宽敏感应用程序仍然会受到严重影响。<span class="label primary">PM上的密集访问将显着减少DRAM的带宽。对PM的随机写入和顺序读取分别对DRAM的写入和读取带宽有更严重的干扰</span></p>
+<p>解决方式就是通过上面的分析动态调整这些应用程序工作负载的执行顺序,也是通过先验知识去查找。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b406960826234fc8a2610dc1b7a2befd.png"></p>
+<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>这个在上一节已经说了。</p>
+<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>也是在5部分吐槽了。解决方案很多靠先验经验或者用户直接指定，而且细节也不咋提。虽然这个是针对并发程序设计的，也可以和其他混合内存系统相比较一下啊。</p>
+<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>从带宽敏感考虑了内存分配，而且性能提升还不错。</p>
+<h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><p>GPU内存系统中，应用感知的内存调度方案[13], [14]可以通过减少地址转换和数据请求之间的干扰来提高<br>公平性和整体系统性能。</p>
+<p>应用感知的存储器通道划分算法[15]可以为不同的应用分配首选的存储器通道，以减少应用间的存储器干扰。</p>
 
                 
             </div>
@@ -588,7 +577,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/02/06/MULTI-CLOCK-Dynamic-Tiering-for-Hybrid-Memory-Systems/">http://ytirus.github.io/2023/02/06/MULTI-CLOCK-Dynamic-Tiering-for-Hybrid-Memory-Systems/</a>
+                    <a href="http://ytirus.github.io/2023/10/04/Characterizing-and-Optimizing-Hybrid-DRAMPM-Main-Memory-System-with-Application-Awareness/">http://ytirus.github.io/2023/10/04/Characterizing-and-Optimizing-Hybrid-DRAMPM-Main-Memory-System-with-Application-Awareness/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -626,12 +615,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
+                                <a href="/tags/B/">
+                                    <span class="chip bg-color">B</span>
                                 </a>
                             
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
+                                <a href="/tags/Hybrid-Memory/">
+                                    <span class="chip bg-color">Hybrid Memory</span>
                                 </a>
                             
                         </div>
@@ -675,28 +664,82 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/03/08/A-Survey-of-Non-Volatile-Main-Memory-Technologies-State-of-the-Arts-Practices-and-Future-Direction/">
+                <a href="/2023/10/04/Characterizing-and-Optimizing-Hybrid-DRAMPM-Main-Memory-System-with-Application-Awareness/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e565e90afda244f6a8dcfbe3081068c1.png" class="responsive-img" alt="A Survey of Non-Volatile Main Memory Technologies:State-of-the-Arts, Practices, and Future Direction">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b4675b4852e44b7cba5a23362663c62f.png" class="responsive-img" alt="Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness">
                         
-                        <span class="card-title">A Survey of Non-Volatile Main Memory Technologies:State-of-the-Arts, Practices, and Future Direction</span>
+                        <span class="card-title">Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            非易失性主存储器技术综述:技术发展最新水平、实践和未来方向。综述翻译。
+                            从并发应用的角度讨论混合内存的使用，可以感知程序的带宽敏感和延迟敏感
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-03-08
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
+                                </a>
+                            
+                            
                         </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/B/">
+                        <span class="chip bg-color">B</span>
+                    </a>
+                    
+                    <a href="/tags/Hybrid-Memory/">
+                        <span class="chip bg-color">Hybrid Memory</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/09/15/Going-Vertical-in-Memory-Management/">
+                    <div class="card-image">
+                        
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d6f56fdc5eca4311851b27a93bc66713.png" class="responsive-img" alt="Going Vertical in Memory Management">
+                        
+                        <span class="card-title">Going Vertical in Memory Management</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            片上缓存容量敏感
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-15
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -712,69 +755,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
                     </a>
                     
-                    <a href="/tags/B/">
-                        <span class="chip bg-color">B</span>
-                    </a>
-                    
-                    <a href="/tags/Review/">
-                        <span class="chip bg-color">Review</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/06/06/Time-Complexity-Calculation/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="Time Complexity Calculation">
-                        
-                        <span class="card-title">Time Complexity Calculation</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            求时间复杂度会用到的公式，算法复杂性估计函数，还有递归方程的解法。从自己以前的博客搬运。
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-06-06
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Algorithm/" class="post-category">
-                                    Algorithm
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Algorithm/">
-                        <span class="chip bg-color">Algorithm</span>
-                    </a>
-                    
-                    <a href="/tags/Advanced-Mathematics/">
-                        <span class="chip bg-color">Advanced Mathematics</span>
+                    <a href="/tags/Chip-on/">
+                        <span class="chip bg-color">Chip on</span>
                     </a>
                     
                 </div>

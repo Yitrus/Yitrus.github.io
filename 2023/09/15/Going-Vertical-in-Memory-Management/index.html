@@ -539,7 +539,7 @@
 <p>研究了这些策略针对<strong>2000</strong>多个工作负载的性能，并通过<strong>数据挖掘方法将结果与应用程序特征相关联</strong>。基于这种相关性，我们得出了几种实用的内存分配规则，并将其集成到统一的多策略框架中，以指导动态和多样化的多编程/线程工作负载的资源分区和合并。（生成了一套实用的分区和聚合规则以及一棵策略决策树，帮助HVR自动选择策略、动态资源分区和聚合。）</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c95f6f8820ec410285d3dadd9678cb5c.png"></p>
 <p>（置信度和支持度是数据挖掘中的术语。在我们的工作中，支持被定义为规则中包含特定类型应用程序的工作负载的比例；置信度表明该规则的准确性。）</p>
-<div class="note info no-icon">其实就是先采样热页，制定一些阈值，得到分类算法。然后将workload名称和分类绑定成一个键值对，再将分类和着色位的性能（就是最初的散点图）建立相关规则（通过观察得到的，比如：“包含 LLCT 和其他应用程序（LLCH、LLCM、CCF）的工作负载应使用 C-VP 或 A-VP（37.1% 支持，94.4% 置信度）”）。**总是一开始使用bank-only然后迁移** </div>
+<div class="note info no-icon">其实就是先采样热页，制定一些阈值，得到分类算法。然后将workload名称和分类绑定成一个键值对，再将分类和着色位的性能（就是最初的散点图）建立相关规则（通过观察得到的，比如：“包含 LLCT 和其他应用程序（LLCH、LLCM、CCF）的工作负载应使用 C-VP 或 A-VP（37.1% 支持，94.4% 置信度）”）。！！总是一开始使用bank-only然后迁移！！</div>
 
 <p>在 Linux 内核 2.6.32 中将我们的方法实现为重构的页面索引系统加上一系列内核模块。</p>
 <h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>大量实验表明，在实践中，我们的框架可以选择适当的内存分配策略，并始终优于未修改的Linux内核，与现有技术相比，性能提升高达11%。</p>
@@ -657,29 +657,28 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/09/15/Going-Vertical-in-Memory-Management/">
+                <a href="/2023/10/04/Characterizing-and-Optimizing-Hybrid-DRAMPM-Main-Memory-System-with-Application-Awareness/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d6f56fdc5eca4311851b27a93bc66713.png" class="responsive-img" alt="Going Vertical in Memory Management">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b4675b4852e44b7cba5a23362663c62f.png" class="responsive-img" alt="Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness">
                         
-                        <span class="card-title">Going Vertical in Memory Management</span>
+                        <span class="card-title">Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            片上缓存容量敏感
+                            从并发应用的角度讨论混合内存的使用，可以感知程序的带宽敏感和延迟敏感
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-15
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-04
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -692,16 +691,15 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/B/">
+                        <span class="chip bg-color">B</span>
                     </a>
                     
-                    <a href="/tags/Chip-on/">
-                        <span class="chip bg-color">Chip on</span>
+                    <a href="/tags/Hybrid-Memory/">
+                        <span class="chip bg-color">Hybrid Memory</span>
                     </a>
                     
                 </div>
@@ -909,7 +907,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">42.5k</span>&nbsp;字
+                class="white-color">47.1k</span>&nbsp;字
             
             
             
