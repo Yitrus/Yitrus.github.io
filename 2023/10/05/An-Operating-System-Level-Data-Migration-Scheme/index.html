@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems, Yi&#39;s Blog">
+    <meta name="keywords" content="An Operating System Level Data Migration Scheme, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems | Yi&#39;s Blog</title>
+    <title>An Operating System Level Data Migration Scheme | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d916d5cd134a4909a11c4901a00fe76b.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/26073db180a64a9c888e27b6f08665c5.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems</h1> -->
+                    <!-- <h1 class="description center-align post-title">An Operating System Level Data Migration Scheme</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
+                            <a href="/tags/B/">
+                                <span class="chip bg-color">B</span>
                             </a>
                         
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
+                            <a href="/tags/Hybrid-Memory-Systems/">
+                                <span class="chip bg-color">Hybrid Memory Systems</span>
                             </a>
                         
                     </div>
@@ -466,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-05-01
+                    2023-10-05
                 </div>
                 
 
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    783
+                    2.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    9 分
                 </div>
                 
 
@@ -506,21 +506,36 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
-
-<ul>
-<li>文章来自HPCA, 2021</li>
-<li>Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems</li></ul></div> 
+- 文章来自Design, Automation &amp; Test in Europe (DATE), 2016
+- An Operating System Level Data Migration Scheme in Hybrid DRAM-NVM Memory Architecture
+</div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>A, Mazen Alwadi1, Vamsee Reddy Kommareddy1, Clayton Hughes2, Simon David Hammond2, Amro Awad3<br>University of Central Florida1, Sandia National Laboratories2, North Carolina State University3</li>
+<li>Reza Salkhordeh and Hossein Asadi, Data Storage Systems &amp; Networks (DSN) Lab, 伊朗谢里夫理工计算工程系</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>它们存在着高写延迟和有限的写持久性。研究人员提出了结合DRAM和NVM的混合存储系统，利用DRAM的低延迟来掩盖NVM的一些缺点——通过在DRAM中缓存常驻NVM数据来提高系统性能。对于大容量的NVM快速和持久的缓存能力是有限的。利用DRAM作为NVM的一个快速持久的缓存，受到能源支持的限制。</p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>越来越多的应用程序将利用NVMs的持久性功能。因此，提高这类应用的性能，同时保证数据的持久性是一个关键的设计点。允许NVM的非常快速的持久性缓存，但不需要任何额外的能量支持能力来刷新DRAM缓存内容到NVM</p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>现有的持久性存储器技术要么提供小容量但快速和基于电池支持的DRAM持久性区域，要么提供高容量的NVM (不需要电池支持)但缓慢的持久性区域。前者需要系统的支持，需要笨重的物品，并且会根据超级电容或电池的大小限制持久性DRAM的大小。此外，它需要改变某些DIMM来支持备份模式。同时，由于持久性对象的缓慢读取访问，后者会产生明显的性能下降。期待电池备份、有限的DRAM尺寸以及限制集成在系统中的DRAM模块的选择。</p>
-<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>实现NVM的快速持久的DRAM缓存，我们利用选择性的NVM镜像对缓存在DRAM中的持久页面进行了新的内存控制器。</p>
-<p>在DRAM中缓存时将持久区域的更新镜像到NVM。 Stealth-Persist的镜像操作发生在内存控制器上，不需要对应用程序或持久性编程库做任何改变。最后，为了支持对持久性页面的高性能访问，我们的方案从DRAM中提供对持久性对象的读取请求，如果在那里有缓存</p>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>写次数不变，对于写耐久性的破坏</p>
-<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>虽然之前所有关于持久化应用的工作都探讨了对持久化对象的写的优化，但这是第一个探讨对持久化对象的读操作进行优化的工作。仅仅依靠对处理器芯片的微小改动来支持DRAM中持久性数据对象的缓存是非常重要的。Stealth-Persist的镜像操作发生在内存控制器上，不需要对应用程序或持久性编程库做任何改变</p>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>本文提出了一种在主存储器中同时采用DRAM和NVM的混合存储器架构中的数据迁移方案。所提出方案的主要目的是减少DRAM和NVM存储器之间无益数据迁移的数量，以提高性能和功效。</p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>与Clock-DWF不同的是，每次写入命中都会导致将页面移动到DRAM主存储器，在所提出的方案中，NVM LRU中的每次命中都将被与LRU算法类似地处理，但有一个区别。如果某个页面停留在LRU顶部页面的时间超过阈值访问次数，则该页面将被视为热页面，并将被移至DRAM。由于在两个存储器之间移动数据页的成本很高，因此使用此阈值将防止在以前的研究（例如Clock-DWF）中很可能发生的无益迁移。</p>
+<p> CLOCK-DWF 使用两种时钟算法，每个内存模块使用一种时钟算法。当发生页面错误时，如果导致页面错误的请求是写入，则该页面将被移动到DRAM，否则它将被移动到NVM。时钟算法的修改使 CLOCK-DWF 能够找到活跃的并且写入为主的数据页并将它们移动到 DRAM 内存。如果针对驻留在 NVM 存储器中的数据页的写入请求到达，则该数据页将被移动到 DRAM。在两个存储器之间迁移页面需要对两个存储器进行多次访问。但CLOCK-DWF中没有考虑这种影响，这将导致其模型不准确</p>
+<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>使用两个最近最少使用（LRU）队列（一个用于DRAM，一个用于NVM），并优化NVM的LRU队列，以防止无益的迁移到DRAM。LRU队列中的优化是最小的，因此所提出的方案将具有与未修改的LRU几乎相同的命中率。</p>
+<h3 id="1）建立性能能量模型"><a href="#1）建立性能能量模型" class="headerlink" title="1）建立性能能量模型"></a>1）建立性能能量模型</h3><p>18年华科的对象级迁移的性能能量建模就和这个差不多。但是这里的性能能量建模只适用于说明之前方案的缺陷，和后面方案设计没太大关系。</p>
+<p>性能模型取决于DRAM和NVM的延迟、驱逐的粒度以及存储器之间迁移的延迟。为了衡量性能，我们使用平均内存访问时间(AMAT)。迁移的开销将在对内存的所有访问之间按比例分配。公式1显示了AMAT 的公式。表I中提供了参数的描述。在该等式中，前两项计算DRAM或NVM中所有命中访问的 AMAT。第三项考虑页面错误。由于将数据页从磁盘传输到内存将通过DMA 完成，因此将数据块写入内存的延迟将与从磁盘读取下一个数据块的延迟重叠。因此，操作系统只看到磁盘延迟，在这个术语中我们只考虑磁盘延迟。最后两项计算两个存储器之间的迁移成本。当发生迁移时，将从一个内存读取数据页并将其写入另一个内存。由于数据页的粒度比对内存的实际访问要大得多（通常为4到16B），因此我们使用PageFactor，它是一个系数，可将数据页的移动转换为要被访问的内存数量。</p>
+<div class="note info no-icon">PageFactor这个转换多余了吧，按页迁移也没法只移动这几B的，属于附带消耗。这位伙计定义的表格里的能耗什么的怎么收集到的，还有那些概率</div> 
+
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b5b2cad055864692a88d2b9ecbb5485d.png"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/add1e59ff2e8473f8454f2bf31f34f89.png"></p>
+<p>无论到达存储器的请求数量如何，都会消耗静态功耗，而每个发送到存储器的请求都会消耗动态功耗。我们的电源模型考虑了两个内存之间的迁移以及将页面从磁盘移动到任一内存模块以及服务请求的静态和动态电源。每次访问内存时都会计算动态功耗。这将导致功耗模型独立于应用程序运行时和内存大小。因此，我们引入每个请求的平均功率(APPR)作为测量功率的指标，如公式2所示。与性能模型类似，前两项计算对存储器的所有命中访问的功率。第三项和第四项考虑将数据页从磁盘移动到内存模块的写入功率。最后两项考虑了两个存储器之间迁移的功率效应。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/78719c197cd24a28942ca867cf81a3a1.png"></p>
+<p>由于静态功耗与请求无关，因此我们引入了一个名为 AvgStaticPower 的新参数，该参数按比例分配给定时间间隔内到达内存的所有请求之间的静态功耗。对所有请求按比例分配静态功耗的原因是，从操作系统的角度来看，主内存会消耗功率（包括静态和动态）来服务请求，并且这两个功耗来源都应被视为服务成本的请求。对于特定工作负载，AvgStaticPower根据公式3计算。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1103cf68e870402d91ee88f71097d61c.png"></p>
+<h3 id="2）迁移方案"><a href="#2）迁移方案" class="headerlink" title="2）迁移方案"></a>2）迁移方案</h3><p>为了找到在迁移时能够改善功耗和性能的数据页（相对于迁移成本），所提出的方案存储了一些关于数据页的附加信息，例如NVM LRU队列中的读和写计数器。请注意，此附加信息不会干扰LRU，并且不需要了解此内务信息。对于NVM队列中的每个数据页，将存储两个计数器，用于计数从数据页进入队列时起对相应数据页的读写访问的次数。</p>
+<p>图 3 显示了所提出的由两个 LRU 队列组成的数据迁移方案的架构。虚线表示所提出的技术执行的操作，实线表示传统的 LRU 管理算法。暗数据页访问更频繁，被视为热数据页。与 CLOCK DWF 将读取请求发出的页面错误放置在 NVM 上相反，所提出的方案将所有页面从磁盘移动到 DRAM 区域。这是因为移动到 NVM 或 DRAM 将导致 NVM 中的页面写入，因为 DRAM 始终已满，并且将数据页面移动到 DRAM 会向 NVM 发出驱逐。因此，就 NVM 写入而言，迁移到 NVM 或 DRAM 的成本是相同的。与旧数据页相比，新访问的数据页具有更高的访问概率，并且将此新页移动到 DRAM 将导致 DRAM 命中率而不是 NVM 命中率的增加。这将有助于提高性能和电源效率，因为 DRAM 在动态功耗和延迟方面具有优越性。存储内务信息的开销并不大，对于 4KB 数据页来说约为 0.04%。然而，在 NVM 中保留所有页面的计数器有一些缺点。首先，它需要一个排序方案，以便识别冷但会在很长一段时间内访问一次的数据页。这些数据页将在 NVM 中驻留足够长的时间以具有较高的计数器值，因此将被移动到 DRAM，在那里它们无法与热数据页竞争，并且将返回到 NVM，这使得它们迁移到 DRAM 没有任何好处。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/26073db180a64a9c888e27b6f08665c5.png"></p>
+<p>算法 1 显示了在收到请求的情况下所提出方案的流程。由于 DRAM 包含最热的数据页，因此所提出的方案首先搜索 DRAM，如果没有找到，则转到 NVM。在 DRAM 中查找数据页将导致正常的 LRU 内务处理。否则，NVM 中的额外内务信息将根据请求类型进行更新。读取和写入计数器将分别存储在 NVM 中的 readperc 和 writeperc 顶部数据页。因此，在命中的情况下，从顶部数据页掉落的数据页的读和写计数器将被清除。第 10 行到第 22 行初始化相应数据页的计数器。如果 NVM 中数据页的计数器值超过读取阈值或写入阈值（取决于请求类型），则会将其迁移到 DRAM。将新数据页插入内存和逐出策略与 LRU 相比没有变化，因此，为了简洁起见，算法中省略了这些细节。读取阈值和写入阈值的值决定了我们计划如何积极地阻止有用概率较低的迁移。它与 DRAM 和 NVM 之间的迁移成本密切相关，而迁移成本又与所采用的 NVM 的性能和功耗特性有关。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c39c07a13b894e9ba202c0ea626bdc5b.png"></p>
+<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><p>发现了先前研究的缺点，并提出了一种新颖的混合内存数据迁移方案。在LRU上加了一些小改动。</p>
+<h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><p>在过去几年提供的各种NVM中，相变存储器(PCM)、自旋转移扭矩(STT-RAM) 和电阻RAM(PRAM)被认为是主存储器中最有前途的NVM[2] 。</p>
+<p>本文中我们使用COTSon全系统模拟器[13]。</p>
+<p>CLOCK-DWF 维护 DRAM 和 NVM 的两种时钟算法。 NVM中的时钟算法与传统的时钟算法有一点不同。如果对 NVM 中的数据页进行写访问，则相应的数据页将被移动到 DRAM。因此，NVM 不会响应任何写访问。该方法的主要目的是减少 NVM 中的写入次数。虽然这会阻止任何写入到达 NVM，但 NVM 中数据页的每次写入访问都会导致两个存储器之间的数据页迁移。然而，DRAM 的时钟算法有所不同，它尝试将写主导的数据页保留在 DRAM 内存中，并逐出主要读主导的数据页。这是因为与 NVM中的写入请求相比，只读页面具有更好的性能与功耗权衡。发生页面错误时，如果请求是读，则相应的数据页将被移动到NVM，如果是写，则数据页将被移动到DRAM。</p>
 
                 
             </div>
@@ -547,7 +562,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/05/01/Stealth-Persist-Architectural-Support-for-Persistent-Applications-in-Hybrid-Memory-Systems/">http://ytirus.github.io/2023/05/01/Stealth-Persist-Architectural-Support-for-Persistent-Applications-in-Hybrid-Memory-Systems/</a>
+                    <a href="http://ytirus.github.io/2023/10/05/An-Operating-System-Level-Data-Migration-Scheme/">http://ytirus.github.io/2023/10/05/An-Operating-System-Level-Data-Migration-Scheme/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -585,12 +600,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
+                                <a href="/tags/B/">
+                                    <span class="chip bg-color">B</span>
                                 </a>
                             
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
+                                <a href="/tags/Hybrid-Memory-Systems/">
+                                    <span class="chip bg-color">Hybrid Memory Systems</span>
                                 </a>
                             
                         </div>
@@ -634,28 +649,29 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/">
+                <a href="/2023/10/05/An-Operating-System-Level-Data-Migration-Scheme/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/76369fa4b49c432fa9e498567df6adf4.png" class="responsive-img" alt="Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/26073db180a64a9c888e27b6f08665c5.png" class="responsive-img" alt="An Operating System Level Data Migration Scheme">
                         
-                        <span class="card-title">Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems</span>
+                        <span class="card-title">An Operating System Level Data Migration Scheme</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            提出了一种称为Rainbow的新的内存管理机制来弥合超级页面和轻量级页面迁移之间的根本冲突
+                            对性能和能耗进行建模，指导页面迁移。
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-05-02
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-05
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -668,15 +684,16 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/B/">
+                        <span class="chip bg-color">B</span>
                     </a>
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/Hybrid-Memory-Systems/">
+                        <span class="chip bg-color">Hybrid Memory Systems</span>
                     </a>
                     
                 </div>
@@ -690,23 +707,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/05/01/Object-Level-Memory-Allocation-and-Migration-in-Hybrid-Memory-Systems/">
+                <a href="/2023/10/04/Characterizing-and-Optimizing-Hybrid-DRAMPM-Main-Memory-System-with-Application-Awareness/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1560f56c3c8c4c2bac8a3b2f22c9ece4.png" class="responsive-img" alt="Object-Level Memory Allocation and Migration in Hybrid Memory Systems">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b4675b4852e44b7cba5a23362663c62f.png" class="responsive-img" alt="Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness">
                         
-                        <span class="card-title">Object-Level Memory Allocation and Migration in Hybrid Memory Systems</span>
+                        <span class="card-title">Characterizing and Optimizing Hybrid DRAMPM Main Memory System with Application Awareness</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            提出混合内存系统编程接口, 对象粒度迁移, 减少迁移开销,减少能源。
+                            从并发应用的角度讨论混合内存的使用，可以感知程序的带宽敏感和延迟敏感
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-05-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-04
                             </span>
                         <span class="publish-author">
                             
@@ -723,16 +740,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/B/">
+                        <span class="chip bg-color">B</span>
                     </a>
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
-                    <a href="/tags/%E7%BB%86%E7%B2%92%E5%BA%A6/">
-                        <span class="chip bg-color">细粒度</span>
+                    <a href="/tags/Hybrid-Memory-System/">
+                        <span class="chip bg-color">Hybrid Memory System</span>
                     </a>
                     
                 </div>

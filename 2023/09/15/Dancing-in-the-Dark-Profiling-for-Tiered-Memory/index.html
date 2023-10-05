@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -437,12 +437,16 @@
                     
                     <div class="article-tag">
                         
+                            <a href="/tags/B/">
+                                <span class="chip bg-color">B</span>
+                            </a>
+                        
                             <a href="/tags/Hybrid-Memory-Systems/">
                                 <span class="chip bg-color">Hybrid Memory Systems</span>
                             </a>
                         
-                            <a href="/tags/B/">
-                                <span class="chip bg-color">B</span>
+                            <a href="/tags/%E5%86%85%E5%AD%98%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7/">
+                                <span class="chip bg-color">内存监控工具</span>
                             </a>
                         
                     </div>
@@ -475,7 +479,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2k
+                    1.8k
                 </div>
                 
 
@@ -514,52 +518,55 @@
 </div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Jinyoung Choi, University of California, Riverside</li>
-<li>Sergey Blagodurov, Advanced Micro Devices, Inc.</li>
-<li>Hung-Wei Tseng, University of California, Riverside</li>
+<li>Jinyoung Choi, 加州大学河滨分校（UC Riverside）</li>
+<li>Sergey Blagodurov, 美国超威半导体公司（AMD）</li>
+<li>Hung-Wei Tseng, UC Riverside</li>
 </ul>
-<h2 id="2-Introduction-amp-Background"><a href="#2-Introduction-amp-Background" class="headerlink" title="2. Introduction &amp; Background"></a>2. Introduction &amp; Background</h2><p>多种内存技术协同-&gt;更多内存、更少延迟、更大带宽<br>tiered memory architectures （TMAs）<br>缓存会给更多设计给硬件，平面寻址会有更多软件策略<br>对延迟的优化，可以通过命中更多的热页面，常用的优化内存延迟的方式。<br>但是软件优化通过TLB条目和内存页：</p>
+<h2 id="2-Introduction-amp-Background"><a href="#2-Introduction-amp-Background" class="headerlink" title="2. Introduction &amp; Background"></a>2. Introduction &amp; Background</h2><ul>
+<li>究竟如何向软件公开每种内存类型是一个悬而未决的问题</li>
+<li>多种内存技术协同-&gt;更多内存、更少延迟、更大带宽</li>
+<li>tiered memory architectures （TMAs）</li>
+<li>缓存会给更多设计给硬件，平面寻址会有更多软件策略</li>
+</ul>
+<p><strong>软件监控方法，通过TLB条目和内存页的现状：</strong></p>
 <ol>
 <li>页面访问不可见只有缺页时才知道，识别被多次访问的代码段很难。</li>
 <li>硬件监控的多样性，是由供应商提供，没有标准。</li>
-<li>创建一个新的分析工具，组合硬件监控器的信息做出热度排名策略。</li>
+<li>创建一个新的分析工具，组合硬件监控器的信息，抽象出一些二级指标，再通过一些策略，做出页面热度排名之类的。</li>
 </ol>
-<p>与硬件控制相比，软件控制的4个优点：</p>
+<p><strong>与硬件缓存相比，软件控制的分层内存4个优点：</strong></p>
 <ol>
-<li>首先，分层内存允许直接从数据所在的层进行就地内存访问。使用硬件缓存时，请求的内存块将从第 2 层可寻址内存引入第 1 层缓存，从而导致流量增加。而且缺页导致的迁移开销大。<div class="note primary">所以有的数据可能缓存更合适，有的就平面寻址。PM的延迟和带宽的落后是什么造成的，XCL呢？？？为什么CPU那里是三层缓存，那么DRAM的缓存多少合适？</div> </li>
-<li>其次，在TMA中，内存页面可以在任一层中找到；缓存会在内存中创建重复的、可能不一致的页面副本，并且需要机制来保持数据一致。</li>
+<li>首先，分层内存允许直接从数据所在的层进行就地内存访问。使用硬件缓存时，请求的内存块将从第2层可寻址内存引入第1层缓存，从而导致流量增加。而且缺页导致的迁移开销大。</li>
+<li>其次，在TMA中，内存页面可以在任一层中找到；缓存会在内存中创建重复的、可能不一致的页面副本，并且需要机制来保持数据一致。RDMA做缓存带宽效率会比较低[2][10]</li>
 <li>第三，分层内存解决方案允许缓存策略微调（通过工作负载混合、服务级别协议等）以适应高层策略决策并消除过度迁移。（不懂）</li>
-<li>第四，由于与根深蒂固的NUMA架构相似，分层内存可以利用NUMA和异构内存管理（HMM）[5]系统基础设施。 Linux 社区中关于如何将NVM暴露给操作系统一直存在争论。当前的提案围绕将NVM配置为无CPU的NUMA节点以及使用AutoNUMA或其他现有的管理NUMA方法[11]、[12]。这里再次强调的是内存如何分配和移动，而不是如何分析热度（例如，AutoNUMA 中的定期取消映射和页错误处理如何产生开销 [13]）。</li>
+<li>第四，由于与根深蒂固的NUMA架构相似，分层内存可以利用NUMA和异构内存管理（HMM）[5]系统基础设施。 Linux社区中关于如何将NVM暴露给操作系统一直存在争论。当前的提案围绕将NVM配置为无CPU的NUMA节点以及使用AutoNUMA或其他现有的管理NUMA方法[11]、[12]管理TMA平衡。这里再次强调的是内存如何分配和移动，而不是如何分析热度（例如，AutoNUMA 中的定期取消映射和页错误处理如何产生开销 [13]）。我们的工作重点是比较各种监控方法，以最小的开销获得最大的热度可见性，这对 NUMA 和分层内存都有好处。</li>
 </ol>
-<p>内存分析方法：</p>
+<p><strong>内存分析方法：</strong></p>
 <ol>
 <li><span class="label info">页表项PTE位跟踪。PTE包括已访问A位和脏D位。操作系统可以清除这些PTE位，并且硬件页表遍历器PTW将设置它们。</span>PTW在TLB未命中时设置A位。A位不区分在分析间隔期间访问一次的页面和多次访问的页面。更频繁的A位检查可以提高分析的信息量，但也会增加开销。</li>
-<li><span class="label info">TBP能够从加载或存储指令收集地址跟踪</span>。在AMD系统上，基于指令的采样IBS[18]、[19] 使CPU指令能够在穿过管道时被标记，允许在指令执行时收集数据，并在指令退出时引发中断。</li>
-<li>轻量级分析 (LWP) [20] 是 AMD64 系列 15h AMD 处理器的硬件扩展，与 IBS 的不同之处在于 LWP 在生成中断之前收集大量数据。</li>
+<li><span class="label info">TBP能够从加载或存储指令收集地址跟踪</span>。在AMD系统上，基于指令的采样IBS[18]、[19]使CPU指令能够在穿过管道时被标记，允许在指令执行时收集数据，并在指令退出时引发中断。</li>
+<li>轻量级分析（LWP） [20] 是AMD64系列15h AMD处理器的硬件扩展，与IBS的不同之处在于LWP在生成中断之前收集大量数据。</li>
 <li>英特尔的处理器基于事件的采样（PEBS）是一种基于跟踪的功能，类似于IBS/LWP，其中处理器在指定的内存区域中记录标记的样本。PEBS样本可以根据许多事件（例如缓存未命中）来选择，每个PEBS记录包含<span class="label info">时间戳、线性地址和物理地址</span>等[21]</li>
-<li>硬件性能计数器HWPC是大多数现代CPU和GPU上可用的特殊硬件寄存器，作为性能监控单元PMU的一部分。通过事件复用，perf 和 pfmon 等软件工具可以监控比物理寄存器更多的事件。HWPC 是粗粒度的（所有进程页面的一个指标），并且不能用于获取内存访问跟踪 [25]</li>
+<li>硬件性能计数器HWPC是大多数现代CPU和GPU上可用的特殊硬件寄存器，作为性能监控单元PMU的一部分。通过事件复用，perf和pfmon等软件工具可以监控比物理寄存器更多的事件。HWPC是粗粒度的（所有进程页面的一个指标），并且不能用于获取内存访问跟踪 [25]</li>
 <li>BadgerTrap[6]拦截TLB Miss，并且对TLB做相应修改，用采样页预估总体未命中次数。</li>
 </ol>
 <h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>这篇文章评估了很多内存监视器，提出一种统一的方法，为分层内存提供详细、低开销的可见性。</p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>表 I</p>
+<p>(1) 提出了一种低开销、高精度的分析机制，可以缓解TMA中的性能问题。<br>(2) 本文产生的见解可以指导TMA的高效内存管理策略。<br>(3) 本文使用所提出的分析机制来实现和评估内存管理策略，以在不进行任何硬件修改的情况下实现加速。<br>(4) 介绍了一种分析工具作为可升级的解决方案，以提高分层内存系统的性能。</p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b3e4837a025a42dbaec15d17e0663308.png"></p>
 <h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>figure1系统的架构图，说明了每个部分的功能，其实就是将以上提到的组合了一下，取长补短。TMP 使用多种互补的监测方法，最大限度地提高信息量并最大限度地减少开销（表 I）</p>
-<p>实施方案，非常细节可以对着代码看。</p>
-<div class="note primary">cache是相当于备份了的数据，所以这里统计热度和他没有关系，但是，被cache备份的数据有多大呢？相反可以放在慢速吧。</div> 
-
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d1e3a9c929af46c796a7d2a5061b421c.png"><br>实施方案，非常细节可以对着代码看。</p>
 <p>TMP在分层内存中的使用还是识别页面冷热，并且排序，然后确定哪些页面是可以迁移的，迁移时虚拟地址不变，页面物理地移动（这一段介绍也很细节，可以对着代码看）作者figure6的分析表明，是想要去提高第一层的命中率的。</p>
-<div class="notedanger no-icon">Figure 2的I-TLB Miss，D-TLB Miss是虚拟页到物理页转化时的miss，这个时候cache miss应该已经发生了，这两种情况的共同点就是会去DRAM取页面。但是这和作者的策略将冷热页面放在不同内存层的关系有多大呢？也就是在慢速和快速内存的那一点点区别嘛。前面提到“对延迟的优化，可以通过命中更多的热页面，常用的优化内存延迟的方式。”（在讨论尾延迟时是因为整个差距太大了其他操作us？一次尾延迟5s）  另一方面，有什么方法可以减少这个miss吗？（以前考虑的大页面算一种，但是效果不好）
-</div>
-
-<div class="note primary">以前的迁移都是根据热度来的，但是同上，既然这种缓存不命中对内存来说不是内存策略可以改变的，而且访问第二级内存和访问第一级内存并不是慢很多个数量级。那么为什么不从其他角度考虑，比如根据容量需求，但是容量需求的背后应该是延迟敏感带宽敏感的数据或者读写延迟敏感的部分数据，更应该被放在那些地方！！！
-但是站在其他论文角度，层级结构就是为了更好的利用局部性，但是PM和DRAM和传统的层级并不一样。从我自己采样的热力图来看就是会存在局部性很差的情况；从YCSB设置的访问模式来看，这样的规定也会受损。他们本质的区别还是带宽、读写延迟、持久性、能耗！但是造成延迟不同、带宽不同的本质原因又是什么?
-</div> 
-
-<div class="notedanger no-icon">迁移会涉及TLB shootdown这个开销大？</div>
+<div class="note danger no-icon"> 迁移会涉及TLB shootdown这个开销大？</div>
 
 
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>感觉这方面还是缺失一些。</p>
-<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><p>但是整个组合会变得复杂，到底在收集信息时内核负担会不会变大反而效率更低。文章说：保持工作负载开销低于应用程序开销的 5%。<br>有的对硬件的采样是不允许的，那么这个可能有的地方收集不了数据。</p>
-<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
+<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>选用了云工作负载和HPC工作负载，但是这位怎么只给了表格没有引用emmm，而且云工作负载看起来像自己取的名字。</p>
+<h2 id="7-缺陷和wuwu改进思路"><a href="#7-缺陷和wuwu改进思路" class="headerlink" title="7. 缺陷和wuwu改进思路"></a>7. 缺陷和wuwu改进思路</h2><p>但是整个组合会变得复杂，到底在收集信息时内核负担会不会变大反而效率更低。文章说：保持工作负载开销低于应用程序开销的 5%。</p>
+<p>有的对硬件的采样是不允许的，那么这个可能有的地方收集不了数据。</p>
+<p>有的采样率还是得手动调。</p>
+<h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><p>数据密集型服务器：内存中键值存储、数据库、整合在各个云服务器上的虚拟机以及需要大量内存的高性能计算HPC应用程序。</p>
+<p>对延迟的优化，可以通过命中更多的热页面，常用的优化内存延迟的方式。</p>
+<p>内存技术及其相关字节可寻址接口（例如 NVDIMM P、CXL、3D XPoint DIMM、CCIX和Gen-Z）具有不同的延迟、带宽、功耗、持久性和每GB成本特征，成功的分层内存架构必须依赖系统来最小化与内存内容访问和每个内存请求的地址转换相关的延迟。</p>
+
                 
             </div>
             <hr/>
@@ -623,12 +630,16 @@
                     
                         <div class="article-tag">
                             
+                                <a href="/tags/B/">
+                                    <span class="chip bg-color">B</span>
+                                </a>
+                            
                                 <a href="/tags/Hybrid-Memory-Systems/">
                                     <span class="chip bg-color">Hybrid Memory Systems</span>
                                 </a>
                             
-                                <a href="/tags/B/">
-                                    <span class="chip bg-color">B</span>
+                                <a href="/tags/%E5%86%85%E5%AD%98%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7/">
+                                    <span class="chip bg-color">内存监控工具</span>
                                 </a>
                             
                         </div>
@@ -919,7 +930,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">47.1k</span>&nbsp;字
+                class="white-color">49.6k</span>&nbsp;字
             
             
             
