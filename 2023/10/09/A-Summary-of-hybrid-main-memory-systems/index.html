@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Coalescing for Multi-Grained Page Migration, Yi&#39;s Blog">
+    <meta name="keywords" content="A Summary of hybrid main memory systems, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Coalescing for Multi-Grained Page Migration | Yi&#39;s Blog</title>
+    <title>A Summary of hybrid main memory systems | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '';
+        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://pic3.zhimg.com/80/v2-3f6e2da315fb39126b6ba5e1779e2afe_1440w.webp')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Coalescing for Multi-Grained Page Migration</h1> -->
+                    <!-- <h1 class="description center-align post-title">A Summary of hybrid main memory systems</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
-                            </a>
-                        
-                            <a href="/tags/O/">
-                                <span class="chip bg-color">O</span>
+                            <a href="/tags/Review/">
+                                <span class="chip bg-color">Review</span>
                             </a>
                         
                     </div>
@@ -466,7 +462,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-05-20
+                    2023-10-09
                 </div>
                 
 
@@ -475,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    176
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    7 分
                 </div>
                 
 
@@ -505,20 +501,58 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
+                <p>确实系统主要还是提供服务不是去适应硬件的，那么如果optane停产，确实CXL的异构是值得研究值得的吧~但是这个延迟数据又说不过去了，emmmmmm</p>
+<h2 id="1-异构内存设备"><a href="#1-异构内存设备" class="headerlink" title="1. 异构内存设备"></a>1. 异构内存设备</h2><p>随着字节可寻址的非易失性设备的出现以及商业化，目前面临的内存价格高昂，以及一些关键的应用如图计算、高性能计算、内存数据库等需要大内存容量，这些问题可以得以缓解。但是这具体还是取决于异构内存的架构设计。</p>
+<p>现在做的话需要尽量独立于Optane的特性去做，那么确实有必要收集一下这些的共性。</p>
+<p>下面收集了目前用于做异构内存的设备以及他们的特点：<br>缩写 名称 访问方式<br>RDMA 通过内存总线和处理器直接相连 DDR4<br>PCM 变相存储器 通过内存总线和处理器直接相连<br>ReRAM 电阻式存储器 通过内存总线和处理器直接相连<br>Optane PM(3D-XPoint)  通过内存总线和处理器直接相连 DDR-T</p>
+<p>DCPMM的特性和指导原则是否适用于其他PMEM技术?DCPMM的一些特性只与它的内部结构和存储技术有关。因此，近期DCPMM研究得出的指南并不广泛适用于其他类型的PMEM。遵循这些指导方针可能会得到一个高度专门化的系统，该系统可以很好地与DCPMM一起工作，但与其他PMEM不兼容。为了防止这种过度专业化，我们认为系统设计者应该正确地理解这些特性的根本原因，以及它们如何适用于未来不同类别的PMEM。</p>
+<p>不对称的</p>
+<h2 id="2-分层架构设计"><a href="#2-分层架构设计" class="headerlink" title="2. 分层架构设计"></a>2. 分层架构设计</h2><h3 id="2-1基于LRU的异构内存系统设计"><a href="#2-1基于LRU的异构内存系统设计" class="headerlink" title="2.1基于LRU的异构内存系统设计"></a>2.1基于LRU的异构内存系统设计</h3><p>CLOCK-DWF 维护 DRAM 和 NVM 的两种时钟算法。在这之前还有CLOCK-DNF？ 然后……虽然都遵循了内核最初的设计，但是他们各有创新性的思考，侧重点不同比如读写次数、耗能、吞吐量这些都有显著提升。大家都遵循这种数据结构很大程度是因为不需要复杂的热度监控，而且大部分的工作持续证明这样简单的架构可以获得很大的性能提升，也是为数不多被Linux社区接受的（并入分支）。</p>
+<h2 id="3-缓存架构设计"><a href="#3-缓存架构设计" class="headerlink" title="3. 缓存架构设计"></a>3. 缓存架构设计</h2><h2 id="4-NUMA架构下的异构内存"><a href="#4-NUMA架构下的异构内存" class="headerlink" title="4. NUMA架构下的异构内存"></a>4. NUMA架构下的异构内存</h2><p>随着cpu处理器的增加，内存总线的争用变得剧烈，NUMA架构受到了大家的青睐。但是NUMA架构的实现是基于一定的硬件和软件策略的。</p>
+<h2 id="5-针对特定程序的设计"><a href="#5-针对特定程序的设计" class="headerlink" title="5. 针对特定程序的设计"></a>5. 针对特定程序的设计</h2><h3 id="5-1-图"><a href="#5-1-图" class="headerlink" title="5.1 图"></a>5.1 图</h3><p> 21B也有一篇，华科也有一篇，不一样</p>
+<h3 id="5-2-并行并发"><a href="#5-2-并行并发" class="headerlink" title="5.2 并行并发"></a>5.2 并行并发</h3><h3 id="5-3-数据仓库"><a href="#5-3-数据仓库" class="headerlink" title="5.3 数据仓库"></a>5.3 数据仓库</h3><h3 id="5-4-大规模的统计"><a href="#5-4-大规模的统计" class="headerlink" title="5.4 大规模的统计"></a>5.4 大规模的统计</h3><p> 追溯到比较早的异构内存的研究，还没有可字节寻址的非易失存储设备的时候，异构内存通常在研究片上内存和主存之间的数据放置等。虽然他不是今天这个方向的主角（更多的异构内存是PCM、PM等硬件来做的），但是仍然有许多可以值得借鉴的工作。</p>
+<p>片上和片外内存主要问题是————允许所有应用程序共享LLC（末级缓存）和DRAM组，从而在许多情况下导致严重的<strong>争用</strong>。这通常会导致程序间扰动、资源抖动、内存/缓存利用率不佳，从而导致性能下降。</p>
+<p>大部分策略使用页面着色的方法指定DRAM可以对应放置的缓存，只是具体对应放置策略各有不同。</p>
+<p>几种解决方案尝试通过将主内存（DRAM 组）[10,16,17,29] 或缓存 [15,24,30,31,32] 水平分区为独占片来隔离具有不同内存资源需求的应用程序。比如[10]通过扩展操作系统的物理帧分配算法让映射到同一DRAM Bank的物理帧可以专门分配给单个线程。</p>
+<p>这些方法避免了对内存占用较小的程序的干扰，但可能会通过有效减少容量来影响较大工作负载的性能。</p>
+<p>以[1]为例，商品生产并行机中使用的大多数现有内存和缓存管理机制都采用通用地址交错或调度/分区方法，这些方法忽视了当今异构环境中不同的内存利用率特征和不同的资源需求。这通常会导致程序间扰动、资源抖动、内存/缓存利用率不佳，从而导致性能下降</p>
+<p>结合工作负载特点，并且将常用的2种着色位分为3类：bank-only、仅高速缓存位（C位）和重叠位（O位在图 1 中同时索引bank和高速缓存）。</p>
+<p>23年关于片上和片外内存的研究主要关于堆叠式DRAM（stacked DRAM and off-chip DRAM）</p>
+<h2 id="6-页面粒度与TLB"><a href="#6-页面粒度与TLB" class="headerlink" title="6. 页面粒度与TLB"></a>6. 页面粒度与TLB</h2><h2 id="7-持久性"><a href="#7-持久性" class="headerlink" title="7. 持久性"></a>7. 持久性</h2><h2 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h2><h3 id="7-1-异构内存架构"><a href="#7-1-异构内存架构" class="headerlink" title="7.1 异构内存架构"></a>7.1 异构内存架构</h3><h3 id="7-2-异构内存分配"><a href="#7-2-异构内存分配" class="headerlink" title="7.2 异构内存分配"></a>7.2 异构内存分配</h3><p> API之类的？</p>
+<h3 id="7-3-页面相关属性监控"><a href="#7-3-页面相关属性监控" class="headerlink" title="7.3 页面相关属性监控"></a>7.3 页面相关属性监控</h3><p> 读、写、热度</p>
+<h3 id="7-4-异构内存数据迁移"><a href="#7-4-异构内存数据迁移" class="headerlink" title="7.4 异构内存数据迁移"></a>7.4 异构内存数据迁移</h3><h3 id="7-5-数据回收-卸载"><a href="#7-5-数据回收-卸载" class="headerlink" title="7.5 数据回收(卸载)"></a>7.5 数据回收(卸载)</h3><p> mot之类的，watermake的修改</p>
+<h2 id="9-CXL"><a href="#9-CXL" class="headerlink" title="9. CXL"></a>9. CXL</h2><h2 id="10-引用"><a href="#10-引用" class="headerlink" title="10. 引用"></a>10. 引用</h2><p>:tear: “很不规范的引用”<br>[1] Going Vertical in Memory Management: Handling Multiplicity by Multi-policy,ISCA,2014</p>
+<p>（其实还有CXL）<br>每个标签结束后必须空一行:</p>
+<div class="note info">这里是 info 标签样式</div> 
 
-<ul>
-<li>文章来自IEEE International Symposium on High-Performance Computer Architecture, (HPCA), 2022</li>
-<li>Coalescing for Multi-Grained Page Migration</li>
-</ul>
-</div> 
+<div class="note info no-icon">这里是不带符号的 info 标签样式</div> 
 
-<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>华中科技大学</li>
-</ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>观察结果1，一些热页在虚拟地址和物理地址上都有连续性。</p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>Tamp使用DRAM作为数据缓冲器来缓存NVM中多种尺寸的热页(所谓的多粒度页)。相应地使用分裂的超级页TLB和多粒度TLB来分别加速NVM和DRAM的地址转换。</p>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>每一个idea都有对应的问题要解决，最后嵌套太多了，所以投的刊物可能会不好。</p>
+<div class="note primary">这里是 primary 标签样式</div> 
+
+<div class="note primary no-icon">这里是不带符号的 primary 标签样式</div> 
+
+<div class="note warning">这里是 warning 标签样式</div> 
+
+<div class="note warning no-icon">这里是不带符号的 warning 标签样式</div> 
+
+<div class="note danger">这里是 danger 标签样式</div> 
+
+<div class="note danger no-icon">这里是不带符号的 danger 标签样式</div>
+
+<p>然后是行内标签，比加粗更能显示重点，Fulid移植的。<br><span class="label primary">Label primary</span></p>
+<p><span class="label default">Label default</span></p>
+<p><span class="label info">Label info</span></p>
+<p><span class="label success">Label success</span></p>
+<p><span class="label warning">Label warning</span></p>
+<p><span class="label danger">Label danger</span></p>
+<p><img src="https://images.weserv.nl/?url="></p>
+
+在这之间写LaTex或者其他造成的符号转义冲突之类的报错
+
+
+<p>会不会这种策略是跨整个子系统的，既有线程进程调度，又有迁移热度这些，就是把以前的策略都调一调？</p>
+<p>现代主存储器系统利用空间局部性来提供高带宽，同时最小化存储器设备功耗和成本。利用空间局部性主要通过四种方式提高带宽和效率：（1）DRAM地址可以分为行地址和列地址，分别发送到存储设备以节省地址引脚； (2)访问粒度可以很大，以分摊控制和冗余开销； (3) 启用页面模式，其中，整个内存行都保存在行缓冲区中，因此具有相同行地址的后续请求只需发送列地址； (4)因为不访问主数据阵列，所以这样的行缓冲器命中请求消耗显着更少的能量并且具有更低的延迟。（这好像都是硬件设置啊啊啊啊啊啊啊啊~）</p>
+<p>许多应用程序呈现具有高空间局部性的存储器访问模式，并受益于页面模式访问所实现的效率和性能。然而，随着芯片上内核数量的增加，内存访问流的空间局部性降低，因为独立线程的访问流可能在内存控制器处交错[2, 23]。根据应用程序组合，交错流的空间局部性可能会进一步下降，因为某些应用程序比其他应用程序更具侵入性。例如，SPEC CPU2006基准测试mcf是内存密集型的，但空间局部性非常差，因此严重干扰其他应用程序的内存访问。</p>
 
                 
             </div>
@@ -545,7 +579,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/05/20/Coalescing-for-Multi-Grained-Page-Migration/">http://ytirus.github.io/2023/05/20/Coalescing-for-Multi-Grained-Page-Migration/</a>
+                    <a href="http://ytirus.github.io/2023/10/09/A-Summary-of-hybrid-main-memory-systems/">http://ytirus.github.io/2023/10/09/A-Summary-of-hybrid-main-memory-systems/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -583,12 +617,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
-                                </a>
-                            
-                                <a href="/tags/O/">
-                                    <span class="chip bg-color">O</span>
+                                <a href="/tags/Review/">
+                                    <span class="chip bg-color">Review</span>
                                 </a>
                             
                         </div>
@@ -636,23 +666,23 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/08/17/P2Cache-An-Application-Directed-Page-Cache-for-Improving-Performance-of-Data-Intensive-Applications/">
+                <a href="/2023/10/12/An-empirical-guide-to-the-behavior-and-use-of-scalable-persistent-memory/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1392a78bce7340b886bd89b864b1e283.png" class="responsive-img" alt="P2Cache An Application-Directed Page Cache for Improving Performance of Data-Intensive Applications">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/adac8e025a634145a7ffef40338f51f9.png" class="responsive-img" alt="An empirical guide to the behavior and use of scalable persistent memory">
                         
-                        <span class="card-title">P2Cache An Application-Directed Page Cache for Improving Performance of Data-Intensive Applications</span>
+                        <span class="card-title">An empirical guide to the behavior and use of scalable persistent memory</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            发现一些特殊的I/O现有的缓存策略无法适用。设计应用程序导向的页面缓存，用于提高数据密集型应用程序的性能。
+                            探究了Optane的其他浅在特性
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-17
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-12
                         </span>
                         <span class="publish-author">
                             
@@ -669,12 +699,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/O/">
-                        <span class="chip bg-color">O</span>
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
                     </a>
                     
-                    <a href="/tags/Cache/">
-                        <span class="chip bg-color">Cache</span>
+                    <a href="/tags/Optane-NVDIMMs/">
+                        <span class="chip bg-color">Optane NVDIMMs</span>
                     </a>
                     
                 </div>
@@ -688,23 +718,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/">
+                <a href="/2023/10/05/An-Operating-System-Level-Data-Migration-Scheme/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/76369fa4b49c432fa9e498567df6adf4.png" class="responsive-img" alt="Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/26073db180a64a9c888e27b6f08665c5.png" class="responsive-img" alt="An Operating System Level Data Migration Scheme">
                         
-                        <span class="card-title">Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems</span>
+                        <span class="card-title">An Operating System Level Data Migration Scheme</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            提出了一种称为Rainbow的新的内存管理机制来弥合超级页面和轻量级页面迁移之间的根本冲突
+                            对性能和能耗进行建模，指导页面迁移。
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-05-02
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-05
                             </span>
                         <span class="publish-author">
                             
@@ -721,12 +751,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/B/">
+                        <span class="chip bg-color">B</span>
                     </a>
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/Hybrid-Memory-Systems/">
+                        <span class="chip bg-color">Hybrid Memory Systems</span>
                     </a>
                     
                 </div>
