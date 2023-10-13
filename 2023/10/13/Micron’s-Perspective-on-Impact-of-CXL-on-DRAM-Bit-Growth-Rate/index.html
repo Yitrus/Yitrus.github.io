@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Time Complexity Calculation, Yi&#39;s Blog">
+    <meta name="keywords" content="Micron’s Perspective on Impact of CXL on DRAM Bit Growth Rate, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Time Complexity Calculation | Yi&#39;s Blog</title>
+    <title>Micron’s Perspective on Impact of CXL on DRAM Bit Growth Rate | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/aacf6242525244268488b272ffbfa75f.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Time Complexity Calculation</h1> -->
+                    <!-- <h1 class="description center-align post-title">Micron’s Perspective on Impact of CXL on DRAM Bit Growth Rate</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Algorithm/">
-                                <span class="chip bg-color">Algorithm</span>
+                            <a href="/tags/A/">
+                                <span class="chip bg-color">A</span>
                             </a>
                         
-                            <a href="/tags/Advanced-Mathematics/">
-                                <span class="chip bg-color">Advanced Mathematics</span>
+                            <a href="/tags/Hybrid-Memory-Systems/">
+                                <span class="chip bg-color">Hybrid Memory Systems</span>
                             </a>
                         
                     </div>
@@ -453,8 +453,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Algorithm/" class="post-category">
-                                Algorithm
+                            <a href="/categories/Paper/" class="post-category">
+                                Paper
                             </a>
                         
                     </div>
@@ -466,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-06-06
+                    2023-10-13
                 </div>
                 
 
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    5.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    10 分
+                    17 分
                 </div>
                 
 
@@ -505,186 +505,39 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="一、常见阶大小比较"><a href="#一、常见阶大小比较" class="headerlink" title="一、常见阶大小比较"></a>一、常见阶大小比较</h2><p>从大到小：  </p>
-<ul>
-<li>超指数阶：$n^n$，$n!$</li>
-<li>指数阶：$9^{n/2}$,  $2^n$</li>
-<li>多项式阶：$n^3$,   $n*log(n)$, $n^{1/2}$</li>
-<li>对数阶：$log^2(n)$, $log(n)$, $log(log(n))$</li>
-<li>常数阶：100, 1<br>下题需要保留阶最高的部分：<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210605220748744.jpg"></li>
-</ul>
-<h2 id="二、算法复杂性估计函数"><a href="#二、算法复杂性估计函数" class="headerlink" title="二、算法复杂性估计函数"></a>二、算法复杂性估计函数</h2>
-$$
-\lim_{n \to \infty} \frac{f(n)}{g(n)}  =
-\begin{cases}
-(大于0的常数或)0       &amp;&amp;&amp; f(n)=O(g(n))上界&amp;-----f(n)\le cg(n)\\
-(大于0的常数或)无穷    &amp;&amp;&amp; f(n)= \Omega(g(n))下界&amp;-----f(n)\ge cg(n)\\
-大于0的常数            &amp;&amp;&amp; f(n)= \Theta(g(n))确切界&amp;-----f(n)=cg(n)\\
-0      &amp;&amp;&amp;f(n)=o(g(n))上界&amp;-----f(n)&lt; cg(n)
-\end{cases}
-$$
-
-
-<p>可以发现都是针对f(n)在讨论，很容易得出下题答案：<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210605220628312.jpg"></p>
-<h2 id="三、几个常用替换的式子"><a href="#三、几个常用替换的式子" class="headerlink" title="三、几个常用替换的式子"></a>三、几个常用替换的式子</h2><h3 id="1-Stirling公式："><a href="#1-Stirling公式：" class="headerlink" title="1.Stirling公式："></a>1.Stirling公式：</h3>
-$$n! \approx {(2 \pi n)}^{1/2}{(n/e)}^n$$
-
-
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210605222019202.jpg"></p>
-<h3 id="2-阶乘和二项式系数"><a href="#2-阶乘和二项式系数" class="headerlink" title="2.阶乘和二项式系数"></a>2.阶乘和二项式系数</h3>
-$$C_n^k = C_n^{n-k} \\ C_n^n = C_n^0 = 1 \\C_n^k = C_{n-1}^k +C_{n-1}^{k-1} $$
-
-
-<p>帕斯卡三角形可以辅助记二项式系数：<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2021060522532381.jpg"></p>
-
-$$\sum_{j=0}^{n}{C_{n}^j}x^j= {(1+x)}^n $$
-
-
-<h3 id="3-和式"><a href="#3-和式" class="headerlink" title="3.和式"></a>3.和式</h3>
-$$\sum_{j=1}^{n}{a_{n-j}} = \sum_{j=0}^{n-1}{a_j} \\
-\sum_{j=0}^n{j \over 2^j} = \sum_{j=1}^n{j \over 2^j} = 2-{{(n+2)} \over {n^2}} = \Theta(1) \\
-\sum_{j=0}^njc^j = \sum_{j=1}^njc^j = \Theta(nc^n)$$
-
-
-<h3 id="4-定积分与和式转换"><a href="#4-定积分与和式转换" class="headerlink" title="4.定积分与和式转换"></a>4.定积分与和式转换</h3>
-$$\int_m^{n+1} f(x) dx  \le \sum_{j=m}^nf(j) \le \int_{m-1}^nf(x)dx 递减函数 \\
-\int_{m-1}^{n} f(x) dx  \le \sum_{j=m}^nf(j) \le \int_{m}^{n+1}f(x)dx  递增函数$$
-
-
-<p>可以采用画图的方法辅助记忆它的上下界：<br>以一个递增的函数为例，我们要求1（m）~6（n）他的面积，每一个小矩形$1*f(j)$如果我们积分每个点左边的矩形，那么总面积就是偏小的，积分右边矩形就会稍微偏大，这就找到了上下界，当函数平行于X轴时就会有等号。递减也是一个道理。<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210606094351964.jpg"><br>但是，如果是logn等函数会遇到定义域不存在的情况。我们应该从和式中把（在积分中）没有定义的点先拿出来，再去积分。<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2021060610042349.jpg"></p>
-<p>用代数方法证明就是放大缩小去求，用积分方法证明就是用上面那个公式。可以看到积分方法求时等式左边按公式应该为$\int_0^n jlogj !\ dj$定义域<br>不存在，所以对于右边：</p>
-
-$$\sum_{j=1}^njlogj=\sum_{j=2}^njlogj+1log1=\int_{2-1}^njlogj \!\ dj+1log1$$
-
-
-
-<h2 id="四、计算次数"><a href="#四、计算次数" class="headerlink" title="四、计算次数"></a>四、计算次数</h2><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">算法:COUNT
-输入:n=2k,k为正整数。
-输出: count的值 。
-count=0
-while n&gt;=1
-	for j=1 to n
-		count=count+1
-	n=n/2
-return count
-end COUNT<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>while要执行k+1次，$k=log_2n$.for循环在每次while的基础上执行n次所以(k+1)n即$nlog_2n$次计算</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">算法: MERGE
-输入:数组A[1..m]和它的三个索引p, q, r, 1&lt;=p&lt;=q&lt;r&lt;=m。
-两个子数组A[p..q]和A[q+1..r]各自按升序排列。
-输出:合并两个子数组A[p..q]和A[q+1..r]的升序数组A[p..r]
-for(s=p, t=q+1, k=p; S&lt;=q and t&lt;=r; k++)
-	if A[s]&lt;=A[t] //两个指针从两个头开始排序
-		B[k]=A[s]; //B[p..r]是个辅助数组
-		S=S+1;
-	else
-		B[k]=A[t];
-		t=t+1;
-if s=q+1 
-	B[k..r]=A[q+1..r] 
-else
-	B[k..r]=A[s..q]
-A[p..r]=B[p..r]
-end MERGE
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>两段相邻数组分别有序，两个指针将两段变为有序的。2(r-p+1)先遍历一次排序，在从排好序的辅助数组移回来。</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">void insertion_ sort(Type *a, int n){
-								// 代价 次数
-								// ti: for的第i次while的循环次数
-for (int i=1; i&lt;n; i++){		// c1   n(比较语句)
-	key=a[i];					// c2   n-1
-	int j=i-1;					// c3   n-1
-	while( j&gt;=0 &amp;&amp; a[j]&gt;key ){  // c4   sum ti
-		a[j+1] = a[j];			// c5   sum of (ti-1)
-		j--;					// c6	sum of (ti-1)
-	}
-	a[j+1]=key; 				// c7   n-1
-}
-}
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>插入排序的思想是左手为空，右手的牌按序插入。这里t是个不确定的数，但是还是可以得出计算次数为：</p>
-<p>$$c_1n+c_2(n-1)+c_3(n-1)+c_4\sum_{i=1}^{n-1}{t_i}+c_5\sum_{i=1}^{n-1}{(t_i-1)}+c_6\sum_{i=1}^{n-1}{(t_i-1)}+c_7(n-1)$$</p>
-<p>最好情况就是已经排好序了，c5与c6都是0，每次for的while都只跑一次。<br>$$c_1n+c_2(n-1)+c_3(n-1)+c_4(n-1)+c_7(n-1) = O(n)$$<br>最坏情况就是倒序排的，n张牌每次都比上一次多查找一个。</p>
-<p>$$\sum_{i=1}^{n-1}{(t_i-1)} = n(n-1)/2$$</p>
-<p>复杂度$O(n^2)$</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">1. COUNT4
-2.count &lt;-- 0
-3.for i ←- 1 to Llogn」
-4.	for j ←- i to i+5
-5.		for k ←- 1 to i^2
-6.         count ←- count +1
-7.		end for
-8.  end for
-9.end for
-(a)第6步执行了多少次?
-(b)要表示算法的时间复杂性，用0和O哪个符号更合适?为什么?
-(c)算法的时间复杂性是什么?
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>a）思路是把每次for循环乘起来。<br>$$\sum_{i=1}^{\lfloor logn \rfloor}\sum_{j=i}^{i+5}\sum_{k=1}^{i^2}{1}$$内层指的是从1到$i^2$个1相加$=\sum_{i=1}^{\lfloor logn \rfloor}\sum_{j=i}^{i+5}{i^2} = 6\sum_{i=1}^{\lfloor logn \rfloor}{i^2}$<br>利用平方和求和公式$n(n+1)(2n+1)/6$进一步化简$=\lfloor logn \rfloor(\lfloor logn \rfloor +1)(2\lfloor logn \rfloor+1)$<br>b） O 因为对于算出的确切的计算次数，这个用于表示算法时间复杂性的函数是它上界。<br>c）$O(log^3n)$</p>
-<h2 id="五、解递归方程式"><a href="#五、解递归方程式" class="headerlink" title="五、解递归方程式"></a>五、解递归方程式</h2><h3 id="1-线性齐次递推式（二阶）"><a href="#1-线性齐次递推式（二阶）" class="headerlink" title="1.线性齐次递推式（二阶）"></a>1.线性齐次递推式（二阶）</h3><p>对于递推式:$$f(n)=a_1f(n-1)+a_2f(n-2)+…+a_kf(n-k)$$我们想要得到$f(n)$的确切解，它的解往往是$x^n$于是我们可以把这个递推式的等价于:$$x_n=a_1x^{n-1}+a_2x^{n-2}+…+a_kx^{n-k}$$将两边同时除以$x^{n-k}$并且移项可以得到与n无关还能解出x的式子$$x^k-a_1x^{k-1}-a_2x^{k-2}-…-a_k = 0$$这个就是常说的特征方程。</p>
-<table>
-<thead>
-<tr>
-<th align="center">步骤</th>
-<th align="center">例1</th>
-<th align="center">例2</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">序列</td>
-<td align="center">1,4,16,64,256</td>
-<td align="center">1,1,2,3,5,8(斐波拉契)</td>
-</tr>
-<tr>
-<td align="center">递推关系</td>
-<td align="center">f(n)=3f(n-1)+4f(n-2)</td>
-<td align="center">f(n)=f(n-1)+f(n-2)</td>
-</tr>
-<tr>
-<td align="center">特征方程</td>
-<td align="center">$x^2-3x-4=0$</td>
-<td align="center">$x^2-x-1=0$</td>
-</tr>
-<tr>
-<td align="center">特征根</td>
-<td align="center">$x_1=-1,x_2=4$</td>
-<td align="center">$x_1= { {1+\sqrt5} \over 2},x_2={ {1-\sqrt5} \over 2}$</td>
-</tr>
-<tr>
-<td align="center">通解</td>
-<td align="center">$f(n) = c_1{(-1)}^n+c_24^n$</td>
-<td align="center">$f(n)=c_1\left( { {1+\sqrt5} \over 2} \right)^n+c_2\left( { {1-\sqrt5} \over 2} \right)^n$</td>
-</tr>
-<tr>
-<td align="center">带入序列中的点</td>
-<td align="center">$c_1=0,c_2=1$</td>
-<td align="center">$c_1={1\over {\sqrt5}},c_2=-{1\over {\sqrt5}}$</td>
-</tr>
-<tr>
-<td align="center">最终解</td>
-<td align="center">$f(n)=4^n$</td>
-<td align="center">由于n无穷大$c_2\left( { {1-\sqrt5} \over 2} \right)^n$趋于0,$f(n)={1\over {\sqrt5}}\left( { {1+\sqrt5} \over 2} \right)^n$</td>
-</tr>
-</tbody></table>
-<p>还有种特殊情况：$x_1=x_2=x$时$f(n)=c_1nx^n+c_2x^n$</p>
-<h3 id="2-非齐次递推式"><a href="#2-非齐次递推式" class="headerlink" title="2.非齐次递推式"></a>2.非齐次递推式</h3><h4 id="2-1-f-n-f-n-1-g-n"><a href="#2-1-f-n-f-n-1-g-n" class="headerlink" title="2.1  f(n)=f(n-1)+g(n)"></a>2.1  f(n)=f(n-1)+g(n)</h4><p>对于这一类g(n)是一个已知的函数，推导可得：<br>$$f(n) = f(n-1)+g(n) = \big(f(n-2)+g(n-1)\big)+g(n) = f(0)+ \sum_{j=1}^ng(j)$$<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210606120205290.jpg"><br>这道题麻烦点在于怎么把前面的系数3搞没了。由1我们知道，这种递推式是$f(n)=x^n$变形令$f(n)=3^nq(n), f(0)=q(0)=3$于是乎原式变为：</p>
-
-$$3^nq(n)=3*3^{n-1}q(n-1)+2^n \\ q(n)=q(n-1)+{(2/3)}^n\\ q(n)=q(0)+\sum_{j=1}^n{{(2/3)}^n}\\ f(n)=3^n*\big(3+{(2/3)(1-{(2/3)}^n) \over {1-(2/3)}}\big) \\ f(n)=5*3^n+2^{n+1}$$
-
-
-<h4 id="2-2-f-n-f-n-1-g-n"><a href="#2-2-f-n-f-n-1-g-n" class="headerlink" title="2.2  f(n)=f(n-1)*g(n)"></a>2.2  f(n)=f(n-1)*g(n)</h4><p>对于这一类g(n)也是一个已知的函数，推导可得：<br>$$f(n) = f(n-1)*g(n) = \big(f(n-2)*g(n-1)\big)+g(n) = f(0)\prod_{i=1}^ng(i)$$</p>
-<h4 id="2-3-f-n-f-n-1-g-n-h-n"><a href="#2-3-f-n-f-n-1-g-n-h-n" class="headerlink" title="2.3  f(n)=f(n-1)*g(n)+h(n)"></a>2.3  f(n)=f(n-1)*g(n)+h(n)</h4><p>可以直接推，也可以带点技巧推。结果：$$=\prod_{i=1}^ng(i)\big( f(0)+\sum_{j=1}^n{h(j) \over{\prod_{i=1}^ng(i)} } \big)$$</p>
-<h4 id="2-4-f-n-af-n-c-g-n"><a href="#2-4-f-n-af-n-c-g-n" class="headerlink" title="2.4 f(n)=af(n/c)+g(n)"></a>2.4 f(n)=af(n/c)+g(n)</h4>
-$$f(n)=\begin{cases} d&amp; \text{n=1}\\af({n\over c})+bn^x&amp; \text{n &gt;= 2} \end{cases}$$
-
-
-<p>其中d非负常量，g(n)非负函数，a，c正数。设$n=c^k$</p>
-
-$$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}}\big)n^{log_ca}-\big({{bc^x}\over{a-c^x}}\big)n^x&amp; {a\neq c^x} \end{cases}$$
-
-
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210606123724891.jpg"><br>这道题就没有为难菜鸡，直接把方向给了。这种做法在遇到f(n/2)的情况下叫做<strong>更换变元法</strong><br>$$f(2^k)=f(2^{k-1})+2^k=f(2^0)+\sum_{i=1}^k2^i=2^{k+1}-1 =2n-1\<br>g(2^k)=2g(2^{k-1})+1=\sum_{i=0}^k2^i=2^{k+1}-1=2n-1$$<br>也可以直接套公式:<br>对于f   $d=1,a=1,c=2,b=1$<br>对于g  $a=2,c=2,b=1,d=1$<br>这些公式太惨绝人寰了，其他还有一些和2.4一样复杂的，等遇到了再补充上去。</p>
-<h2 id="六、p、np、np-hard、np-complete问题"><a href="#六、p、np、np-hard、np-complete问题" class="headerlink" title="六、p、np、np-hard、np-complete问题"></a>六、p、np、np-hard、np-complete问题</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/birduncle/article/details/94646993">p、np、np-hard、np-complete问题</a>这篇文章讲的很清晰，附上一张从文章里拿的<img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/20210704092654261.png"></p>
+                <p>CXL (Compute Express Link™) 是一种高速互连、行业标准接口，用于处理器、加速器、内存、存储和其他 IO 设备之间的通信。 CXL 通过允许异构和分布式计算架构的可组合性、可扩展性和灵活性来提高效率。 CXL的主要优势是计算节点的内存扩展，填补了需要高带宽、容量和低延迟的数据密集型应用程序的空白。</p>
+<p>在本文中，我们将阐述美光科技的观点：内存市场提供强劲的增长前景，Compute Express Link™ (CXL)1 将为 DRAM 位需求增长和总可寻址市场 (TAM) 增长带来净积极影响。</p>
+<p>我们将首先讨论当今 IT 系统中的两个挑战，然后讨论 CXL 如何解决这些问题。最后，我们将解释我们认为 CXL 将对内存市场产生的影响。</p>
+<h2 id="内存墙问题"><a href="#内存墙问题" class="headerlink" title="内存墙问题"></a>内存墙问题</h2><p>现代并行计算机架构很容易出现系统级瓶颈，从而限制应用程序处理的性能。历史上，这种现象被称为“内存墙”，微处理器性能的提高速度远远超过 DRAM 内存速度的提高速度。在过去的十年中，CPU 核心数量的增长速度导致 CPU 和内存性能之间的差距越来越大（图 1），从而阻碍了复杂的计算挑战。</p>
+<p>添加处理器核心只是解决许多应用计算挑战的一部分。在大多数情况下，拥有足够的内存带宽来为这些处理器内核提供数据至关重要。 CPU 供应商试图通过增加更多内存通道并提高新一代 CPU 中这些通道的数据速率来逐步改进，从而缓解扩展差距问题。新一代 DRAM 技术为内存数据速率的发展提供了暂时的缓解。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/82284a0bb0484aba83155e934c0f2760.png"></p>
+<p>表 1 显示了过去十年中 CPU 核心数量和 DDR DRAM 数据速率随着 2011 年、2017 年、2021 年和 2023 年更多内存通道的增加而增加的进展。然而，即使有了理论内存数据速率和更多内存通道，内存带宽要跟上 CPU 核心数量的增长并随着时间的推移保持每个核心 4 GB/s 是一项挑战。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c7bb70cbebb94edd8bb4cc227a450588.png"></p>
+<p>以 CPU 核心数量衡量的平台处理能力与可用内存容量扩展之间的关系也同样受到挑战。如图 2 中的历史趋势数据所示，处理器核心数量增长相当迅速，而每个核心的系统内存容量增长却稳步下降。将内存控制器集成到 CPU 中通常会导致处理器与内存容量比率更加直接和受限。可以通过为每个通道添加更多 DIMM 来增加容量。然而，由于通道负载增加，为每个通道添加更多 DIMM 通常需要降低内存时钟速度，从而减少内存带宽，从而加剧前面讨论的内存墙问题。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/85106b4286dd43de958c0f23847650cd.png"></p>
+<h2 id="IT资源效率最大化问题"><a href="#IT资源效率最大化问题" class="headerlink" title="IT资源效率最大化问题"></a>IT资源效率最大化问题</h2><p>应用程序和服务被分解为微服务，以随着工作负载需求的起伏而优化可用资源。 IT 效率的主要限制因素之一是没有一种基础设施资源组合适合所有工作负载。工作负载对计算能力、内存、存储、延迟和 IO 带宽有动态需求。随着算法的性质和复杂性发生变化，工作负载和服务经过优化，可以通过已安装且不变的公共和私有云硬件基础设施来交付。</p>
+<p>IT 工作负载历来都是针对高峰需求进行配置的。架构师和服务规划人员预测在一段时间内提供给定服务级别所需的最大资源需求，然后确保提供适当的峰值级别（以及一些额外的缓冲区）计算、内存、存储和网络资源给定服务器或服务器机架上的工作负载，包括满足峰值水平需求的功率。然而，这通常意味着资源的严重过度配置，因为工作负载需求很少在峰值水平运行。在最近的大部分时间里，该行业的整体数据中心资源利用率都非常低（低于 50%，并且通常远低于 2）。</p>
+<p>随着时间的推移，虚拟化和云基础设施提供了重要的功能，通过增强的自动化、工作负载迁移和放置以及其他技术，帮助节省甚至回收因过度配置和利用不足而损失的资源。许多人认为这将大大减少数据中心服务器基础设施的 TAM。这产生了完全相反的效果，并产生了对更高密度 CPU 计算平台的需求，因为效率可以节省其他领域（例如电源和运营管理）的费用。因此，强化了杰文斯悖论“资源效率的提高将导致资源消耗的增加而不是减少”。</p>
+<p>人们对提高灵活性和效率的渴望从未如此强烈，业界一直在讨论如何实现可组合的“未来数据中心”。下一代数据中心对资源的使用进行更细粒度的控制，包括重新思考如何不仅在数据中心级别共享资源，而且还跨机架共享资源甚至在服务器内。</p>
+<h2 id="CXL-架构数据中心的演变"><a href="#CXL-架构数据中心的演变" class="headerlink" title="CXL 架构数据中心的演变"></a>CXL 架构数据中心的演变</h2><p>CXL 已成为一种经济高效、灵活且可扩展的架构解决方案，将塑造未来的数据中心。 CXL 将改变服务器和光纤交换机的传统机架和堆栈架构在数据中心的部署方式。拥有由 CPU、内存、网络和存储组件组成的专用固定资源的专用服务器将让位于更灵活和可扩展的架构。机架中的服务器一旦与网络、存储和计算的固定资源互连以作为解决方案运行，将通过软件管理基础设施动态组合，以满足人工智能和深度学习等现代和新兴工作负载的需求。</p>
+<p>业界一直关注可通过具有内存访问功能的 CXL 设备（如 CXL 连接内存设备）释放的潜力。内存附加点提供高容量内存扩展，可用于密集型服务器工作负载，并具有增加的内存带宽、低延迟和内存一致性，以实现异构计算/处理，并实现内存基础设施的分层。内存分层的引入方式与过去几十年存储分层的引入方式大致相同，最终将包括直连内存扩展、内存池和内存共享。</p>
+<p>数据中心将更加以内存为中心，能够动态组合具有高太字节 (TB) 以上内存池的服务器，从而使更多应用程序能够在内存中运行。存储级内存成为新的主要活动数据存储层，NAND 和磁盘驱动器用于在多个主机之间共享热数据和非活动数据。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/65fa682280034b73a0741413825ee9e2.png"></p>
+<p>最终，数据中心将迁移到所有服务器元素（包括计算、内存、网络和存储）的完全分解。大规模部署的容器和微服务将推动动态配置所需的底层资源，以实现具有平衡计算和内存比率且无性能损失的优化解决方案。借助 CXL，随着可组合性管理软件的出现，按需配置中使用的服务和底层硬件的部署将显得无缝且快速，从而在异构环境中的即服务模型中创造更高的效率。</p>
+<h2 id="CXL-如何解决内存墙问题"><a href="#CXL-如何解决内存墙问题" class="headerlink" title="CXL 如何解决内存墙问题"></a>CXL 如何解决内存墙问题</h2><p>用于内存设备凝聚力和一致性的 CXL 协议属性将通过支持将内存扩展到服务器 DIMM 插槽之外来解决“内存墙”问题。 CXL 内存扩展是一种双管齐下的方法，通过增加带宽来克服“内存墙”问题，并为支持 CXL 的服务器增加数据密集型工作负载的容量。</p>
+<p>对于典型的工作负载，保持每个 CPU 核心的带宽以获得理想的效率非常重要。随着核心数量迅速增加，带宽会出现不足（参见表 1）。直接连接 CXL 内存扩展允许服务器平台进行扩展并缩小额外带宽的差距以保持平衡。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/aacf6242525244268488b272ffbfa75f.png"></p>
+<p>另一个需要考虑的因素是，随着核心数量的增加，每个核心的容量会减少。应用程序的工作负载需求不断增长，需要快速分析收集的数据并以有用的业务见解呈现结果。这些高价值工作负载（即机器学习、NLP、计算机视觉、推荐系统、内存数据库等）可以通过每个系统更高级别的内存来经济地解决。 CXL 内存模块可以直接插入服务器，为处理器提供超出直接连接内存通道的更多带宽和容量，并且延迟时间与双插槽服务器中处理器之间的 NUMA 链路相当。</p>
+<h2 id="CXL-如何应对-I​​T-效率和可持续发展挑战"><a href="#CXL-如何应对-I​​T-效率和可持续发展挑战" class="headerlink" title="CXL 如何应对 I​​T 效率和可持续发展挑战"></a>CXL 如何应对 I​​T 效率和可持续发展挑战</h2><p>跨应用垂直领域的各种工作负载对计算操作、内存容量、带宽和延迟高度敏感。在云、企业或边缘数据中心的传统机架服务器上运行的应用程序必须满足服务级别协议 (SLA)。一种常见的方法是将这些类型的应用程序工作负载分布到多个系统上。构建 IT 基础设施并不总是遵循简单的经验法则来实现计算和设备资源之间的系统平衡。平衡这些资源取决于工作负载，这些工作负载可以是计算限制、内存限制或 IO 限制。</p>
+<p>基于 CXL 的系统的初始部署提供了性能和容量的扩展选项，以匹配基于工作负载需求的计算资源的扩展。内存、存储、网络和随着外形和连接的标准化，加速器成为可互换的模块，并且可以根据工作负载需求来组合服务器。这种方法允许服务器制造商（包括云提供商）减少他们需要开发和维护的服务器 SKU 的数量，以满足其客户群的无数应用程序。它还可以帮助 IT 管理员正确调整具有足够资源的服务器的大小，以减少单个工作负载必须分布的服务器数量，从而提高效率和性能。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a8ca37be3e8a473e81e8b4f6dffe46a3.png"></p>
+<p>随着时间的推移，CXL 架构的价值将扩展到机架，从而实现可组合性。可组合性是指在支持一个或多个工作负载的一台或多台服务器中更灵活地配置内存与计算资源比率的能力。资源平衡可以通过内存扩展、内存池或内存共享来实现。在机架上，横向扩展方法允许根据应用程序的要求动态分配资源池（计算、网络、内存、存储和 IO）并进行无缝集成。当实例通过使用机架内本机设备级发现的组合管理软件上线时，计算、内存、网络和存储被分配给应用程序或微服务。在高峰需求期间，可以为应用程序动态分配额外的资源以满足 SLA。当应用程序工作负载需求缓和时，可以释放额外的资源并将其重新分配给其他服务。资源共享或池提供了更高的利用率，而无需过度配置系统，这也意味着更高的性能、降低的软件堆栈复杂性和更低的总体系统成本。</p>
+<p>当然，将多少共享（因此可组合）资源聚合到任何给定工作负载总是存在限制，因为客户需要考虑安全和容错因素以及工作负载效率和利用率问题。尽管内存池创建了满足峰值水平所需的资源，但 85% 的组织需要 99.99% 的正常运行时间才能满足 SLA 3 ，这必须在机架内的内存池中考虑到，即使在池化 CXL 连接内存时，也会导致一定程度的超额订阅被采纳。此外，虽然内存池可以缓解近期内存过度配置的问题，但必须仔细考虑内存池扩展故障，以避免整个机架的服务器故障，从而驱动冗余以避免停机。一种受到青睐的方法是创建资源区或 Pod，在有效使用共享资源与最大限度地减少服务中断的影响之间取得平衡，并提供适当的安全性和合规性功能。</p>
+<p>数据中心最大的举措之一是推动净零排放。效率是数据中心可持续发展方程中的一个关键变量。就像服务器虚拟化一样，扩大设备共享和资源池通常会减少数据中心的过度配置，但规模更大。将专用设备资源转换为共享池资源并将其进行动态分配可降低计算节点的功耗。不仅减少了每个计算节点的功耗，还改善了气流和热量，以实现机架内更高效的冷却，减少对 HVAC 系统的需求，从而进一步降低数据中心的功耗。</p>
+<h2 id="CXL-对-DRAM-位需求增长的影响"><a href="#CXL-对-DRAM-位需求增长的影响" class="headerlink" title="CXL 对 DRAM 位需求增长的影响"></a>CXL 对 DRAM 位需求增长的影响</h2><p>现在让我们讨论一下 CXL 将如何影响 DRAM 位需求增长。</p>
+<p>CXL 支持的池化和 CXL 支持的内存带宽扩展对比特需求增长的净影响将是积极的。总而言之，我们预计 CXL 将在中短期内帮助维持数据中心比特 20% 的高增长。</p>
+<p>近期 CXL 内存市场取决于支持 CXL 的服务器平台向广泛行业推出的速度。由于CXL内存是一个新兴市场，CXL上的内存增长将非常快，但直到2026年才会对整个DRAM市场产生巨大影响。Yole Intelligence市场研究小组预测，CXL上的DRAM位需求将增长到接近到 2028 年将达到 100 exabs。Yole Intelligence 预测，到 20284 年，CXL 位将占服务器 DRAM 位总数的 31%。</p>
+<p>卡内基梅隆大学/微软最近发表的一篇论文讨论了池化如何影响 CXL TCO 节省。该论文提出了一种基于 CXL 的池解决方案，通过将给定超大规模工作负载集的内存需求减少 9-10%，可以节省 4-5% 的 TCO。数据中心 DRAM 位增长复合年增长率 (CAGR) 仍保持在 20% 的范围内，其中包括 CXL 的影响。即使添加了内存池，这对整个数据中心 DRAM 位增长的影响也很小。通过粗略数学计算，将 9-10% 的减少量乘以 20-30% 的预期复合年增长率即可实现这一效果。理论上最坏情况的计算表明，由于合并，损失会减少 2-3 个百分点。当然，这种理论场景是不可行的，因为池化伴随着延迟权衡和软件优化要求，并且池化并不适用于所有工作负载。其次，池的适用性和扩展受到一定程度冗余的容错需求以及跨多个托管服务器级联内存池故障的风险的限制。最后，逐步采用 CXL 会减弱任何影响。支持 CXL 的池将无法解决当前非 CXL 数据中心安装基础的问题。</p>
+<p>虽然支持 CXL 的池化机会可能会减少给定工作负载组所需的峰值内存，但支持 CXL 的内存带宽将增加峰值内存，从而能够解决不断增长的内存密集型和 AI 工作负载，而目前使用 CXL 替代方案在经济上不可行。这些 CXL 替代方案（例如基于硅通孔 (TSV) 的解决方案）价格昂贵，并且面临热密度和信号完整性挑战。内存扩展和内存池带来的机会总和对 DRAM 位增长产生了净积极影响。</p>
+<h2 id="CXL-对行业收入的影响-TAM-和美光的财务模型"><a href="#CXL-对行业收入的影响-TAM-和美光的财务模型" class="headerlink" title="CXL 对行业收入的影响 TAM 和美光的财务模型"></a>CXL 对行业收入的影响 TAM 和美光的财务模型</h2><p>内存的收入 TAM 增长取决于位数和价格，而价格取决于供需平衡。 CXL 是一种互连解决方案，其技术采用本身并不会增加市场供应。 CXL 本身不应成为行业供需的破坏性因素，定价预计将促进 TAM 的增长。在某些配置中，连接到 CXL 接口的内存与标准内存插槽相比更具成本效益，使服务器系统的构建和部署规模超出预算目标。 CXL 的第一个用例围绕单主机配置的内存扩展。内存扩展可恢复内存限制工作负载的计算和内存之间的平衡，否则这些工作负载将分布在多个服务器之间，并将内存从这些服务器整合到 CXL 扩展插槽。能够支持 CXL 1.1+ 的新型服务器将于 2023 年上市，但主要用作 CXL 新兴内存解决方案的概念验证。真正的部署将于 2024 年底开始，届时支持 CXL 2.0 的服务器将提供更多内存扩展选项，并标志着服务器中平均 DRAM 内容量开始增加。我们预计这将是 CXL 接口收入增长的开始，并预计到 2025 年该市场将达到 20 亿美元。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e31421c95c7f41d4893436c06e38d3f6.png"></p>
+<p>资源扩展是 CXL 演进的第一步，然后再转向完全可组合性和内存池，我们目前预计这将在 2026 年开始增长。2026 年，许多新服务器将支持 CXL 3.0，服务器市场预计将增长到2100万个单位5，为分解提供必要的支持。影响内存池采用率的因素包括 CXL 交换机以及可以处理分层内存池和跨多个主机分配以最大限度减少延迟的软件。超大规模企业将在短期内成为内存池扩展的早期采用者。它们很可能在单主机内存扩展和机架内内存池之间均匀分配增长。我们以及行业分析师 Yole Intelligence 预计，到 2030 年，CXL 附加内存市场将超过 200 亿美元，数据中心内存市场预计将达到 1000 亿美元，其中大部分增长将在 2025 年之后。</p>
+<p>我们对 CXL 影响的看法和预期已纳入我们的长期模型和跨周期财务模型中，因此对 CXL 技术采用的预期不应改变投资者对我们财务业绩的预期。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>CXL 提供了平衡“内存墙”问题所需的架构，并为通过内存扩展实现经济的内存解决方案提供了新的向量。此外，CXL 灵活且可扩展的架构可提高计算和内存资源的利用率和运行效率，以便根据工作负载需求纵向扩展或横向扩展资源。 CXL 附加内存为分层内存存储的新领域提供了巨大的增长机会，并实现了独立于 CPU 内核的内存扩展。 CXL 将有助于维持比没有它时更高的 DRAM 位增长率。换句话说，我们预计 CXL 不会导致 DRAM 位增长加速，但它对 DRAM 增长具有净积极作用。</p>
+<p>美光对 CXL 技术的承诺使客户和供应商能够推动内存创新解决方案的生态系统。要了解有关美光如何实现下一代数据中心创新的更多信息，请访问 micron.com/solutions/server。</p>
 
                 
             </div>
@@ -711,7 +564,7 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2021/06/06/Time-Complexity-Calculation/">http://ytirus.github.io/2021/06/06/Time-Complexity-Calculation/</a>
+                    <a href="http://ytirus.github.io/2023/10/13/Micron%E2%80%99s-Perspective-on-Impact-of-CXL-on-DRAM-Bit-Growth-Rate/">http://ytirus.github.io/2023/10/13/Micron%E2%80%99s-Perspective-on-Impact-of-CXL-on-DRAM-Bit-Growth-Rate/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -749,12 +602,12 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Algorithm/">
-                                    <span class="chip bg-color">Algorithm</span>
+                                <a href="/tags/A/">
+                                    <span class="chip bg-color">A</span>
                                 </a>
                             
-                                <a href="/tags/Advanced-Mathematics/">
-                                    <span class="chip bg-color">Advanced Mathematics</span>
+                                <a href="/tags/Hybrid-Memory-Systems/">
+                                    <span class="chip bg-color">Hybrid Memory Systems</span>
                                 </a>
                             
                         </div>
@@ -802,24 +655,61 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/02/06/MULTI-CLOCK-Dynamic-Tiering-for-Hybrid-Memory-Systems/">
+                <a href="/2023/10/13/Exploring-the-Design-Space-of-Page-Management-for-Multi-Tiered-Memory-Systems/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ca0046254e904f9991e9b0242696b89f.png" class="responsive-img" alt="MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems">
                         
-                        <span class="card-title">MULTI-CLOCK: Dynamic Tiering for Hybrid Memory Systems</span>
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Exploring the Design Space of Page Management for Multi-Tiered Memory Systems">
+                        
+                        <span class="card-title">Exploring the Design Space of Page Management for Multi-Tiered Memory Systems</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在内核上修改代码，不需要其他程序有什么修改。使用升级列表和频率可以很好的利用层级友好页面的局部性。
+                            
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-02-06
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-13
                         </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            易百分
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/10/13/Characterizing-the-Performance-of-Intel-Optane-Persistent-Memory/">
+                    <div class="card-image">
+                        
+                        <img src="https://images.weserv.nl/?url=" class="responsive-img" alt="Characterizing the Performance of Intel Optane Persistent Memory">
+                        
+                        <span class="card-title">Characterizing the Performance of Intel Optane Persistent Memory</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -839,62 +729,8 @@ $$f(n)=\begin{cases} bn^x*log_cn^x+dn^x&amp;{a=c^x}\\ \big(d+{{bc^x}\over{a-c^x}
                         <span class="chip bg-color">A</span>
                     </a>
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/06/06/Time-Complexity-Calculation/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="Time Complexity Calculation">
-                        
-                        <span class="card-title">Time Complexity Calculation</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            求时间复杂度会用到的公式，算法复杂性估计函数，还有递归方程的解法。从自己以前的博客搬运。
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-06-06
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Algorithm/" class="post-category">
-                                    Algorithm
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Algorithm/">
-                        <span class="chip bg-color">Algorithm</span>
-                    </a>
-                    
-                    <a href="/tags/Advanced-Mathematics/">
-                        <span class="chip bg-color">Advanced Mathematics</span>
+                    <a href="/tags/Optane-NVDIMMs/">
+                        <span class="chip bg-color">Optane NVDIMMs</span>
                     </a>
                     
                 </div>
