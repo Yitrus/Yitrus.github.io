@@ -316,7 +316,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/303687a65e5d422588e1d496884118e5.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    141
+                    1.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    4 分
                 </div>
                 
 
@@ -516,7 +516,29 @@
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
 <li>Lingfeng Xiang, Xingsheng Zhao, Jia Rao, Song Jiang, Hong Jiang, 德克萨斯大学阿灵顿分校(UTA)</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>最近的研究[8,13,23,26,30,32,35,36]发现Optane DCPMM不应简单地被视为速度较慢的持久DRAM。与DRAM相比，Optane DCPMM表现出复杂的行为，并且性能会根据访问大小、访问类型和模式而发生巨大变化。</p>
+<p>连接Optane DCPMM和集成内存控制器（iMC）的新DDR-T协议支持异步存储，以隐藏长写入延迟；而DRAM使用的DDR4协议对于加载和存储是同步的。</p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>目标是了解DIMM缓冲如何影响应用程序感知的性能。我们使用微基准评估了现有的两代Optane DCPMM，并得出了以下以前未报道过的发现：</p>
+<ul>
+<li>在单独的DIMM读缓冲区和写缓冲区中对读和写的管理方式不同。读取缓冲区提供更高的并发性和有效的DIMM预取，从而实现高读取带宽和卓越的顺序性能，但无助于隐藏媒体访问延迟。写入缓冲区提供的并发性有限，但却是支持DDR-T协议中异步写入的管道中的关键阶段。</li>
+<li>除了写入合并之外，写入缓冲区还提供低于读取的延迟和一致的写入延迟，无论工作集大小、写入类型、访问模式或持久性模型如何。</li>
+<li>缓存行访问粒度和3D-Xpoint媒体访问粒度之间的不匹配会对 CPU缓存预取的有效性产生负面影响，并导致持久内存带宽的浪费。</li>
+<li>由于异步DDR-T协议，缓存行刷新或普通写入在到达iMC中的写入挂起队列时返回，以隐藏较长的介质写入延迟。栅栏指令对读写操作进行排序以实现崩溃一致性，仅保证刷新全局可见，但不一定完成。因此，在栅栏指令返回后读取最近刷新的缓存行可能会经历几乎一个数量级的延迟，因为读取需要等待刷新完成。</li>
+</ul>
+<div class="note info">但是实际在使用的时候，延迟的差距带来的性能影响并不是很严重，主要还是带宽影响了TPS系统吞吐（每秒处理的数量），虽然延迟和带宽是有瓜葛不能完全分开的。</div> 
+
+<h2 id="4-结论"><a href="#4-结论" class="headerlink" title="4. 结论"></a>4. 结论</h2><p>这里直接纪录一些个人比较感兴趣的这篇论文的观察结论：</p>
+<p>测试台允许通过BIOS配置单独启用/禁用英特尔可扩展处理器中的三个CPU缓存预取器。我们首先禁用所有三个CPU预取器，以研究是否存在独立于CPU预取的DIMM预取机制。图6（a）和（e）显示，在G1和G2 Optane DCPMM中，Optane DCPMM和iMC的读取比率均接近1，这表明没有观察到明显的DIMM上预取活动。相反，当分别使能各个CPU预取器时，DCPMM的读取比率与iMC的读取比率不同。根据WSS，每个图中都有三个区域。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/303687a65e5d422588e1d496884118e5.png"></p>
+<ul>
+<li><p>WSS（working set sizes）小于读缓冲区16KB。 WSS完全适合读缓冲区，并且CPU预取器预取到读缓冲区的所有数据都会导致后续访问中的缓冲区命中。因此，除了程序要求的数据之外，不从介质加载任何附加数据。</p>
+</li>
+<li><p>WSS大于读缓冲区但小于L3缓存。工作集不再适合读缓冲区，但仍适合最后一级缓存LLC（G1服务器上为27.5MB，G2服务器上为 36MB）。虽然iMC的读取比率保持为 1，因为所有CPU预取数据都会导致LLC命中，但Optane DCPMM的读取比率显着增加。由于WSS大于读取缓冲区大小，因此预取数据在命中缓冲区之前就会被逐出，从而导致介质的浪费和重复加载。</p>
+</li>
+<li><p>WSS大于L3缓存。由于大型WSS会调用频繁的CPU预取，导致LLC未命中，并导致Optane DCPMM和iMC中的读取比率增长。一个值得注意的观察结果是DCPMM读取率明显高于iMC。对于256B的访问块（即4个高速缓存行），当DCPMM从介质加载整个XPLine时，iMC最多会在访问块的边界误预取一个额外的高速缓存行。</p>
+</li>
+</ul>
+<p>Optane DIMM中的预取活动是由CPU预取决定的，DCPMM中的误预取损失比DRAM中的预取损失特别高。 CPU预取中的高速缓存行粒度与媒体访问粒度之间的不匹配需要在预取错误预测时从媒体加载4个高速缓存行或一个XPLine。对于针对XPLine大小和对齐数据访问进行优化的工作负载，CPU预取可能会占DCPMM带宽的一半。建议程序员仔细权衡在此类工作负载中预取的好处和成本。</p>
+
                 
             </div>
             <hr/>
@@ -879,7 +901,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">89.6k</span>&nbsp;字
+                class="white-color">94.1k</span>&nbsp;字
             
             
             
