@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    114
+                    993
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    3 分
                 </div>
                 
 
@@ -508,15 +508,32 @@
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
 <ul>
-<li>文章来自ASPLOS’22四篇Best Paper之一</li>
+<li>文章来自ASPLOS’22四篇Best Paper之一 （但是这个公司和密西根大学之后合作的一篇内容相关性还挺高的）</li>
 <li>TMO: Transparent Memory Offloading in Datacenters</li>
 </ul>
 </div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
 <li> Johannes Weiner, Niket Agarwal, Dan Schatzberg, etc. Mate Inc.</li>
+<li> Dimitrios Skarlatos, 卡内基梅隆大学CMU</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>机器学习等新兴应用对内存需求的大幅增长，加上DRAM设备扩展速度的放缓[19,25] 以及DRAM成本的大幅波动，使得DRAM作为唯一的内存容量解决方案变得昂贵得令人望而却步。</p>
+<p>近年来，大量非DRAM更便宜的内存技术，例如NVMe SSD[8,11]和NVM[14,17,24,30,34,37]已成功部署在数据中心，或正在使用它们方式。此外，新兴的非DDR内存总线技术，例如CXL[9]提供类似内存的访问语义和接近DDR的性能。这些趋势的融合为内存分层带来了过去不可能的新机会[12,16,21,31–33,39,40]。</p>
+<p>使用压缩内存可以大幅降低成本，但这仍然不够，我们需要NVMe SSD等替代内存技术来进一步降低成本。</p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>性能不变的情况下，节约内存。TMO根据设备的性能特征和应用程序对内存访问速度减慢的敏感度，自动调整要卸载到异构设备（例如压缩内存或SSD）的内存量。 </p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><blockquote>
+<p>zswap是一项Linux内核的虚拟内存压缩功能，可为将要交换的页面提供压缩回写缓存。当内存页将要交换出去时，zswap不将其移动到交换设备，而是对其执行压缩，然后存储到系统RAM内动态分配的内存池中。回写到实际交换设备的动作则会延迟，甚至能完全避免，从而显著减少Linux系统用于交换的I/O；副作用则是压缩所需的额外CPU周期。</p>
+</blockquote>
+<p>唯一已知的大规模采用内核驱动交换用于延迟敏感的数据中心应用程序的是Google的zswap部署[18][43].在本文的其余部分中将其称为g-swap。作为先驱，g-swap极大地推进了现有技术水平，但仍然存在几个主要局限性:仅支持单个慢速内存层；某些应用程序的数据难以压缩，例如具有量化字节编码值的机器学习模型。</p>
+<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>TMO需要回答两个问题：要卸载多少内存以及要卸载哪些内存。<br>（1）页面会冷多久：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/4d3acd6320e244119f41bdab3ffe1a62.png"></p>
+<blockquote>
+<p>service-level agreement SLA 网站服务可用性的一个保证<br>为了简化数据中心中应用程序的操作，需要使用大量内存来启用微服务并提供基础设施级功能。我们将软件包、分析、日志记录以及与数据中心应用程序部署相关的其他支持功能所需的内存定义为<strong>数据中心内存税</strong>。这部分占20%,最先被卸载，因为内存税的SLA比程序直接消耗的SLA少。</p>
+</blockquote>
+<p>（2）不同程序文件页和匿名页所占比比例不同<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/08366eac5f724234bd566fd6c704ff40.png"></p>
+<p>（3）考虑到卸载到的SSD耐久性，设计架构<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/35bf4ada06834da894f7c606466dbe8d.png"></p>
+<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><p>迁移过程可以由应用程序本身、用户空间库[6,12,26,29]、内核或虚拟机管理程序驱动。</p>
+<p>我们将内存卸载后端定义为保存卸载内存的慢速内存层。在我们当前的生产队列中，这由NVMe SSD和压缩内存池组成。未来我们预计这将包括NVM和CXL设备。</p>
+
                 
             </div>
             <hr/>
@@ -881,7 +898,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">94.2k</span>&nbsp;字
+                class="white-color">95.6k</span>&nbsp;字
             
             
             
