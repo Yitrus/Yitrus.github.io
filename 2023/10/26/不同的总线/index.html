@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="不同的总线, Yi&#39;s Blog">
+    <meta name="keywords" content="不同的总线和内存条组成, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>不同的总线 | Yi&#39;s Blog</title>
+    <title>不同的总线和内存条组成 | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">不同的总线</h1> -->
+                    <!-- <h1 class="description center-align post-title">不同的总线和内存条组成</h1> -->
                 </div>
             </div>
         </div>
@@ -479,7 +479,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    572
+                    577
                 </div>
                 
 
@@ -512,7 +512,7 @@
                 <blockquote>
 <p>之后会加入CXL相关的信息。一些关于DDR-T更多的信息在论文Characterizing the Performance of Intel Optane Persistent Memory————A Close Look at its On-DIMM Buffering有被讨论。</p>
 </blockquote>
-<p>CPU与内存之间的接口位宽是64bit，也就意味着CPU在一个时钟周期内会向内存发送或从内存读取64bit的数据。单个内存颗粒的位宽仅有4bit、8bit或16bit，个别也有32bit的。因此，必须把多个颗粒并联起来，组成一个位宽为64bit的数据集合，才可以和CPU互连。</p>
+<h2 id="内存条组成"><a href="#内存条组成" class="headerlink" title="内存条组成"></a>内存条组成</h2><p>CPU与内存之间的接口位宽是64bit，也就意味着CPU在一个时钟周期内会向内存发送或从内存读取64bit的数据。单个内存颗粒的位宽仅有4bit、8bit或16bit，个别也有32bit的。因此，必须把多个颗粒并联起来，组成一个位宽为64bit的数据集合，才可以和CPU互连。</p>
 <p>生产商把64bit集合称为一个物理BANK（Physical BANK），简写为P-BANK。为了和逻辑BANK相区分，也经常把P-BANK称为RANK或Physical RANK,把L-BANK则简称为BANK。</p>
 <h2 id="DDR（双数据速率）"><a href="#DDR（双数据速率）" class="headerlink" title="DDR（双数据速率）"></a>DDR（双数据速率）</h2><p>DDR是一种用于系统内存（RAM）的接口和技术。它允许CPU（中央处理器）与系统内存之间进行高速数据传输。DDR标准有多个版本，例如DDR3、DDR4和DDR5，每个版本都有不同的数据传输速率和技术规格。DDR主要用于存储和读取计算机内存中的数据，以供CPU使用。CPU通过DDR接口来访问内存中的程序和数据。</p>
 <h2 id="DDR-T"><a href="#DDR-T" class="headerlink" title="DDR-T"></a>DDR-T</h2><p>Intel Optane Persistent Memory使用DDR-T与CPU传输数据。特别设计用于大型数据中心和需要大量内存的高性能计算环境。DDR-T内存模块通常具有非常高的存储容量，通常以TB（Terabytes，千兆字节）为单位来衡量，因此得名为”Terabyte”。这使得DDR-T非常适合大规模数据分析、虚拟化、人工智能和其他内存密集型应用。</p>

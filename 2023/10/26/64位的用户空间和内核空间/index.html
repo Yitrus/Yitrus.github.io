@@ -516,11 +516,11 @@
 <li>页式内存管理技术。</li>
 <li>通过与磁盘空间的交换实现扩展内存容量。</li>
 </ol>
-<h2 id="虚拟地址怎么认？"><a href="#虚拟地址怎么认？" class="headerlink" title="虚拟地址怎么认？"></a><span class="label primary">虚拟地址怎么认？</span></h2><p>在32位机器上，指针的寻址范围为 $2^{32}$，所能表达的虚拟内存空间为4GB（$2^{30}$是从B到GB）。在目前的64位系统下只使用了48位来描述虚拟内存空间，寻址范围为 $2^{48}$，所能表达的虚拟内存空间为256TB。</p>
+<h2 id="虚拟地址怎么认？"><a href="#虚拟地址怎么认？" class="headerlink" title="虚拟地址怎么认？"></a><span class="label primary">虚拟地址怎么认？</span></h2><p>在32位机器上，指针的寻址范围为 $2^{32}$，所能表达的虚拟内存空间为4GB（$2^{30}$是从B到GB）。在目前的64位系统下只使用了48位来描述虚拟内存空间，寻址范围为 $2^{48}$，所能表达的虚拟内存空间为256TB（字节可寻址，一个地址的大小是Byte）。</p>
 <ul>
 <li>低128T表示用户态虚拟内存空间，虚拟内存地址范围为：0x0000 0000 0000 0000 - 0x0000 7FFF FFFF F000 。</li>
 </ul>
-<p>1左移47位得到的地址是 0x0000800000000000，然后减去一个 PAGE_SIZE（默认为 4K），就是0x00007FFFFFFFF000，共 128T。</p>
+<p>1左移47位（二进制到16进制4位一组）得到的地址是 0x0000800000000000，然后减去一个 PAGE_SIZE（默认为 4K），就是0x00007FFFFFFFF000，共 128T。</p>
 <ul>
 <li>高128T表示内核态虚拟内存空间，虚拟内存地址范围为：0xFFFF 8000 0000 0000 - 0xFFFF FFFF FFFF FFFF 。</li>
 </ul>
@@ -676,9 +676,9 @@
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="不同的总线">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="不同的总线和内存条组成">
                         
-                        <span class="card-title">不同的总线</span>
+                        <span class="card-title">不同的总线和内存条组成</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
