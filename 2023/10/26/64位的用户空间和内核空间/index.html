@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    2.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    7 分
                 </div>
                 
 
@@ -527,7 +527,8 @@
 <p>0x[用户/内核态位][47位偏移量][保留位][12位页内偏移].用户空间的虚拟内存地址的高16位全部为0.内核空间的虚拟内存地址的高16位全部为1.</p>
 <p>这样一来就在用户态虚拟内存空间与内核态虚拟内存空间之间形成了一段0x0000 7FFF FFFF F000 - 0xFFFF 8000 0000 0000 的地址空洞，我们把这个空洞叫做canonical address空洞。高16位不全为0也不全为1.</p>
 <p><img src="https://images.weserv.nl/?url=https://cdn.xiaolincoding.com//mysql/other/4956918c43e186d49df7b9802f080de8.png"></p>
-<h2 id="64位Linux系统下，进程虚拟内存空间布局是怎样的？"><a href="#64位Linux系统下，进程虚拟内存空间布局是怎样的？" class="headerlink" title="64位Linux系统下，进程虚拟内存空间布局是怎样的？"></a><span class="label primary">64位Linux系统下，进程虚拟内存空间布局是怎样的？</span></h2><p><img src="https://images.weserv.nl/?url=https://cdn.xiaolincoding.com//mysql/other/532e6cdf4899588f8b873b6435cba2d8.png"></p>
+<h2 id="64位Linux系统下，进程虚拟内存空间布局是怎样的？"><a href="#64位Linux系统下，进程虚拟内存空间布局是怎样的？" class="headerlink" title="64位Linux系统下，进程虚拟内存空间布局是怎样的？"></a><span class="label primary">64位Linux系统下，进程虚拟内存空间布局是怎样的？</span></h2><p>在进程的地址空间中，包括heap, stack和通过mmap匿名映射的区域，这些区域在建立的时候只有虚拟地址，当它们真正被访问到的时候，内核才会为其分配物理页面，这种方式被称作demand allocation（按需分配），它和page cache的demand paging的概念是对应的这部分物理页面由于没有对应外部存储介质上的文件，因此被统称为anonymous pages。</p>
+<p><img src="https://images.weserv.nl/?url=https://cdn.xiaolincoding.com//mysql/other/532e6cdf4899588f8b873b6435cba2d8.png"></p>
 <ol>
 <li>准备运行的程序编译成二进制文件存放在磁盘中，CPU会执行二进制文件中的机器码来驱动进程的运行。所以在进程运行之前，这些存放在二进制文件中的机器码需要被加载进内存中，而用于存放这些机器码的虚拟内存空间叫做<strong>代码段</strong>。</li>
 <li>在代码段跟数据段的中间还有一段不可以读写的保护段，它的作用是防止程序在读写数据段的时候越界访问到代码段，这个保护段可以让越界访问行为直接崩溃，防止它继续往下运行。</li>
@@ -716,6 +717,10 @@
                     
                     <a href="/tags/PCIe/">
                         <span class="chip bg-color">PCIe</span>
+                    </a>
+                    
+                    <a href="/tags/CXL/">
+                        <span class="chip bg-color">CXL</span>
                     </a>
                     
                 </div>
@@ -924,7 +929,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">101k</span>&nbsp;字
+                class="white-color">103k</span>&nbsp;字
             
             
             

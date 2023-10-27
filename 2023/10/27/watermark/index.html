@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Exploring Memory Access Similarity to Improve Irregular Application Performance for Distributed, Yi&#39;s Blog">
+    <meta name="keywords" content="watermark, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Exploring Memory Access Similarity to Improve Irregular Application Performance for Distributed | Yi&#39;s Blog</title>
+    <title>watermark | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d1f03539af6148d385ff12d71c165eaf.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Exploring Memory Access Similarity to Improve Irregular Application Performance for Distributed</h1> -->
+                    <!-- <h1 class="description center-align post-title">watermark</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
-                            </a>
-                        
-                            <a href="/tags/%E5%A0%86%E5%8F%A0DRAM/">
-                                <span class="chip bg-color">堆叠DRAM</span>
+                            <a href="/tags/watermark/">
+                                <span class="chip bg-color">watermark</span>
                             </a>
                         
                     </div>
@@ -453,8 +449,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Paper/" class="post-category">
-                                Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                Basics
                             </a>
                         
                     </div>
@@ -466,7 +462,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-10-15
+                    2023-10-27
                 </div>
                 
 
@@ -475,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.4k
+                    236
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    1 分
                 </div>
                 
 
@@ -505,53 +501,9 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0-论文信息"><a href="#0-论文信息" class="headerlink" title="0.论文信息"></a>0.论文信息</h2><div class="note primary">
-
-<ul>
-<li>文章来自IEEE Transactions on Parallel and Distributed Systems，TPDS，2023</li>
-<li>Exploring Memory Access Similarity to Improve Irregular Application Performance for Distributed</li></ul></div> 
-
-<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Wenjie Liu， Xubin He，美国宾夕法尼亚州费城天普大学计算机与信息科学系</li>
-<li>Qing Liu，美国新泽西州纽瓦克市新泽西理工学院电气与计算机工程系</li>
-</ul>
-<h1 id="1-Background"><a href="#1-Background" class="headerlink" title="1.Background"></a>1.Background</h1><p>stacked DRAM and off-chip DRAM的异构。<br>并行工作模式使得在高性能集群上产生跨节点的不规则内存访问行为（memory access behaviors，<strong>MAB</strong>）。<br>但是执行共享功能或者数据结构时，节点间会产生相似的MAB。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/59b533c0f549441a95aade87ee7d645f.png"><br>工作节点之间内存访问相似性的示例。每个工作节点执行共享二进制代码的不同部分, 创建MAB的各种组合。如图所示,两个节点之间的相似性是通过重叠的MAB以及每个MAB覆盖的页面数量来估计的,例如,节点K和节点S共享相同的MAB并产生高相似性。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/0ea19701091942909a12b353a43e0b5f.png"><br>最常用的6个MAB所覆盖的内存页的细分。可以得出三个观察结果。首先, MAB,例如MAB 0,可以被所有节点共享为执行相同的二进制代码。<br>第二，在节点3.4.6.7.8.11.12.13上观察到相同的MAB组合;因为这样的节点可以执行相同的任务。第三, <del>MAB 5仅在节点14.上显示</del> ，并且大量页面被MAB 5覆盖,这意味着相似性不仅存在于节点之间，而且存在于节点内的多个页面之间。</p>
-<h1 id="2-解决的问题（Motivation）"><a href="#2-解决的问题（Motivation）" class="headerlink" title="2.解决的问题（Motivation）"></a>2.解决的问题（Motivation）</h1><p>为了利用堆叠DRAM实现的高性能，设计高效混合存储器系统的核心是两个挑战。</p>
-<ul>
-<li>第一个挑战是确定运行时的最佳数据位置。</li>
-<li>第二个挑战是减少元数据造成的开销。下图比较了现有技术的堆叠DRAM命中率和元数据导致的相应性能下降。如图所示，最先进的方法不断提高堆叠DRAM命中率。同时,对于不规则的HPC应用程序,元数据导致的性能开销显著增加，这降低了堆叠DRAM带来的性能增益。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7c1d020bbf2d4c08b35440e4307a2647.png"></li>
-</ul>
-<h1 id="3-其他学者解决这个问题的思路和缺陷"><a href="#3-其他学者解决这个问题的思路和缺陷" class="headerlink" title="3.其他学者解决这个问题的思路和缺陷"></a>3.其他学者解决这个问题的思路和缺陷</h1><p>现有的方法通过利用每个<strong>数据块的访问历史</strong>[7] [8] [9]或操作系统[10] [11]提供的提示来识别热数据，这些提示忽略了由集群的并行工作模式启用的共享MAB,并且可能在集群环境中表现不佳。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">]</span> C. C. Chou, A. Jaleel, and M. K. Qureshi, “CAMEO: A two-level memory organization with capacity of main memory and flexibility of hardware-managed cache,” <span class="token keyword">in</span> Proc. IEEE/ACM 47th Annu. Int. Symp. Microarchitecture, <span class="token number">2014</span>, pp. <span class="token number">1</span>–12.
-<span class="token punctuation">[</span><span class="token number">8</span><span class="token punctuation">]</span> J. B. Kotra, H. Zhang, A. R. Alameldeen, C. Wilkerson, and M. T. Kandemir, “Chameleon: A dynamically reconfigurable heterogeneous memory system,” <span class="token keyword">in</span> Proc. IEEE/ACM 47th Annu. Int. Symp. Microarchitecture, <span class="token number">2018</span>, Art. no. <span class="token number">533</span>.
-<span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span> E. Vasilakis, V. Papaefstathiou, P. Trancoso, and I. Sourdis, “Hybrid2: Combining caching and migration <span class="token keyword">in</span> hybrid memory systems,” <span class="token keyword">in</span> Proc. IEEE Int. Symp. High Perform. Comput. Architecture, <span class="token number">2020</span>, pp. <span class="token number">649</span>–662.
-<span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">]</span> A. Kokolis, D. Skarlatos, and J. Torrellas, “PageSeer: Using page walks to trigger page swaps <span class="token keyword">in</span> hybrid memory systems,” <span class="token keyword">in</span> Proc. IEEE Int. Symp. High Perform. Comput. Architecture, <span class="token number">2019</span>, pp. <span class="token number">596</span>–608.
-<span class="token punctuation">[</span><span class="token number">11</span><span class="token punctuation">]</span> A. Prodromou, M. Meswani, N. Jayasena, G. Loh, and D. M. Tullsen, “MemPod: A clustered architecture <span class="token keyword">for</span> efficient and scalable migration <span class="token keyword">in</span> flat address space multi-level memories,” <span class="token keyword">in</span> Proc. IEEE Int. Symp. High Perform. Comput. Architecture, <span class="token number">2017</span>, pp. <span class="token number">433</span>–444.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>针对不规则应用的优化。现有的研究针对不规则应用, 要么将不规则性暴露给作业调度器进行自适应调度[31] ,[32] ,要么利用不规则性在异构集群中进行更好的资源分配[33] [34]。Nozal等人提出在使用OneAPI框架执行不规则应用程序时，平衡分配给不同硬件的负载[31]。 此外, Dai等人在运行时检测不均匀分布的不规则工作负载, 并将不堪重负的节点的工作负载迁移到分配较少工作负载的节点[32]。另一方面,利用不规则性来细化集群中的资源分配。杨等人观察了集群中运行的不规则应用程序导致的随机和不规则网络流量,并提出利用数据压缩技术来最大限度地减少网络带宽消耗[34]。此外, Shin等人分析了GPU上运行的不规则应用程序导致的性能下降,并提出加快地址转换过程，以最大限度地减少SIMD指令的数据准备时间[33]。</p>
-<p>系统中的相似性。相似之处存在于许多方面各方面的计算系统, 以及先前的工作探讨了相似性以提高系统性能。Koller等人提出了一种基于观察到的存储和访问数据的高度相似的I/O内容的I/O重复数据消除方法[35]。同时,Xiao等人利用高级程序中丰富的自相似性来加速芯片之间的数据通信[36]。刘等人利用集群的并行工作模式,提出了提高掉队性能的方法。</p>
-<p>混合存储器系统。现有工程确定热点通过监视每个数据块的存储器访问行为或依赖于操作系统发现的信息来获取数据。通过监测每个数据块的内存访问行为, 可以使用获得的访问行为来识别下面访问的缓存行，并且可以执行准确的数据迁移/缓存[7]、[8]、[9]。另一方面,Prodromou等人提出利用操作系统观察到的内存访问行为，并使用多数元素算法来预测热页[1]。此外,研究人员将计算能力集成到堆叠的DRAM中，这进一步减少了内存流量,并为内存密集型应用提供了更高的效率[37] ,[38]。</p>
-<h1 id="4-围绕该问题作者如何构建解决思路（Design）"><a href="#4-围绕该问题作者如何构建解决思路（Design）" class="headerlink" title="4.围绕该问题作者如何构建解决思路（Design）"></a>4.围绕该问题作者如何构建解决思路（Design）</h1><h2 id="4-1-Similarity-Monitor"><a href="#4-1-Similarity-Monitor" class="headerlink" title="4.1 Similarity Monitor"></a>4.1 Similarity Monitor</h2><p>提出了一种量化方法来测量节点之间的内存访问相似度，<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/97d94f0e504f4a95936dca253e9c8429.png">将来自所有节点的MAB聚合为全局内存访问行为向量(<strong>GMABV</strong>) ,生成每节点内存访问行为矢量(<strong>PMABV</strong>) ，并计算PMABV之间的距离作为相似性。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/f907559fea214cc1b9b62e61ce11e4ef.png"><br>比较两种共享方案，全局共享无法为不规则应用提供高的共享精度，因为并非每个MAB都对其他节点有帮助。相反,选择性共享按需共享MAB,这会给部署的节点带来性能开销。由于MAB共享不准确,这两种方法都存在性能损失，GS和SS的性能损失分别高达13.1%和15.4%， 这表明在不规则应用的情况下需要一种有效的MAB共享方案。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># Similarity-Based Sharing</span>
-Input: Receiving access behavior AccBhv from <span class="token function">node</span> k
-	<span class="token keyword">if</span> AccBhv <span class="token keyword">in</span> GMABV <span class="token keyword">then</span>
-		<span class="token keyword">if</span> <span class="token function">node</span> k belongs to a Similarity Group <span class="token keyword">then</span>
-			Forward AccBhv to nodes within the group with global sharing
-	<span class="token keyword">else</span>
-		Perform selective sharing with all Low Similarity nodes
-	end <span class="token keyword">if</span>
-	Update metadata
-	<span class="token keyword">else</span>
-	Update PMABV , GMABV and Similarity Matrix
-	end <span class="token keyword">if</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="4-2-Access-Behavior-Buffer"><a href="#4-2-Access-Behavior-Buffer" class="headerlink" title="4.2 Access Behavior Buffer"></a>4.2 Access Behavior Buffer</h2><p>根据SMABS的设计，节点之间只共享当前工作集的MAB，这减轻了每个节点上MAB监控带来的开销。此外，由于每个节点处理的大量结构化数据和HPC应用程序中丰富的循环，跨节点的多个内存页共享相同的MAB。因此，即使是单个共享MAB也可以描述相应节点内多个页面的访问行为。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c8a23de4e70141a0a79a68b7c4769a7d.png"><br>如图访问行为缓冲区的一个条目。状态和覆盖比特都确定新观察到的MAB是否将被发送到相似性监视器以进行相似性更新。而起始地址和覆盖页是用来快速识别内存请求的滑动窗口部分。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e6b261c2909546e593d09f8c527e1daf.png"></p>
-<h2 id="4-3-Swap-Executor"><a href="#4-3-Swap-Executor" class="headerlink" title="4.3 Swap Executor"></a>4.3 Swap Executor</h2><p>为了利用访问行为缓冲区中缓冲的M4B,交换执行器用于通过使用共享M4B作为“配方”来执行底层混合存储器系统的数据放置。</p>
-<h2 id="4-4-SM-HMS-Overview"><a href="#4-4-SM-HMS-Overview" class="headerlink" title="4.4 SM-HMS Overview"></a>4.4 SM-HMS Overview</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d1f03539af6148d385ff12d71c165eaf.png"></p>
-<h1 id="5-从结果看，作者如何有力证明他解决了问题"><a href="#5-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="5.从结果看，作者如何有力证明他解决了问题"></a>5.从结果看，作者如何有力证明他解决了问题</h1><p>在模拟器上运行的，首先是作业完成时间比较：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/02a690c97d864595a981b18d199b8106.png"><br>之后是IPC比较：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/963bb9358e614c849013917e811a2781.png"><br>还讨论了相应的参数敏感性、堆叠命中率（不过这都是针对片内DRAM的了）延迟和带宽的收益应该是来自于共享吧。之后容量占用之类的数据都很好，不放图片了。</p>
-<p>我们对由多达256个节点组成的各种集群配置上的一组不规则应用程序的评估结果表明， SM-HMS在完成时间减少方面优于最先进的方法Cameo、Chameleon和Hyrbid2 ， 分别减少了58.6%、56.7%和31.3%， 平均减少了46.1%、41 .6%和19.3%。与理想的混合存储系统相比， SM-HMS的效率高达98.6%(平均91.9% )。此外,在常规应用.上的实验表明，所提出的<br>SM-HMS有利于更广泛的HPC应用。</p>
-<h1 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6.缺陷和改进思路"></a>6.缺陷和改进思路</h1><p>这些最开始设置的5类MAB分别是啥？到底是怎么将访问行为表示为向量的，<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a85a47828a004423ad5a501188b6a2b2.png"></p>
-<h1 id="7-创新点"><a href="#7-创新点" class="headerlink" title="7.创新点"></a>7.创新点</h1><p>应该就是利用相似性去做，减少了一些重复操作？从根本上讲, SMHMS区别于存在通过根据量化的内存访问相似性在工作节点之间共享内存访问行为, 并将共享的内存访问行为作为“配方”来执行准确和知情的缓存替换,从而提高了堆叠DRAM的利用率,并相应地降低了元数据开销。</p>
-<h1 id="8-该论文的相关资料"><a href="#8-该论文的相关资料" class="headerlink" title="8.该论文的相关资料"></a>8.该论文的相关资料</h1><p>srds，中文名作者一般都不会公布什么资料。</p>
+                <p>内存回收机制主要依赖于三个字段LOW MIN HIGH</p>
+<p>watermark有以下两种主要实现方式:<br>地址watermark - 在物理内存的某个地址处写入一个特殊的值,这个地址就是watermark。当内存使用量达到watermark地址时,就表示内存已使用到一定程度,可能需要采取相应措施(如结束某些进程释放内存等)。<br>值watermark - 内存中有一个变量用于存储一个数值,这个数值就是watermark。它可以表示当前内存已使用的百分比或者剩余内存的大小。当该值达到事先设置的阈值时,就触发相应的内存调节机制。</p>
+<p>在x86 Linux上,内存watermark主要采用预先设置好的物理地址来反映内存使用状态,根据地址是否被占用来决定是否需要内存回收或进程终止。</p>
 
                 
             </div>
@@ -578,7 +530,7 @@ Input: Receiving access behavior AccBhv from <span class="token function">node</
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/10/15/Exploring-Memory-Access-Similarity-to-Improve-Irregular-Application-Performance-for-Distributed/">http://ytirus.github.io/2023/10/15/Exploring-Memory-Access-Similarity-to-Improve-Irregular-Application-Performance-for-Distributed/</a>
+                    <a href="http://ytirus.github.io/2023/10/27/watermark/">http://ytirus.github.io/2023/10/27/watermark/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -616,12 +568,8 @@ Input: Receiving access behavior AccBhv from <span class="token function">node</
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%A0%86%E5%8F%A0DRAM/">
-                                    <span class="chip bg-color">堆叠DRAM</span>
+                                <a href="/tags/watermark/">
+                                    <span class="chip bg-color">watermark</span>
                                 </a>
                             
                         </div>
@@ -665,49 +613,48 @@ Input: Receiving access behavior AccBhv from <span class="token function">node</
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/10/15/Transparent-memory-offloading-in-datacenters/">
+                <a href="/2023/10/27/watermark/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/35bf4ada06834da894f7c606466dbe8d.png" class="responsive-img" alt="Transparent memory offloading in datacenters">
                         
-                        <span class="card-title">Transparent memory offloading in datacenters</span>
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="watermark">
+                        
+                        <span class="card-title">watermark</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在不显著影响性能的情况下自动地offload DRAM到更便宜的存储介质中为数据中心节约内存
+                            
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-15
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-27
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/watermark/">
+                        <span class="chip bg-color">watermark</span>
                     </a>
                     
                 </div>
@@ -721,30 +668,31 @@ Input: Receiving access behavior AccBhv from <span class="token function">node</
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/10/13/Exploring-the-Design-Space-of-Page-Management-for-Multi-Tiered-Memory-Systems/">
+                <a href="/2023/10/26/%E9%80%9A%E8%BF%87PTE%E7%BB%9F%E8%AE%A1%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E6%AC%A1%E6%95%B0/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/3eaa55b57d7d44b7925221a4b1cf7dcc.png" class="responsive-img" alt="Exploring the Design Space of Page Management for Multi-Tiered Memory Systems">
                         
-                        <span class="card-title">Exploring the Design Space of Page Management for Multi-Tiered Memory Systems</span>
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="通过PTE统计页面访问次数">
+                        
+                        <span class="card-title">通过PTE统计页面访问次数</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            这一篇属于翻译。结合PM的混合分层NUMA架构，写的非常仔细的一篇。
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-13
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-26
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
                                 </a>
                             
                             
@@ -754,16 +702,8 @@ Input: Receiving access behavior AccBhv from <span class="token function">node</
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
-                    <a href="/tags/NUMA/">
-                        <span class="chip bg-color">NUMA</span>
+                    <a href="/tags/PTE/">
+                        <span class="chip bg-color">PTE</span>
                     </a>
                     
                 </div>
