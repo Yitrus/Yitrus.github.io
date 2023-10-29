@@ -475,7 +475,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.2k
+                    1.1k
                 </div>
                 
 
@@ -533,11 +533,7 @@
    2.2使用-append "init=/xx.sh"写一个脚本告诉内核启动阶段需要创建的目录和文件
        但这两种方式不一定能行，因为这里面的文件应该是内核自己挂载上去的才对，最初img里面的文件只有一层。而有趣的是最小的根文件系统创建的时候，有4个文件创建空文件夹，由内核启动时挂载上去就好。当需要更多文件系统的功能时，需要自己从内核文件去拿编译了的，并且创建新的文件映射。详见下面这部分的文件有没有被改。</div> 
 
-<pre><code>这里参考的链接如下,谢谢慷慨的前辈们：     
-- [利用qemu+gdb在ubuntu下搭建调试kernel的环境](https://www.cnblogs.com/haiyonghao/p/14440249.html)  
-- [Linux内核调试环境的搭建 QEMU+GDB](https://blog.cyyself.name/setup-linux-kernel-debug-environment/)  
-- [使用 GDB + Qemu 调试 Linux 内核](https://www.ebpf.top/post/qemu_gdb_busybox_debug_kernel/)  
-</code></pre>
+<p>这里参考的链接如下,谢谢慷慨的前辈们：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/haiyonghao/p/14440249.html">利用qemu+gdb在ubuntu下搭建调试kernel的环境</a><br><a target="_blank" rel="noopener" href="https://blog.cyyself.name/setup-linux-kernel-debug-environment/">Linux内核调试环境的搭建 QEMU+GDB</a><br><a target="_blank" rel="noopener" href="https://www.ebpf.top/post/qemu_gdb_busybox_debug_kernel/">使用 GDB + Qemu 调试 Linux 内核</a>  </p>
 <ol start="3">
 <li>启动命令<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">qemu-system-x86_64 <span class="token punctuation">\</span>
 	<span class="token parameter variable">-kernel</span> /home/yi/Downloads/kernel/longterm/linux-5.4.259/arch/x86_64/boot/bzImage <span class="token punctuation">\</span>
@@ -719,18 +715,17 @@ clash <span class="token parameter variable">-d</span> ~/.config/clash<span aria
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/10/29/Linux%E5%86%85%E6%A0%B8%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BAQEMU-GDB/">
+                <a href="/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Linux内核调试环境的搭建QEMU+GDB">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="小实验:cgroup限制应用程序和namespace的内存">
                         
-                        <span class="card-title">Linux内核调试环境的搭建QEMU+GDB</span>
+                        <span class="card-title">小实验:cgroup限制应用程序和namespace的内存</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -740,9 +735,9 @@ clash <span class="token parameter variable">-d</span> ~/.config/clash<span aria
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -755,16 +750,11 @@ clash <span class="token parameter variable">-d</span> ~/.config/clash<span aria
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/qemu/">
-                        <span class="chip bg-color">qemu</span>
-                    </a>
-                    
-                    <a href="/tags/gdb/">
-                        <span class="chip bg-color">gdb</span>
+                    <a href="/tags/cgroup/">
+                        <span class="chip bg-color">cgroup</span>
                     </a>
                     
                 </div>
@@ -969,7 +959,7 @@ clash <span class="token parameter variable">-d</span> ~/.config/clash<span aria
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">104.1k</span>&nbsp;字
+                class="white-color">104.6k</span>&nbsp;字
             
             
             

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems, Yi&#39;s Blog">
+    <meta name="keywords" content="小实验:cgroup限制应用程序和namespace的内存, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems | Yi&#39;s Blog</title>
+    <title>小实验:cgroup限制应用程序和namespace的内存 | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/76369fa4b49c432fa9e498567df6adf4.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems</h1> -->
+                    <!-- <h1 class="description center-align post-title">小实验:cgroup限制应用程序和namespace的内存</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
-                            </a>
-                        
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
+                            <a href="/tags/cgroup/">
+                                <span class="chip bg-color">cgroup</span>
                             </a>
                         
                     </div>
@@ -453,8 +449,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Paper/" class="post-category">
-                                Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                Basics
                             </a>
                         
                     </div>
@@ -466,7 +462,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-05-02
+                    2023-10-29
                 </div>
                 
 
@@ -475,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.5k
+                    432
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    1 分
                 </div>
                 
 
@@ -505,69 +501,29 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
+                <p>Linux cgroups是Linux系统中管理和分配资源的强大工具。它们允许管理员限制进程或进程组可以使用的资源量，确保基本系统服务始终能够访问正常运行所需的资源。</p>
+<blockquote>
+<p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p>
+</blockquote>
+<h2 id="1-创建一个有内存限制的cgroup"><a href="#1-创建一个有内存限制的cgroup" class="headerlink" title="1.创建一个有内存限制的cgroup"></a>1.创建一个有内存限制的cgroup</h2><p>为了创建、管理和监控cgroup，我们需要另一个名为cgroup-tools的包<code>sudo apt install cgroup-tools</code></p>
+<p>创建内存类型的cgroup命名为memhog-limiter<code>sudo cgcreate -g memory:memhog-limiter</code>实际操作是创建了一个目录。<code>ls -la /sys/fs/cgroup/memhog-limiter/</code></p>
+<p><img src="https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p>
+<p>设置内存限制，这里有新版的cgroup的软限制是memory.high,硬限制是menory.max<code>sudo cgset -r memory.max=50M memhog-limiter</code>设置完成后可以输出查看<code>cat  /sys/fs/cgroup/memhog-limiter/memory.max</code></p>
+<p><img src="https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p>
+<h2 id="2-去限制内存"><a href="#2-去限制内存" class="headerlink" title="2. 去限制内存"></a>2. 去限制内存</h2><p>创建一个吃内存的脚本</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> memhog 100M<span class="token punctuation">;</span> <span class="token assign-left variable">id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>pgrep memhog<span class="token variable">)</span></span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$id</span>"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">20</span><span class="token punctuation">;</span> <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>运行脚本<code>sudo cgexec -g memory:memhog-limiter ./memhog.sh</code>查看这个内存控制组里的pid<code>cat  /sys/fs/cgroup/memhog-limiter/cgroup.procs</code></p>
+<p><img src="https://img-blog.csdnimg.cn/98414239c59242a1b9a5d84302694121.png"></p>
+<p>显然没有控制住，emmmm到底什么原因还在找。</p>
+<h2 id="3-创建namespace"><a href="#3-创建namespace" class="headerlink" title="3. 创建namespace"></a>3. 创建namespace</h2><p><code>sudo cgexec -g memory:memhog-limiter unshare -fp --mount-proc</code></p>
+<p>To verify that you are in a new namespace<code>ps -ef</code></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token environment constant">UID</span>          PID    <span class="token environment constant">PPID</span>  C STIME TTY          TIME CMD
+root           <span class="token number">1</span>       <span class="token number">0</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token parameter variable">-bash</span>
+root          <span class="token number">12</span>       <span class="token number">1</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token function">ps</span> <span class="token parameter variable">-ef</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>新命名空间中，只有bash作为PID 1运行。因此，现在启动的每个服务都将在这个cgroup上下文中启动。</p>
+<p><code>./memhog.sh</code>应该也是被之前那样限制住的情况。</p>
 
-<ul>
-<li>文章来自ACM Transactions on Architecture and Code Optimization, (TACO), 2019</li>
-<li>Supporting Superpages and Lightweight Page Migration in Hybrid Memory Systems</li></ul></div> 
-
-<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>XIAOYUAN WANG, HAIKUN LIU, XIAOFEI LIAO, JI CHEN, HAI JIN, YU ZHANG, and LONG ZHENG, 华中科技大学</li>
-<li>BINGSHENG HE, 新加坡国立大学</li>
-<li>SONG JIANG, 德克萨斯大学阿灵顿分校(UTA)</li>
-</ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>在大内存系统中，<strong>超级页一直被用来减轻地址转换开销</strong>。 然而，在由DRAM和NVM组成的混合存储系统中，<strong>超页面往往会阻碍轻量级页面迁移，而轻量级页面迁移对性能和能量效率至关重要</strong>。 </p>
-<blockquote>
-<p>Superpages have long been used to mitigate address translation overhead in large-memory systems. However, superpages often preclude lightweight page migration, which is crucial for performance and energy efficiency in hybrid memory systems composed of DRAM and NVM.</p>
-</blockquote>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><ol>
-<li>如果大多数内存引用<strong>分布在超级页的一个小区域中</strong>，那么以超级页粒度（例如2MB）进行的页迁移会导致DRAM容量和带宽的巨大浪费，从而导致无法承受的性能开销。 成本可能比超级页面迁移的好处还要大。 这给超级页面的使用带来了一个困境，因为<strong>轻量级页面迁移可能会超过扩展TLB覆盖的好处</strong>。 </li>
-</ol>
-<blockquote>
-<p>However, page migration at the superpage granularity (e.g., 2MB) can incur unbearable performance overhead due to a vast waste of DRAM capacity and bandwidth if most memory references are distributed in a small region ofthe superpage (see Section 2.2). The cost may be even larger than the benefit of superpage migration. This presents a dilemma for the use of superpages,<br>since the lightweight page migration can outweigh the benefits of extended TLB coverage.</p>
-</blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bea989a85a31">累积分布函数图怎么看</a><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/6d3b808800554ed3b2d0a153353c4e26.png" alt="2MB超级页的累积分布函数与给定区间(108个周期)内一个超级页中被触及的4KB小页的数量"><br>从图中可以看到，很大一部分工作负载有80%以上的概率：2MB的页面中被访问的4kb页面只有12.5%。<br>还有一张表格来说明问题：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/abbbcb642622478cb35fd087610a7f69.png" alt="4kb热页访问统计"><br>使用的工作负载：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.spec.org/cpu2006">SPEC CPU2006</a></li>
-<li><a target="_blank" rel="noopener" href="http://parsec.cs.princeton.edu/index.htm">Parsec</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.cs.cmu.edu/%E2%88%BCpbbs/">Problem Based Benchmarks Suit（PBBS）</a></li>
-<li><a target="_blank" rel="noopener" href="http://whitedb.org/">WhiteDB</a></li>
-<li><a target="_blank" rel="noopener" href="https://redis.io/">Redis</a></li>
-<li><a target="_blank" rel="noopener" href="http://graph500.org/">Graph500</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.netlib.org/benchmark/">Linpack</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.nas.nasa.gov/publications/npb.html">NPB-CG</a></li>
-<li><a target="_blank" rel="noopener" href="http://icl.cs.utk.edu/hpcc/">HPC Challenge Benchmark GUPS</a></li>
-</ul>
-<ol start="2">
-<li><strong>轻量级热页的标识</strong>：为了支持轻量级页迁移，大量工作提倡通过内存控制器监视内存访问。 然而，当<strong>主存容量变大时</strong>，以每页粒度（即4KB）使用<strong>访问计数器会导致高得令人望而却步的存储开销</strong>。</li>
-</ol>
-<blockquote>
-<p>Identification oflightweight hot pages: to support lightweight page migration, a large body of work advocates monitoring memory accesses through the memory controller [55, 63]. However, using access counters at per-page granularity (i.e., 4KB) leads to prohibitively high storage overhead when the capacity of main memory becomes large.</p>
-</blockquote>
-<ol start="3">
-<li>轻量级页面迁移对TLB覆盖率的影响：页面迁移通常会<strong>分割超级页面</strong>，从而<strong>破坏物理地址的连续性</strong>。 </li>
-</ol>
-<blockquote>
-<p>Impact oflightweight page migration on TLB coverage: page migrations often fragment superpages and thus break the physical address continuity.</p>
-</blockquote>
-<ol start="4">
-<li>热页寻址效率：由于热页占应用程序内存引用的主要部分，因此必须进一步<strong>减少DRAM中那些热页的地址转换开销</strong>。 </li>
-</ol>
-<blockquote>
-<p>Efficiency of hot pages addressing:ashot pages<br>contribute to a major portion of applications’ memory references, it is essential to further reduce<br>the overhead of address translation for those hot pages in the DRAM.</p>
-</blockquote>
-<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>以前的工作主张分割超级页面以实现轻量级内存管理，如页面迁移和共享，同时牺牲地址转换的性能[37,58]当<strong>超级页面中的热小页面迁移到DRAM时，保持改进的TLB覆盖率</strong>仍然是一个挑战。</p>
-<blockquote>
-<p>Previous work has advocated splintering superpages to enable lightweight memory management such as page migration and sharing, while sacrificing the performance of address translation [37,58]. It is still a challenge to retain the improved TLB coverage when the hot small pages within superpages are migrated to the DRAM.</p>
-</blockquote>
-<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>针对上述问题，提出了一种新的内存管理机制Rainbow, Rainbow在Superpage粒度上管理NVM，并使用DRAM在每个Superpage内缓存频繁访问（热）的小页面。相应地，Rainbow利用拆分TLB[2,7,30,52]的可用硬件特性来支持不同的页面大小，其中一个TLB用于寻址超级页面，另一个TLB用于寻址小页面。 Rainbow将SuperPage中的热小页迁移到DRAM中，而不会损害SuperPage TLB的完整性。 因此，Rainbow实际上将DRAM架构为NVM的缓存。</p>
-<ul>
-<li>为了减少细粒度页面访问计数的存储开销，分两个阶段进行计数。在<strong>给定的时间间隔内</strong>，Rainbow<strong>首先计算Superpage粒度下的NVM内存访问</strong>，然后选择<strong>前N个热门Superpage作为目标</strong>。 在第二阶段，我们<strong>只监视那些小页面</strong>(4KB)粒度的热点超页面，以识别热点小页面。 这种基于历史的策略避免了监视大量冷超页中的子块（4KB页），从而显著降低了热页识别的开销。 </li>
-<li>我们采用<strong>拆分TLB</strong>来加速DRAM和NVM引用的地址转换性能。当一些小页迁移到DRAM时，为了保持SuperPages TLB的完整性，我们在内存控制器中使用位图来识别迁移的热页，而<strong>不会分裂SuperPages</strong>。</li>
-<li>我们提出了一种<strong>物理地址重映射机制来访问DRAM中迁移的热页</strong>，而不必为寻址DRAM页而遭受昂贵的页表遍历。为了实现这一目标，我们将迁移的热点页面的目的地址存储在其原始住所（超级页面）中。 一旦热页对应的TLB未命中，DRAM页寻址应求助于对超级页的间接访问。这种设计在逻辑上利用了SuperPage TLBS作为4KB页面TLB的下一级缓存。 因为Superpage TLB命中率通常很高，所以Rainbow可以显著加快DRAM页面寻址的速度。 </li>
-</ul>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>实验结果表明，与现有的内存迁移策略相比，在没有Superpage支持的情况下，Rainbow可以将应用程序的TLB丢失率降低99.9%，并将应用程序的性能（以OFIPC为标准）平均提高2.9×(45.3%)。</p>
-<h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2>
                 
             </div>
             <hr/>
@@ -593,7 +549,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/">http://ytirus.github.io/2023/05/02/Supporting-Superpages-and-Lightweight-Page-Migration-in-Hybrid-Memory-Systems/</a>
+                    <a href="http://ytirus.github.io/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/">http://ytirus.github.io/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -631,12 +587,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
-                                </a>
-                            
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
+                                <a href="/tags/cgroup/">
+                                    <span class="chip bg-color">cgroup</span>
                                 </a>
                             
                         </div>
@@ -680,50 +632,48 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/05/20/Coalescing-for-Multi-Grained-Page-Migration/">
+                <a href="/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Coalescing for Multi-Grained Page Migration">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="小实验:cgroup限制应用程序和namespace的内存">
                         
-                        <span class="card-title">Coalescing for Multi-Grained Page Migration</span>
+                        <span class="card-title">小实验:cgroup限制应用程序和namespace的内存</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            NVM连续小页迁移至DRAM形成2MB以下任意粒度大页，迁移方式上TLB凝聚是创新点。
+                            
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-05-20
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                    <a href="/tags/O/">
-                        <span class="chip bg-color">O</span>
+                    <a href="/tags/cgroup/">
+                        <span class="chip bg-color">cgroup</span>
                     </a>
                     
                 </div>
@@ -737,30 +687,31 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/05/01/Stealth-Persist-Architectural-Support-for-Persistent-Applications-in-Hybrid-Memory-Systems/">
+                <a href="/2023/10/29/Linux%E5%86%85%E6%A0%B8%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BAQEMU-GDB/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d916d5cd134a4909a11c4901a00fe76b.png" class="responsive-img" alt="Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems">
                         
-                        <span class="card-title">Stealth-Persist: Architectural Support for Persistent Applications in Hybrid Memory Systems</span>
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Linux内核调试环境的搭建QEMU+GDB">
+                        
+                        <span class="card-title">Linux内核调试环境的搭建QEMU+GDB</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            实现NVM的快速持久的DRAM缓存，我们利用选择性的NVM镜像对缓存在DRAM中的持久页面进行了新的内存控制器。
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-05-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
                                 </a>
                             
                             
@@ -770,12 +721,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/qemu/">
+                        <span class="chip bg-color">qemu</span>
                     </a>
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/gdb/">
+                        <span class="chip bg-color">gdb</span>
                     </a>
                     
                 </div>
