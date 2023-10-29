@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="watermark, Yi&#39;s Blog">
+    <meta name="keywords" content="Direct Access, High-Performance Memory Disaggregation with DIRECTCXL, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>watermark | Yi&#39;s Blog</title>
+    <title>Direct Access, High-Performance Memory Disaggregation with DIRECTCXL | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">watermark</h1> -->
+                    <!-- <h1 class="description center-align post-title">Direct Access, High-Performance Memory Disaggregation with DIRECTCXL</h1> -->
                 </div>
             </div>
         </div>
@@ -437,8 +437,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/watermark/">
-                                <span class="chip bg-color">watermark</span>
+                            <a href="/tags/A/">
+                                <span class="chip bg-color">A</span>
                             </a>
                         
                     </div>
@@ -449,8 +449,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Basics/" class="post-category">
-                                Basics
+                            <a href="/categories/Paper/" class="post-category">
+                                Paper
                             </a>
                         
                     </div>
@@ -462,7 +462,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-10-27
+                    2023-10-29
                 </div>
                 
 
@@ -471,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    236
+                    717
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -501,9 +501,20 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>内存回收机制主要依赖于三个字段LOW MIN HIGH</p>
-<p>watermark有以下两种主要实现方式:<br>地址watermark - 在物理内存的某个地址处写入一个特殊的值,这个地址就是watermark。当内存使用量达到watermark地址时,就表示内存已使用到一定程度,可能需要采取相应措施(如结束某些进程释放内存等)。<br>值watermark - 内存中有一个变量用于存储一个数值,这个数值就是watermark。它可以表示当前内存已使用的百分比或者剩余内存的大小。当该值达到事先设置的阈值时,就触发相应的内存调节机制。</p>
-<p>在x86 Linux上,内存watermark主要采用预先设置好的物理地址来反映内存使用状态,根据地址是否被占用来决定是否需要内存回收或进程终止。</p>
+                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary no-icon">
+
+<ul>
+<li>文章来自2022 USENIX Annual Technical Conference,CCFA</li>
+<li>Direct Access, High-Performance Memory Disaggregation with DIRECTCXL</li>
+</ul>
+</div> 
+
+<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
+<li> Donghyun Gouk, Sangwon Lee, Miryeong Kwon, Myoungsoo Jung. KAIST CAMELab.</li>
+</ul>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>Memory disaggregation是什么？<br>一种服务器内存架构,其核心思想是将服务器内存从计算节点（CPU）上分离出来,形成一个可独立扩展的内存资源池,然后再根据需要将内存资源动态分配给各个计算节点使用。（将内存资源解耦，使多个计算节点可以访问一个集中式内存池，而不必依赖本地内存。）</p>
+<p>我们可以根据现有的内存分解运行时如何管理主机和内存服务器之间的数据，将其大致分为两种不同的方法：i）基于页面和ii）基于对象。基于页面的方法[4-10]利用虚拟内存技术来使用分解内存，而无需更改代码。在发生页面错误时，它通过网络将驻留在主机本地DRAM上的页面缓存数据与远程内存系统进行交换。另一方面，基于对象的方法使用自己的数据库（例如键值存储）从远程处理分解内存，而不是利用虚拟内存系统[11-16]。这种方法可以解决地址转换带来的挑战（例如，页面错误、上下文切换和写放大），但它需要大量的源代码级别修改和接口更改。</p>
+<p>虽然有很多变体，但所有现有方法都需要通过远程直接内存访问（RDMA）[4,5,11–13,15,16]（或类似的细粒度网络接口 [7,9,10,17]）将数据从远程内存移动到主机内存。此外，它们甚至需要管理主机或内存节点中本地缓存的数据。不幸的是，数据移动及其伴随操作（例如页面缓存管理）引入了冗余内存副本和软件结构干预，这使得分解内存的延迟比本地DRAM访问的延迟长多个数量级。在这项工作中，我们提倡计算快速链路（CXL [18]），这是开放式行业标准互连的新概念，在多个主机处理器、硬件加速器和I/O设备之间提供高性能连接[19]。 CXL最初的设计目的是实现跨不同处理器复合体的异构管理的卓越性，但业界和学术界都预计其缓存一致性能力可以帮助提高内存利用率并以低延迟缓解内存过度配置[20-22]。尽管CXL展现出以低成本和高性能实现内存分解的巨大潜力，但它尚未投入生产，并且没有平台将内存集成到内存池网络中。</p>
 
                 
             </div>
@@ -530,7 +541,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/10/27/watermark/">http://ytirus.github.io/2023/10/27/watermark/</a>
+                    <a href="http://ytirus.github.io/2023/10/29/Direct-Access-High-Performance-Memory-Disaggregation-with-DIRECTCXL/">http://ytirus.github.io/2023/10/29/Direct-Access-High-Performance-Memory-Disaggregation-with-DIRECTCXL/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -568,8 +579,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/watermark/">
-                                    <span class="chip bg-color">watermark</span>
+                                <a href="/tags/A/">
+                                    <span class="chip bg-color">A</span>
                                 </a>
                             
                         </div>
@@ -613,17 +624,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/10/29/Linux%E5%86%85%E6%A0%B8%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BAQEMU-GDB/">
+                <a href="/2023/10/29/Direct-Access-High-Performance-Memory-Disaggregation-with-DIRECTCXL/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Linux内核调试环境的搭建QEMU+GDB">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Direct Access, High-Performance Memory Disaggregation with DIRECTCXL">
                         
-                        <span class="card-title">Linux内核调试环境的搭建QEMU+GDB</span>
+                        <span class="card-title">Direct Access, High-Performance Memory Disaggregation with DIRECTCXL</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -633,30 +645,27 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Basics/" class="post-category">
-                                    Basics
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/qemu/">
-                        <span class="chip bg-color">qemu</span>
-                    </a>
-                    
-                    <a href="/tags/gdb/">
-                        <span class="chip bg-color">gdb</span>
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
                     </a>
                     
                 </div>
@@ -670,13 +679,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/10/26/%E9%80%9A%E8%BF%87PTE%E7%BB%9F%E8%AE%A1%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E6%AC%A1%E6%95%B0/">
+                <a href="/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="通过PTE统计页面访问次数">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="小实验:cgroup限制应用程序和namespace的内存">
                         
-                        <span class="card-title">通过PTE统计页面访问次数</span>
+                        <span class="card-title">小实验:cgroup限制应用程序和namespace的内存</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -687,7 +696,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
                             </span>
                         <span class="publish-author">
                             
@@ -704,8 +713,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/PTE/">
-                        <span class="chip bg-color">PTE</span>
+                    <a href="/tags/cgroup/">
+                        <span class="chip bg-color">cgroup</span>
                     </a>
                     
                 </div>
