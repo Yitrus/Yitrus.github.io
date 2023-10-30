@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Linux内核调试环境的搭建QEMU+GDB, Yi&#39;s Blog">
+    <meta name="keywords" content="Linux x86内核调试环境搭建QEMU+GDB, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Linux内核调试环境的搭建QEMU+GDB | Yi&#39;s Blog</title>
+    <title>Linux x86内核调试环境搭建QEMU+GDB | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Linux内核调试环境的搭建QEMU+GDB</h1> -->
+                    <!-- <h1 class="description center-align post-title">Linux x86内核调试环境搭建QEMU+GDB</h1> -->
                 </div>
             </div>
         </div>
@@ -529,12 +529,12 @@
 <span class="token function">sudo</span> <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">'echo "#!/bin/sh\nmount -t proc none /proc\nmount -t sysfs none /sys\nln -s /dev/null /dev/tty2\nln -s /dev/null /dev/tty3\nln -s /dev/null /dev/tty4\nexit 0" &gt; etc/init.d/rcS'</span>
 <span class="token function">sudo</span> <span class="token function">chmod</span> a+x etc/init.d/rcS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ol>
- <div class="note info no-icon">但是我的要求应该不止根文件系统，还需要更丰富的文件系统。
-   2.1在创建文件镜像的时候加入那些目录。
-   2.2使用-append "init=/xx.sh"写一个脚本告诉内核启动阶段需要创建的目录和文件
+ <div class="note info no-icon">但是我的要求应该不止最小根文件系统，还需要更丰富的根文件系统。对于4.15用于采样的那个内核最小根文件系统cgroup文件夹就是没法挂载上的。一些可能有效的方法：
+- 2.1在创建文件镜像的时候加入那些目录。
+- 2.2使用-append "init=/xx.sh"写一个脚本告诉内核启动阶段需要创建的目录和文件
        但这两种方式不一定能行，因为这里面的文件应该是内核自己挂载上去的才对，最初img里面的文件只有一层。而有趣的是最小的根文件系统创建的时候，有4个文件创建空文件夹，由内核启动时挂载上去就好。当需要更多文件系统的功能时，需要自己从内核文件去拿编译了的，并且创建新的文件映射。详见下面这部分的文件有没有被改。</div> 
 
-<p>这里参考的链接如下,谢谢慷慨的前辈们：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/haiyonghao/p/14440249.html">利用qemu+gdb在ubuntu下搭建调试kernel的环境</a><br><a target="_blank" rel="noopener" href="https://blog.cyyself.name/setup-linux-kernel-debug-environment/">Linux内核调试环境的搭建 QEMU+GDB</a><br><a target="_blank" rel="noopener" href="https://www.ebpf.top/post/qemu_gdb_busybox_debug_kernel/">使用 GDB + Qemu 调试 Linux 内核</a>  </p>
+<p>这里参考的链接如下,谢谢慷慨的前辈们：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/haiyonghao/p/14440249.html">利用qemu+gdb在ubuntu下搭建调试kernel的环境</a><br><a target="_blank" rel="noopener" href="https://blog.cyyself.name/setup-linux-kernel-debug-environment/">Linux内核调试环境的搭建QEMU+GDB</a><br><a target="_blank" rel="noopener" href="https://www.ebpf.top/post/qemu_gdb_busybox_debug_kernel/">使用GDB+Qemu调试Linux内核</a>  </p>
 <ol start="3">
 <li>启动命令<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">qemu-system-x86_64 <span class="token punctuation">\</span>
 	<span class="token parameter variable">-kernel</span> /home/yi/Downloads/kernel/longterm/linux-5.4.259/arch/x86_64/boot/bzImage <span class="token punctuation">\</span>
@@ -546,7 +546,7 @@
 	<span class="token parameter variable">-S</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ol>
 <h2 id="3-更丰富的调试环境"><a href="#3-更丰富的调试环境" class="headerlink" title="3. 更丰富的调试环境"></a>3. 更丰富的调试环境</h2><p><span class="label primary">Ubuntu系统提供debootstrap工具快速创建指定架构的根文件系统。</span></p>
-<h3 id="3-1-根文件系统的制作"><a href="#3-1-根文件系统的制作" class="headerlink" title="3.1 根文件系统的制作"></a>3.1 根文件系统的制作</h3><p>只使用最小的根文件系统是横有局限性的，很多调试的工具都没法用，现在试图做一个更丰富的根文件。<br>这些文件来自<a target="_blank" rel="noopener" href="https://github.com/figozhang/runninglinuxkernel_5.0">笨叔的奔跑吧</a></p>
+<h3 id="3-1-根文件系统的制作"><a href="#3-1-根文件系统的制作" class="headerlink" title="3.1 根文件系统的制作"></a>3.1 根文件系统的制作</h3><p>只使用最小的根文件系统是很有局限性的，很多调试的工具都没法用，现在试图做一个更丰富的根文件。<br>这些文件来自<a target="_blank" rel="noopener" href="https://github.com/figozhang/runninglinuxkernel_5.0">笨叔的奔跑吧</a></p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> rootfs_debian_x86_64.part0* <span class="token operator">&gt;</span> rootfs_debian_x86_64.tar.xz
 <span class="token function">sudo</span> <span class="token function">tar</span> Jxf rootfs_debian_x86_64.tar.xz
 <span class="token function">mkdir</span> <span class="token parameter variable">-p</span> /home/yi/Documents/rootfsAdvance
