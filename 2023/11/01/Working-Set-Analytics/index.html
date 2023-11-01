@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Direct Access, High-Performance Memory Disaggregation with DIRECTCXL, Yi&#39;s Blog">
+    <meta name="keywords" content="Working Set Analytics, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Direct Access, High-Performance Memory Disaggregation with DIRECTCXL | Yi&#39;s Blog</title>
+    <title>Working Set Analytics | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c6fa0871c9e64650a0a23a410649c60c.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Direct Access, High-Performance Memory Disaggregation with DIRECTCXL</h1> -->
+                    <!-- <h1 class="description center-align post-title">Working Set Analytics</h1> -->
                 </div>
             </div>
         </div>
@@ -437,20 +437,12 @@
                     
                     <div class="article-tag">
                         
+                            <a href="/tags/Hybrid-Memory-Systems/">
+                                <span class="chip bg-color">Hybrid Memory Systems</span>
+                            </a>
+                        
                             <a href="/tags/A/">
                                 <span class="chip bg-color">A</span>
-                            </a>
-                        
-                            <a href="/tags/CXL2-0/">
-                                <span class="chip bg-color">CXL2.0</span>
-                            </a>
-                        
-                            <a href="/tags/RDMA/">
-                                <span class="chip bg-color">RDMA</span>
-                            </a>
-                        
-                            <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
-                                <span class="chip bg-color">内存分解</span>
                             </a>
                         
                     </div>
@@ -474,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-10-29
+                    2023-11-01
                 </div>
                 
 
@@ -483,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.4k
+                    0
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    12 分
+                    1 分
                 </div>
                 
 
@@ -513,52 +505,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary no-icon">
-
-<ul>
-<li>文章来自2022 USENIX Annual Technical Conference,CCFA</li>
-<li>Direct Access, High-Performance Memory Disaggregation with DIRECTCXL</li></ul></div> 
-
-<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li> Donghyun Gouk, Sangwon Lee, Miryeong Kwon, Myoungsoo Jung. KAIST CAMELab.</li>
-</ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h3 id="Memory-disaggregation是什么？"><a href="#Memory-disaggregation是什么？" class="headerlink" title="Memory disaggregation是什么？"></a>Memory disaggregation是什么？</h3><p>一种服务器内存架构,其核心思想是将服务器内存从计算节点（CPU）上分离出来,形成一个可独立扩展的内存资源池,然后再根据需要将内存资源动态分配给各个计算节点使用。（将内存资源解耦，使多个计算节点可以访问一个集中式内存池，而不必依赖本地内存。）</p>
-<h3 id="远端直接内存访问RDMA怎么做的？"><a href="#远端直接内存访问RDMA怎么做的？" class="headerlink" title="远端直接内存访问RDMA怎么做的？"></a>远端直接内存访问RDMA怎么做的？</h3><p>对于后端网络控制，大多数分解工作采用远程直接内存访问（RDMA）[4,5,11–13,15,16]或类似的定制DMA协议[7,9,10]。图1显示了RDMA式数据传输（单侧RDMA）的工作原理。对于主机和内存节点端，RDMA都需要RDMA NIC（RNIC[23]）等硬件支持，其设计目的是尽可能消除网络软件堆栈的干预。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9128ea4c40a043d9bd581017c6274724.png"><br>为了在它们之间移动数据，每一侧的进程首先需要定义一个或多个存储区域（MR）并让MR到达底层RNIC。在此期间，RNIC驱动程序检查与MR页面关联的所有物理地址，并将它们注册到RNIC的内存转换表（MTT）。</p>
-<p>由于这两个RNIC还在初始化时交换其MR的虚拟地址，因此主机可以简单地将内存节点的目标虚拟地址与数据一起发送以进行写入。然后，远程节点通过参考其MTT来转换地址，并将传入数据复制到MR的目标位置。通过RDMA的读取也可以以类似的方式执行。请注意，除了内存复制操作（对于DMA）之外，每一方的应用程序还需要准备数据到MR中或从MR中检索数据以进行数据传输，从而在本地DRAM中引入额外的数据副本[24]。</p>
-<p>（说到底就是需要复制很多次吧）</p>
-<h3 id="基于页面的内存池————SWAP"><a href="#基于页面的内存池————SWAP" class="headerlink" title="基于页面的内存池————SWAP"></a>基于页面的内存池————SWAP</h3><p>基于页面的内存分解[4-10]通过依赖虚拟内存系统实现内存弹性。具体来说，这种方法会在出现缺页异常时将数据交换到远程内存节点而不是底层存储。主机kswapd下的分解驱动程序将传入的块地址转换为内存节点的虚拟地址，目标页面复制到RNIC的MR并向内存节点发出相应的RDMA请求。</p>
-<p>当对远程内存的请求过多时，由于页面错误处理、I/O 放大和上下文切换的开销，基于页面的系统会遭受性能下降[16]。</p>
-<h3 id="基于对象的存储池————KVS"><a href="#基于对象的存储池————KVS" class="headerlink" title="基于对象的存储池————KVS"></a>基于对象的存储池————KVS</h3><p>基于对象的内存分解系统[11-16]使用自己的数据库（例如键值存储（KVS））直接干预RDMA数据传输。基于对象的系统为主机和内存节点端创建两个MR，每个MR处理缓冲区数据和提交/完成队列（SQ/CQ）。采用KV哈希表，其条目指向相应的（远程）内存对象。每当应用程序发出Put（或Get）请求时，系统会将相应的值放入主机的缓冲区MR中，并通过RDMA写入SQ MR的远程端来提交它。由于内存节点不断轮询SQ MR，因此它可以识别该请求。然后，内存节点通过RDMA将值复制到其缓冲区MR，并通过写入主机的CQ MR来完成请求。</p>
-<p>这种方法受到限制，因为它需要对遗留应用程序进行大量的源代码级修改。而且访问不是直接的，是通过提交完成队列间接交互的。</p>
-<h3 id="CXL优势"><a href="#CXL优势" class="headerlink" title="CXL优势"></a>CXL优势</h3><p>FlexBus指的是CXL定义的互连架构。CXL.mem允许主机通过PCIe总线直接访问底层内存,而不是通过像PCIe这样的外设互连协议。（CXL基于PCI Express 5.0物理层，速度高达 32GT/s。）</p>
-<p>CXL最初的设计目的是实现跨不同处理器复合体的异构管理的卓越性，但业界和学术界都预计其缓存一致性能力可以帮助提高内存利用率并以低延迟缓解内存过度配置[20-22]。</p>
-<h2 id="3-其他学者解决这个问题的思路和缺陷"><a href="#3-其他学者解决这个问题的思路和缺陷" class="headerlink" title="3. 其他学者解决这个问题的思路和缺陷"></a>3. 其他学者解决这个问题的思路和缺陷</h2><p>我们可以根据现有的内存分解运行时如何管理主机和内存服务器之间的数据，将其大致分为两种不同的方法：i）基于页面和ii）基于对象。基于页面的方法[4-10]利用虚拟内存技术来使用分解内存，而无需更改代码。在发生页面错误时，它通过网络将驻留在主机本地DRAM上的页面缓存数据与远程内存系统进行交换。另一方面，基于对象的方法使用自己的数据库（例如键值存储）从远程处理分解内存，而不是利用虚拟内存系统[11-16]。这种方法可以解决地址转换带来的挑战（例如，页面错误、上下文切换和写放大），但它需要大量的源代码级别修改和接口更改。</p>
-<p>虽然有很多变体，但所有现有方法都需要通过远程直接内存访问（RDMA）[4,5,11–13,15,16]（或类似的细粒度网络接口 [7,9,10,17]）将数据从远程内存移动到主机内存。此外，它们甚至需要管理主机或内存节点中本地缓存的数据。不幸的是，数据移动及其伴随操作（例如页面缓存管理）引入了冗余内存副本和软件结构干预，这使得分解内存的延迟比本地DRAM访问的延迟长多个数量级。</p>
-<h2 id="4-解决了什么问题"><a href="#4-解决了什么问题" class="headerlink" title="4. 解决了什么问题"></a>4. 解决了什么问题</h2><p>尽管CXL展现出以低成本和高性能实现内存分解的巨大潜力，但它尚未投入生产，并且没有平台将内存集成到内存池网络中。基于CXL的内存分解与直接访问。</p>
-<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h3 id="5-1架构设计"><a href="#5-1架构设计" class="headerlink" title="5.1架构设计"></a>5.1架构设计</h3><p>CXL设备设计和实现为每个模块都能够拥有许多带有自己的硬件控制器的DRAM DIMM。我们的CXL设备采用多个DRAM控制器，通过传统DDR接口连接DRAM DIMM。然后，其CXL控制器通过许多PCIe通道将内部DRAM模块暴露给FlexBus。</p>
-<p>在当前架构中，设备的CXL控制器解析传入的基于PCIe的CXL数据包（称为CXL flits），将其信息（地址和长度）转换为DRAM请求，并使用DRAM控制器从底层DRAM为它们提供服务。</p>
-<h3 id="5-2系统集成"><a href="#5-2系统集成" class="headerlink" title="5.2系统集成"></a>5.2系统集成</h3><p>图2显示了CXL设备的内部DRAM如何通过CXL映射（暴露）到主机的内存空间。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/62b69a72893c4da1a015bbc2c157204c.png"><br>主机CPU的系统总线包含一个或多个CXL根端口（RP），它们连接一个或多个作为端点（EP）设备的CXL设备。</p>
-<ol>
-<li>我们的主机端内核驱动程序首先通过PCIe事务查询基址寄存器（BAR）及其内部存储器（称为主机管理设备存储器（HDM））的大小来枚举CXL设备。</li>
-<li>根据检索到的大小，内核驱动程序将BAR和HDM映射到主机的保留系统内存空间中，并让底层CXL设备知道它们的BAR和HDM（基地址）在主机系统内存中的映射位置。</li>
-<li>当主机CPU通过load/store指令访问HDM系统内存时，请求会被传递到相应的RP，RP将请求转换为CXL flit。由于HDM映射到系统内存的不同位置，因此HDM的内存地址空间与EP内部DRAM的内存地址空间不同。因此，CXL控制器通过简单地从中扣除HDM的基地址来转换传入的地址，并将转换后的请求发送到底层DRAM控制器。结果通过CXL交换机和FlexBus返回至主机。请注意，由于HDM访问没有软件干预或内存数据副本，因此DIRECTCXL可以以较低的访问延迟向主机公开CXL设备的内存资源。</li>
-</ol>
-<p>（意思是通过这一步，主机系统映射CXL.mem的地址了。）</p>
-<h3 id="5-3CXL网络交换机"><a href="#5-3CXL网络交换机" class="headerlink" title="5.3CXL网络交换机"></a>5.3CXL网络交换机</h3><p>图3a说明了DIRECTCXL如何使用一个或多个CXL设备从主机中分解内存资源，图3b显示了其中我们的CXL交换机组织。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/1788e055a03e4a3d94cc4cae173984f9.png"></p>
-<p>主机的CXL RP直接连接到CXL交换机或CXL设备的上游端（USP）。CXL交换机的下游端口（DSP）还连接另一个CXL交换机的USP或CXL设备。请注意，我们的CXL交换机采用多个USP和DSP。通过设置内部路由表，我们的CXL交换机的结构管理器（FM）重新配置交换机的交叉开关，将每个USP连接到不同的 DSP，从而创建从根（主机）到终端（CXL设备）的虚拟层次结构。由于CXL设备可以采用一个或多个控制器和许多DRAM，因此它还可以定义多个逻辑设备，每个逻辑设备将其自己的HDM暴露给主机。这样，不同的主机可以连接到CXL交换机和CXL设备。请注意，每个CXL虚拟层次结构仅提供从一个到另一个的路径，以确保没有主机共享HDM。</p>
-<h3 id="5-4程序怎么看CXL的内存"><a href="#5-4程序怎么看CXL的内存" class="headerlink" title="5.4程序怎么看CXL的内存"></a>5.4程序怎么看CXL的内存</h3><p>与RDMA相比，一旦主机和CXL设备之间建立了虚拟层次结构，主机上运行的应用程序就可以通过引用HDM的内存空间直接访问CXL设备。然而，它需要软件运行时/驱动程序来管理底层CXL设备并在应用程序的内存空间中公开其HDM。因此，我们支持DIRECTCXL 运行时，它将HDM的地址空间简单地分成多个段，称为 <code>cxl-namespace</code>。然后允许应用程序将每个CXL命名空间作为内存映射文件（mmap）进行访问。</p>
-<p>为啥是映射文件？？？？</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c6fa0871c9e64650a0a23a410649c60c.png"></p>
-<p>图4显示了运行时的软件堆栈以及应用程序如何通过cxl命名空间使用分解内存。当检测到CXL设备时（在PCIe枚举时），DIRECTCXL驱动程序会创建一个入口设备（例如 <code>/dev/directcxl</code>）以允许用户通过<code>ioctl</code>管理<span class="label primary">cxl命名空间</span>。如果用户向<code>/dev/directcxl</code>请求cxl命名空间，则驱动程序会通过引用其HDM段表来检查HDM上的（物理）连续地址空间，该表的条目包括段的偏移量、大小和引用计数（记录如何许多cxl命名空间指示此段）。由于多个进程可以访问该表，因此其标头还保留必要的信息，例如自旋锁、读/写锁和表条目摘要（例如，有效条目号）。一旦DIRECTCXL驱动程序根据用户请求分配了一个段，它就会为mmap创建一个设备（例如 <code>/dev/cxl-ns0</code>）并更新段表。用户程序可以使用<code>mmap</code>和<code>vm_area_struct</code>将<code>cxl-namespace</code>映射到其进程虚拟内存空间。</p>
-<p>请注意，DIRECTCXL软件运行时是为直接访问CXL设备而设计的，这与持久内存开发工具包（PMDK[25]）的内存映射文件管理的概念类似。然而，它的命名空间管理比PMDK更简单、更灵活。例如，PMDK的命名空间与NVMe命名空间的理念非常相似，由文件系统或具有固定大小的DAX进行管理[26]。相比之下，我们的cxl命名空间更类似于传统的内存段，它直接暴露给应用程序而无需使用文件系统。</p>
-<h3 id="5-5原型实现"><a href="#5-5原型实现" class="headerlink" title="5.5原型实现"></a>5.5原型实现</h3><p>图5a说明了我们用于分解内存资源的CXL网络拓扑设计，实际系统中的相应实现如图5b所示。有n台计算主机通过CXL交换机连接m台CXL设备；在我们的原型中，n和m为4，但这些数字可以通过使用更多CXL开关来扩展。具体来说，每个CXL设备原型均基于我们定制的附加卡（AIC）CXL内存刀片构建，该刀片采用16nm FPGA和8个不同的DDR4 DRAM模块（64GB）。在FPGA中，我们制造了一个CXL控制器和八个DRAM控制器，每个控制器管理CXL端点和内部DRAM通道。到目前为止，还没有支持CXL的处理器架构，我们还使用RISC-V ISA构建自己的内部主机处理器，该处理器采用四个乱序核心，<span class="label primary">其末级缓存（LLC）实现CXL RP</span>。每个支持CXL的主机处理器都在高性能数据中心加速卡中实现，充当主机的角色，可以单独运行Linux 5.13和DIRECTCXL。我们通过PCIe背板向四台主机公开四个CXL设备（32个DRAM模块）。我们通过多一个实现DIRECTCXL的CXL交换机的加速器卡来扩展背板。该交换机实现了FM，可以创建多个虚拟层次结构，每个虚拟层次结构以灵活的方式连接主机和CXL设备。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/eed160e3d6e0444aacccb166c4ab9ab5.png"></p>
-<p>处理器端的CXL引擎和CXL交换机还没有商业化的CXL2.0 IP。因此，我们从头开始构建了所有DIRECTCXL IP。主机端处理器需要高级配置和电源接口（ACPI[27]）来进行CXL2.0枚举（例如RP位置和RP的保留地址空间）。由于RISC-V尚不支持 ACPI，因此我们通过将此类信息添加到设备树中来启用CXL枚举[28]。</p>
-<blockquote>
-<p>咦~</p>
-</blockquote>
-<h2 id="6-积累"><a href="#6-积累" class="headerlink" title="6. 积累"></a>6. 积累</h2>
+                
                 
             </div>
             <hr/>
@@ -584,7 +531,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/10/29/Direct-Access-High-Performance-Memory-Disaggregation-with-DIRECTCXL/">http://ytirus.github.io/2023/10/29/Direct-Access-High-Performance-Memory-Disaggregation-with-DIRECTCXL/</a>
+                    <a href="http://ytirus.github.io/2023/11/01/Working-Set-Analytics/">http://ytirus.github.io/2023/11/01/Working-Set-Analytics/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -622,20 +569,12 @@
                     
                         <div class="article-tag">
                             
+                                <a href="/tags/Hybrid-Memory-Systems/">
+                                    <span class="chip bg-color">Hybrid Memory Systems</span>
+                                </a>
+                            
                                 <a href="/tags/A/">
                                     <span class="chip bg-color">A</span>
-                                </a>
-                            
-                                <a href="/tags/CXL2-0/">
-                                    <span class="chip bg-color">CXL2.0</span>
-                                </a>
-                            
-                                <a href="/tags/RDMA/">
-                                    <span class="chip bg-color">RDMA</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
-                                    <span class="chip bg-color">内存分解</span>
                                 </a>
                             
                         </div>
@@ -679,9 +618,64 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2023/11/01/Working-Set-Analytics/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Working Set Analytics">
+                        
+                        <span class="card-title">Working Set Analytics</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-01
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Hybrid-Memory-Systems/">
+                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    </a>
+                    
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2023/10/31/Linux%E5%86%85%E6%A0%B8%E5%B8%B8%E7%94%A8C%E8%AF%AD%E8%A8%80%E6%8A%80%E5%B7%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/">
                     <div class="card-image">
@@ -699,9 +693,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-31
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-31
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -723,55 +717,6 @@
                     
                     <a href="/tags/Data-Structure/">
                         <span class="chip bg-color">Data Structure</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="小实验:cgroup限制应用程序和namespace的内存">
-                        
-                        <span class="card-title">小实验:cgroup限制应用程序和namespace的内存</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-29
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Basics/" class="post-category">
-                                    Basics
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/cgroup/">
-                        <span class="chip bg-color">cgroup</span>
                     </a>
                     
                 </div>
