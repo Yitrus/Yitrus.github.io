@@ -316,7 +316,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/12adc8365be249769dd357a81f30d8e4.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -437,12 +437,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
+                            <a href="/tags/O/">
+                                <span class="chip bg-color">O</span>
                             </a>
                         
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
+                            <a href="/tags/Working-Set/">
+                                <span class="chip bg-color">Working Set</span>
+                            </a>
+                        
+                            <a href="/tags/Memory-Management/">
+                                <span class="chip bg-color">Memory Management</span>
                             </a>
                         
                     </div>
@@ -475,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    1.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    3 分
                 </div>
                 
 
@@ -505,7 +509,40 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
+- 文章来自ACM Comput. Surv. 2021
+- Working Set Analytics
+
+</div> 
+
+<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
+<li>PETER J. DENNING（ACM前任主席，虚拟内存方面发明了程序行为的工作集模型解决了抖动，等其他贡献）, 海军研究生院（美国海军的公立研究生院）美国加利福尼亚州蒙特雷市</li>
+</ul>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><blockquote>
+<p>工作集是指程序在最近一次执行中访问过的页面(内存块)集合。工作集算法可以根据程序的访问局部性原理来提高内存利用率,减少页面置换的次数,从而提高系统性能。与全局置换算法(如FIFO)相比,工作集算法更能适应不同进程的内存访问行为。</p>
+</blockquote>
+<h2 id="3-文章概要"><a href="#3-文章概要" class="headerlink" title="3. 文章概要"></a>3. 文章概要</h2><p>程序行为的工作集模型于1965年发明。它在虚拟内存管理领域经受了50多年的时间考验。它被认为是管理操作系统和缓存中的内存的理想选择。它的优越性能是基于同时发现的局域性原理；局部性是观察到的程序在较长时间内使用其页面的不同子集的趋势。</p>
+<p>本教程追溯了工作集理论从起源到现在的发展。</p>
+<ol>
+<li>我们将讨论局部性原理及其实验验证。</li>
+<li>我们将展示为什么工作集内存管理可以抵抗颠簸并生成接近最佳的系统吞吐量。</li>
+<li>我们将介绍强大的线性时间算法，用于计算工作集统计数据并将其应用于内存系统的设计。</li>
+<li>我们将揭穿有关存储系统局部性和性能的几个神话。</li>
+<li>最后我们将讨论工作集模型在并行系统、现代共享 CPU 缓存、网络边缘缓存以及库存和物流管理中的应用。</li>
+</ol>
+<h2 id="4-虚拟内存的发展之痛"><a href="#4-虚拟内存的发展之痛" class="headerlink" title="4. 虚拟内存的发展之痛"></a>4. 虚拟内存的发展之痛</h2><p>曼彻斯特的设计师推出了四项创新，这些创新很快就被采纳为计算机体系结构和操作系统的标准，从那时起到今天。</p>
+<ol>
+<li>Page，一种固定大小的存储和传输单元。程序和数据被分成页面并存储在称为页框的主存储器插槽中，并在辅助存储器上复制副本。</li>
+<li>addresses（值的名称）和locations（保存值的内存插槽）之间的区分。地址空间是一个大型的线性地址序列，主存储器（RAM）是一个页框池，每个页框都可以容纳地址空间中的任何页面。当CPU将地址生成到其地址空间时，硬件内存映射单元使用将页面与页框相关联的页表将addresses转换为locations。</li>
+<li>page fault，当执行程序向映射单元提供页面不在主存中的地址时，操作系统会触发中断。操作系统在辅助内存中找到丢失的页面，选择一个已加载的页面进行逐出，并将丢失的页面转移到空出的页面框架中。</li>
+<li>页面替换策略，该算法选择必须从主内存中逐出哪个页面并将其返回到辅助内存以为传入页面让路。未命中率函数（产生页面错误的引用的比例）是虚拟内存的关键性能指标。</li>
+</ol>
+<p>操作系统的性能一直是一个大问题。为了被操作系统接受，虚拟内存系统必须高效。效率低下的两个潜在来源是地址映射和页面传输。它们可以称为寻址问题和替换问题。</p>
+<p>有效的解决方案。TLB是内存映射单元中的一个小型高速缓存，它将地址映射的减慢限制为正常 RAM 访问时间的 3%。就所有好处而言，这是可以接受的成本。虚拟内存确实使程序员的生产力提高了一倍或三倍。它还消除了必须针对每个不同大小的主内存重新制定手工传输计划的恼人问题。更重要的是，虚拟内存可以将主内存划分为不相交的集合，每个地址空间对应一个集合，从而支持防止正在执行的作业相互干扰的主要目标。这对于早期操作系统的设计者和用户来说都是好消息。</p>
+<blockquote>
+<p>太长啦，正在努力读……</p>
+</blockquote>
+
                 
             </div>
             <hr/>
@@ -569,12 +606,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
+                                <a href="/tags/O/">
+                                    <span class="chip bg-color">O</span>
                                 </a>
                             
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
+                                <a href="/tags/Working-Set/">
+                                    <span class="chip bg-color">Working Set</span>
+                                </a>
+                            
+                                <a href="/tags/Memory-Management/">
+                                    <span class="chip bg-color">Memory Management</span>
                                 </a>
                             
                         </div>
@@ -618,30 +659,28 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/11/01/Working-Set-Analytics/">
+                <a href="/2023/11/01/emerging-system-interconnects/">
                     <div class="card-image">
                         
+                        <img src="https://images.weserv.nl/?url=" class="responsive-img" alt="Emerging System Interconnects">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Working Set Analytics">
-                        
-                        <span class="card-title">Working Set Analytics</span>
+                        <span class="card-title">Emerging System Interconnects</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            IEEE Micro theme article Emerging System Interconnects 2023年年初很多不错的作者在这里发表了短小的CXL相关的论文这里做个阅读合集。
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-01
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-01
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -654,16 +693,15 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/O/">
+                        <span class="chip bg-color">O</span>
                     </a>
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/CXL/">
+                        <span class="chip bg-color">CXL</span>
                     </a>
                     
                 </div>
@@ -872,7 +910,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">108.7k</span>&nbsp;字
+                class="white-color">110k</span>&nbsp;字
             
             
             

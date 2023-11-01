@@ -480,18 +480,19 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2023/11/01/Working-Set-Analytics/">
+                    <a href="/2023/11/01/emerging-system-interconnects/">
                         <div class="card-image">
                             
+                            <img src="https://images.weserv.nl/?url=" class="responsive-img" alt="Emerging System Interconnects">
                             
-                            <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Working Set Analytics">
-                            
-                            <span class="card-title">Working Set Analytics</span>
+                            <span class="card-title">Emerging System Interconnects</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
+                            
+                                IEEE Micro theme article Emerging System Interconnects 2023年年初很多不错的作者在这里发表了短小的CXL相关的论文这里做个阅读合集。
                             
                         </div>
                         <div class="publish-info">
@@ -514,12 +515,66 @@
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/Hybrid-Memory-Systems/">
-                            <span class="chip bg-color">Hybrid Memory Systems</span>
+                        <a href="/tags/O/">
+                            <span class="chip bg-color">O</span>
                         </a>
                         
-                        <a href="/tags/A/">
-                            <span class="chip bg-color">A</span>
+                        <a href="/tags/CXL/">
+                            <span class="chip bg-color">CXL</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2023/11/01/Working-Set-Analytics/">
+                        <div class="card-image">
+                            
+                            <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/12adc8365be249769dd357a81f30d8e4.png" class="responsive-img" alt="Working Set Analytics">
+                            
+                            <span class="card-title">Working Set Analytics</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                虚拟内存发明将近60年了，这篇对一些关键部分的设计和演变娓娓道来
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-01
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Paper/" class="post-category">
+                                    Paper
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/O/">
+                            <span class="chip bg-color">O</span>
+                        </a>
+                        
+                        <a href="/tags/Working-Set/">
+                            <span class="chip bg-color">Working Set</span>
+                        </a>
+                        
+                        <a href="/tags/Memory-Management/">
+                            <span class="chip bg-color">Memory Management</span>
                         </a>
                         
                     </div>
@@ -621,12 +676,12 @@
                             <span class="chip bg-color">A</span>
                         </a>
                         
-                        <a href="/tags/CXL2-0/">
-                            <span class="chip bg-color">CXL2.0</span>
-                        </a>
-                        
                         <a href="/tags/RDMA/">
                             <span class="chip bg-color">RDMA</span>
+                        </a>
+                        
+                        <a href="/tags/CXL2-0/">
+                            <span class="chip bg-color">CXL2.0</span>
                         </a>
                         
                         <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
@@ -875,6 +930,10 @@ watermark有以下两种主要实现方式:地址watermark - 在物理内存的�
                     
                     <div class="card-action article-tags">
                         
+                        <a href="/tags/CXL/">
+                            <span class="chip bg-color">CXL</span>
+                        </a>
+                        
                         <a href="/tags/bus/">
                             <span class="chip bg-color">bus</span>
                         </a>
@@ -885,10 +944,6 @@ watermark有以下两种主要实现方式:地址watermark - 在物理内存的�
                         
                         <a href="/tags/PCIe/">
                             <span class="chip bg-color">PCIe</span>
-                        </a>
-                        
-                        <a href="/tags/CXL/">
-                            <span class="chip bg-color">CXL</span>
                         </a>
                         
                     </div>
@@ -912,12 +967,7 @@ watermark有以下两种主要实现方式:地址watermark - 在物理内存的�
                         <div class="summary block-with-text">
                             
                                 为什么需要虚拟内存？
-内存隔离，使每个运行的进程都认为它拥有整个系统的内存。
-延迟内存分配,只有当页面真正被访问时,才需要从磁盘加载到物理内存。
-页式内存管理技术。
-通过与磁盘空间的交换实现扩展内存容量。
-
-虚拟地址怎么认？在32位机器上，
+内存隔离，使每个运行的进程都认为它拥有整个系统的内存。在多进程系统中直接操作物理内存地址的话，我们需要精确地知道每一个变量的位置都被安排在了哪里，而且还要注意当前进程在和多个进程同时运行的时候，不能共用同一个地址，否则
                             
                         </div>
                         <div class="publish-info">
@@ -1358,56 +1408,6 @@ watermark有以下两种主要实现方式:地址watermark - 在物理内存的�
                 </div>
             </div>
             
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2023/10/05/An-Operating-System-Level-Data-Migration-Scheme/">
-                        <div class="card-image">
-                            
-                            <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/26073db180a64a9c888e27b6f08665c5.png" class="responsive-img" alt="An Operating System Level Data Migration Scheme">
-                            
-                            <span class="card-title">An Operating System Level Data Migration Scheme</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                对性能和能耗进行建模，指导页面迁移。
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-05
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/Paper/" class="post-category">
-                                    Paper
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/B/">
-                            <span class="chip bg-color">B</span>
-                        </a>
-                        
-                        <a href="/tags/Hybrid-Memory-Systems/">
-                            <span class="chip bg-color">Hybrid Memory Systems</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
         </div>
     </article>
 
@@ -1424,7 +1424,7 @@ watermark有以下两种主要实现方式:地址watermark - 在物理内存的�
             
         </div>
         <div class="page-info col m4 l4 hide-on-small-only">
-            <div class="center-align b-text-gray">1 / 2</div>
+            <div class="center-align b-text-gray">1 / 3</div>
         </div>
         <div class="col s6 m4 l4">
             
@@ -1455,7 +1455,7 @@ watermark有以下两种主要实现方式:地址watermark - 在物理内存的�
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">108.7k</span>&nbsp;字
+                class="white-color">110k</span>&nbsp;字
             
             
             
