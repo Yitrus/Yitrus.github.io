@@ -441,12 +441,12 @@
                                 <span class="chip bg-color">A</span>
                             </a>
                         
-                            <a href="/tags/RDMA/">
-                                <span class="chip bg-color">RDMA</span>
+                            <a href="/tags/CXL/">
+                                <span class="chip bg-color">CXL</span>
                             </a>
                         
-                            <a href="/tags/CXL2-0/">
-                                <span class="chip bg-color">CXL2.0</span>
+                            <a href="/tags/RDMA/">
+                                <span class="chip bg-color">RDMA</span>
                             </a>
                         
                             <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
@@ -526,9 +526,9 @@
 <h3 id="远端直接内存访问RDMA怎么做的？"><a href="#远端直接内存访问RDMA怎么做的？" class="headerlink" title="远端直接内存访问RDMA怎么做的？"></a>远端直接内存访问RDMA怎么做的？</h3><p>对于后端网络控制，大多数分解工作采用远程直接内存访问（RDMA）[4,5,11–13,15,16]或类似的定制DMA协议[7,9,10]。图1显示了RDMA式数据传输（单侧RDMA）的工作原理。对于主机和内存节点端，RDMA都需要RDMA NIC（RNIC[23]）等硬件支持，其设计目的是尽可能消除网络软件堆栈的干预。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9128ea4c40a043d9bd581017c6274724.png"><br>为了在它们之间移动数据，每一侧的进程首先需要定义一个或多个存储区域（MR）并让MR到达底层RNIC。在此期间，RNIC驱动程序检查与MR页面关联的所有物理地址，并将它们注册到RNIC的内存转换表（MTT）。</p>
 <p>由于这两个RNIC还在初始化时交换其MR的虚拟地址，因此主机可以简单地将内存节点的目标虚拟地址与数据一起发送以进行写入。然后，远程节点通过参考其MTT来转换地址，并将传入数据复制到MR的目标位置。通过RDMA的读取也可以以类似的方式执行。请注意，除了内存复制操作（对于DMA）之外，每一方的应用程序还需要准备数据到MR中或从MR中检索数据以进行数据传输，从而在本地DRAM中引入额外的数据副本[24]。</p>
 <p>（说到底就是需要复制很多次吧）</p>
-<h3 id="基于页面的内存池————SWAP"><a href="#基于页面的内存池————SWAP" class="headerlink" title="基于页面的内存池————SWAP"></a>基于页面的内存池————SWAP</h3><p>基于页面的内存分解[4-10]通过依赖虚拟内存系统实现内存弹性。具体来说，这种方法会在出现缺页异常时将数据交换到远程内存节点而不是底层存储。主机kswapd下的分解驱动程序将传入的块地址转换为内存节点的虚拟地址，目标页面复制到RNIC的MR并向内存节点发出相应的RDMA请求。</p>
+<h3 id="基于页面的内存池——SWAP"><a href="#基于页面的内存池——SWAP" class="headerlink" title="基于页面的内存池——SWAP"></a>基于页面的内存池——SWAP</h3><p>基于页面的内存分解[4-10]通过依赖虚拟内存系统实现内存弹性。具体来说，这种方法会在出现缺页异常时将数据交换到远程内存节点而不是底层存储。主机kswapd下的分解驱动程序将传入的块地址转换为内存节点的虚拟地址，目标页面复制到RNIC的MR并向内存节点发出相应的RDMA请求。</p>
 <p>当对远程内存的请求过多时，由于页面错误处理、I/O 放大和上下文切换的开销，基于页面的系统会遭受性能下降[16]。</p>
-<h3 id="基于对象的存储池————KVS"><a href="#基于对象的存储池————KVS" class="headerlink" title="基于对象的存储池————KVS"></a>基于对象的存储池————KVS</h3><p>基于对象的内存分解系统[11-16]使用自己的数据库（例如键值存储（KVS））直接干预RDMA数据传输。基于对象的系统为主机和内存节点端创建两个MR，每个MR处理缓冲区数据和提交/完成队列（SQ/CQ）。采用KV哈希表，其条目指向相应的（远程）内存对象。每当应用程序发出Put（或Get）请求时，系统会将相应的值放入主机的缓冲区MR中，并通过RDMA写入SQ MR的远程端来提交它。由于内存节点不断轮询SQ MR，因此它可以识别该请求。然后，内存节点通过RDMA将值复制到其缓冲区MR，并通过写入主机的CQ MR来完成请求。</p>
+<h3 id="基于对象的存储池——KVS"><a href="#基于对象的存储池——KVS" class="headerlink" title="基于对象的存储池——KVS"></a>基于对象的存储池——KVS</h3><p>基于对象的内存分解系统[11-16]使用自己的数据库（例如键值存储（KVS））直接干预RDMA数据传输。基于对象的系统为主机和内存节点端创建两个MR，每个MR处理缓冲区数据和提交/完成队列（SQ/CQ）。采用KV哈希表，其条目指向相应的（远程）内存对象。每当应用程序发出Put（或Get）请求时，系统会将相应的值放入主机的缓冲区MR中，并通过RDMA写入SQ MR的远程端来提交它。由于内存节点不断轮询SQ MR，因此它可以识别该请求。然后，内存节点通过RDMA将值复制到其缓冲区MR，并通过写入主机的CQ MR来完成请求。</p>
 <p>这种方法受到限制，因为它需要对遗留应用程序进行大量的源代码级修改。而且访问不是直接的，是通过提交完成队列间接交互的。</p>
 <h3 id="CXL优势"><a href="#CXL优势" class="headerlink" title="CXL优势"></a>CXL优势</h3><p>FlexBus指的是CXL定义的互连架构。CXL.mem允许主机通过PCIe总线直接访问底层内存,而不是通过像PCIe这样的外设互连协议。（CXL基于PCI Express 5.0物理层，速度高达 32GT/s。）</p>
 <p>CXL最初的设计目的是实现跨不同处理器复合体的异构管理的卓越性，但业界和学术界都预计其缓存一致性能力可以帮助提高内存利用率并以低延迟缓解内存过度配置[20-22]。</p>
@@ -626,12 +626,12 @@
                                     <span class="chip bg-color">A</span>
                                 </a>
                             
-                                <a href="/tags/RDMA/">
-                                    <span class="chip bg-color">RDMA</span>
+                                <a href="/tags/CXL/">
+                                    <span class="chip bg-color">CXL</span>
                                 </a>
                             
-                                <a href="/tags/CXL2-0/">
-                                    <span class="chip bg-color">CXL2.0</span>
+                                <a href="/tags/RDMA/">
+                                    <span class="chip bg-color">RDMA</span>
                                 </a>
                             
                                 <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
@@ -927,7 +927,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">110k</span>&nbsp;字
+                class="white-color">110.7k</span>&nbsp;字
             
             
             
