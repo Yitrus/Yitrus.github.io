@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    625
+                    1.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    7 分
                 </div>
                 
 
@@ -534,7 +534,7 @@
   _min1 <span class="token operator">&lt;</span> _min2 ? _min1 <span class="token builtin class-name">:</span> _min2<span class="token punctuation">;</span> <span class="token punctuation">\</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="1-2标号元素"><a href="#1-2标号元素" class="headerlink" title="1.2标号元素"></a>1.2标号元素</h2><p>标准C语言要求数组或者结构体初始化必须固定顺序。但GUN C可以指定要初始化的，没有初始化的为0或者NULL，而且顺序可以不固定。以下是C内核中的一段代码示例:</p>
+<h3 id="1-2标号元素"><a href="#1-2标号元素" class="headerlink" title="1.2标号元素"></a>1.2标号元素</h3><p>标准C语言要求数组或者结构体初始化必须固定顺序。但GUN C可以指定要初始化的，没有初始化的为0或者NULL，而且顺序可以不固定。以下是C内核中的一段代码示例:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">static struct usb_driver usb_storage_driver <span class="token operator">=</span> <span class="token punctuation">{</span>     
   .owner         <span class="token operator">=</span> THIS_MODULE,      
   .name          <span class="token operator">=</span> <span class="token string">"usb-storage"</span>,       
@@ -543,12 +543,12 @@
   .id_table      <span class="token operator">=</span> storage_usb_ids, 
 <span class="token punctuation">}</span><span class="token punctuation">;</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="1-3可变参数的宏"><a href="#1-3可变参数的宏" class="headerlink" title="1.3可变参数的宏"></a>1.3可变参数的宏</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/printk.h<span class="token operator">&gt;</span>
+<h3 id="1-3可变参数的宏"><a href="#1-3可变参数的宏" class="headerlink" title="1.3可变参数的宏"></a>1.3可变参数的宏</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/printk.h<span class="token operator">&gt;</span>
 <span class="token comment"># define pr_debug(fmt, ...) \ //...是可变化参数</span>
   dynamic_pr_debug<span class="token punctuation">(</span>fmt, <span class="token comment">##__VA_ARGS__) //__VA_ARGS__编译器保留字段</span>
 //预处理时参数传给宏，调用宏时传给dynamic_pr_debug函数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="1-4函数属性、变量属性核类型属性"><a href="#1-4函数属性、变量属性核类型属性" class="headerlink" title="1.4函数属性、变量属性核类型属性"></a>1.4函数属性、变量属性核类型属性</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">//属性语法格式
+<h3 id="1-4函数属性、变量属性核类型属性"><a href="#1-4函数属性、变量属性核类型属性" class="headerlink" title="1.4函数属性、变量属性核类型属性"></a>1.4函数属性、变量属性核类型属性</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">//属性语法格式
 __attribute__ <span class="token variable"><span class="token punctuation">((</span>attribute<span class="token operator">-</span>list<span class="token punctuation">))</span></span>
 
 void __attribute__ <span class="token variable"><span class="token punctuation">((</span>noreturn<span class="token punctuation">))</span></span> die<span class="token punctuation">(</span>void<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -565,8 +565,113 @@ struct xx<span class="token punctuation">{</span>
   //以8字节对齐方式分配xx数据结构
 <span class="token punctuation">}</span>__aligned<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>不过还有更复杂的函数属性。函数属性的宏定义在<code>compiler-gcc.h</code>中，在使用时它们不一定都有<code>__attribute</code>字符串在。</p>
-<h2 id="1-5内建函数"><a href="#1-5内建函数" class="headerlink" title="1.5内建函数"></a>1.5内建函数</h2><blockquote>
-<p>这是《奔跑吧Linux内核入门篇（第二版）》第二章的阅读笔记。谢谢欣欣帮忙debug</p>
+<h3 id="1-5内建函数"><a href="#1-5内建函数" class="headerlink" title="1.5内建函数"></a>1.5内建函数</h3><p>以<code>_builtin</code>作为前缀（当然有的已经被宏定义过了）</p>
+<ul>
+<li><code>__builtin_constant_p(x)</code>判断在编译时是否就能确定为常量，返回1或0</li>
+<li><code>__builtin_expect(exp, c)</code>表示<code>exp==c</code>的概率很大，引导GCC做条件分支预测，提高CPU预取指令正确率<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define LIKELY(X) __builtin_expect(!!(x), 1) //x很可能为真</span>
+<span class="token comment">#define UNLIKELY(X) __builtin_expect(!!(x), 0) //x很可能为假</span>
+//<span class="token operator">!</span><span class="token operator">!</span>是为了确保是bool值<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li><code>__builtin_prefetch(const void *addr, int rw, int locality)</code>主动预取，在使用<code>addr</code>的值之前把这个值加入到cache，rw指读写属性，locality指局部性强弱<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define prefetch(x) __builtin_prefetch(x)</span>
+<span class="token comment">#define prefetchw(x) __builtin_prefetch(x, 1)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="1-6-UL"><a href="#1-6-UL" class="headerlink" title="1.6 UL"></a>1.6 UL</h3>在数字定义时在后面加上<code>UL</code>后缀，这会把<code>int</code>类型强制转化为<code>unsigned long</code>，防止两个<code>int</code>相加溢出。</li>
+</ul>
+<h2 id="2-Linux内核中常用数据结构和算法"><a href="#2-Linux内核中常用数据结构和算法" class="headerlink" title="2.Linux内核中常用数据结构和算法"></a>2.Linux内核中常用数据结构和算法</h2><p>Linux内核有的数据结构非常常用因此封装好了一系列的数据结构以及和相关函数操作。</p>
+<h3 id="2-1链表"><a href="#2-1链表" class="headerlink" title="2.1链表"></a>2.1链表</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/types.h<span class="token operator">&gt;</span>
+struct list_head<span class="token punctuation">{</span>
+  struct list_head *next, *prev<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>因为链表的数据区是各不相同的，所以是纯链表封装没有数据区。使用方式是嵌入到其他数据结构，如在<code>page</code>中嵌入lru链表的节点这样就加入了LRU链表。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/mm_types.h<span class="token operator">&gt;</span>
+struct page<span class="token punctuation">{</span>
+  <span class="token punctuation">..</span>.
+  struct list_head lru<span class="token punctuation">;</span>
+  <span class="token punctuation">..</span>.
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>链表的初始化是将两个指针指向自身</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/list.h<span class="token operator">&gt;</span>
+//动态初始化
+static inline void INIT_LIST_HEAD<span class="token punctuation">(</span>struct list_head *list<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  list-<span class="token operator">&gt;</span>next <span class="token operator">=</span> list<span class="token punctuation">;</span>
+  list-<span class="token operator">&gt;</span>next <span class="token operator">=</span> list<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+//静态初始化，宏定义的展开结果是一个包含两个指针的结构，这两个指针都指向name自身
+<span class="token comment">#define LIST_HEAD_INIT(name) {&amp;(name), &amp;(name)} </span>
+//然后把上个结构体封装
+<span class="token comment">#define LIST_HEAD(name) struct list_head name = LIST_HEAD_INIT(name)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>inline是一个关键字，通常用于指示编译器在编译时将函数的代码插入到函数调用的地方，而不是像普通函数那样进行函数调用。因为函数调用通常涉及一定的开销，如参数传递、栈帧设置等，而inline函数可以减少这些开销。这样的函数被声明为内联函数，编译器会尝试在函数调用的地方直接插入函数体的代码。这可以提高函数调用的效率，特别是对于小而简单的函数。如果函数体过于复杂，内联可能会导致代码膨胀，反而降低性能。不过，最终是否内联函数由编译器决定。</p>
+</blockquote>
+<p>添加节点到链表</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/list.h<span class="token operator">&gt;</span>
+//添加到表头
+void list_add<span class="token punctuation">(</span>struct list_head *new, struct list_head *head<span class="token punctuation">)</span>
+//添加到表尾
+void list_add_tail<span class="token punctuation">(</span>struct list_head *new, struct list_head *head<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>遍历节点接口</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define list_for_each(pos, head) \</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span>pos<span class="token operator">=</span><span class="token punctuation">(</span>head<span class="token punctuation">)</span>-<span class="token operator">&gt;</span>next<span class="token punctuation">;</span> pos<span class="token operator">!=</span><span class="token punctuation">(</span>head<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token assign-left variable">pos</span><span class="token operator">=</span>pos-<span class="token operator">&gt;</span>next<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>但是主要还是访问这个节点嵌入的数据结构，比如前面提到的page结构体里的其他成员该怎么办？</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define list_entry(ptr, type, member) container_of(ptr, type, member)</span>
+/*
+container_of宏定义在kernel头文件中
+container_of先将0地址转化为type结构体指针，_mptr<span class="token operator">=</span>ptr，类比page里lru成员的地址（因为假设在遍历LRU链表）
+获取member在type结构体中的偏移量，type—<span class="token operator">&gt;</span>member，即page结构体中lru的偏移量
+ptr-offset得到这个结构体的真实地址，现在这个指针指向page了
+ */
+ 
+ //真实案例
+ <span class="token operator">&lt;</span>drivers/block/osdblk.c<span class="token operator">&gt;</span>
+ //这个函数传入的参数不用管
+ static ssize_t class_osdblk_list<span class="token punctuation">(</span>struct class *c,
+                struct class_attribute *attr, char *data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    int n <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    struct list_head *tmp<span class="token punctuation">;</span> //当前遍历到的节点
+
+    list_for_each<span class="token punctuation">(</span>tmp, <span class="token operator">&amp;</span>osdblkdev_list<span class="token punctuation">)</span><span class="token punctuation">{</span>
+      struct osdblk_device *osdev<span class="token punctuation">;</span> //这个链表本来串连起来的结构体
+
+      osdev <span class="token operator">=</span> list_entry<span class="token punctuation">(</span>tmp, struct osdblk_device, <span class="token function">node</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      //链表的一个节点作为osdblk_device的结构体成员，名称是node
+
+      //现在可以对拿到的结构体做一系列操作了
+      n <span class="token operator">+=</span> sprintf<span class="token punctuation">(</span>data+n, <span class="token string">"%d %d ..."</span>, osdev-<span class="token operator">&gt;</span>id, osdev-<span class="token operator">&gt;</span>major, <span class="token punctuation">..</span>.<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token builtin class-name">return</span> n<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="2-2无锁环形缓冲区"><a href="#2-2无锁环形缓冲区" class="headerlink" title="2.2无锁环形缓冲区"></a>2.2无锁环形缓冲区</h3><p>环形缓冲区属于生产者-消费者模型的经典算法，好处是当一个元素被消耗后，其余元素不需要移动存储位置，减少复制操作。通过移动读指针和写指针实现缓冲区数据的读取和写入。内核使用KFIFO无锁环形缓冲区“first in first out”.</p>
+<p>创建KFIFO</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>include/linux/kfifo.h<span class="token operator">&gt;</span>
+//动态分配
+int kfifo_alloc<span class="token punctuation">(</span>fifo, size, gfp_mask<span class="token punctuation">)</span>
+/*
+创建大小为size的环形缓冲区
+fifo指向kfifo数据结构
+gfp_mask是内存分配的掩码
+ */
+//静态分配
+<span class="token comment">#define DEFINE_KFIFO(fifo, type, size)</span>
+<span class="token comment">#define INIT_KFIFO(fifo)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>入列</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">int kfifo_in<span class="token punctuation">(</span>fifo, buf, n<span class="token punctuation">)</span>
+//将buf指针指向的n个元素复制到环形缓冲区<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>出列</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define kfifo_out(fifo, buf, n)</span>
+//从fifo复制n个到buf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>获取缓冲区大小</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define kfifo_size(fifo) //缓冲区大小</span>
+<span class="token comment">#define kfifo_len(fifo)  //有多少有效数据元素</span>
+<span class="token comment">#define kfifo_is_empty(fifo) //是否为空</span>
+<span class="token comment">#define kfifo_is_full(fifo) //是否已满</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>与用户空间交互</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#define kfifo_from_user(fifo, from, len, copied)</span>
+//将from指向的用户空间中len个数据元素复制到KFIFO中，最后一个参数copied表示成功复制了几个元素
+<span class="token comment">#define kfifo_to_user(fifo, to, len, copied)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="2-3红黑树"><a href="#2-3红黑树" class="headerlink" title="2.3红黑树"></a>2.3红黑树</h3><blockquote>
+<p>这是《奔跑吧Linux内核入门篇（第二版）》第二章的阅读笔记。谢谢欣欣帮忙答疑</p>
 </blockquote>
 
                 
@@ -778,12 +883,12 @@ struct xx<span class="token punctuation">{</span>
                         <span class="chip bg-color">A</span>
                     </a>
                     
-                    <a href="/tags/CXL/">
-                        <span class="chip bg-color">CXL</span>
-                    </a>
-                    
                     <a href="/tags/RDMA/">
                         <span class="chip bg-color">RDMA</span>
+                    </a>
+                    
+                    <a href="/tags/CXL/">
+                        <span class="chip bg-color">CXL</span>
                     </a>
                     
                     <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
@@ -943,7 +1048,7 @@ struct xx<span class="token punctuation">{</span>
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">110.7k</span>&nbsp;字
+                class="white-color">112k</span>&nbsp;字
             
             
             
