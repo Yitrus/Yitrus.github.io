@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness, Yi&#39;s Blog">
+    <meta name="keywords" content="Linux内核字符设备驱动, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness | Yi&#39;s Blog</title>
+    <title>Linux内核字符设备驱动 | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -303,7 +303,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '';
+        let pwd = '4dea5c7cb70f50322ec9d734aa4aa078be9227c05251e18991c596f387552370';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/03757318787c480091970cfc3d2290a2.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness</h1> -->
+                    <!-- <h1 class="description center-align post-title">Linux内核字符设备驱动</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
-                            </a>
-                        
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
+                            <a href="/tags/%E5%AD%97%E8%8A%82%E4%B8%BA%E5%8D%95%E4%BD%8D%E7%9A%84IO/">
+                                <span class="chip bg-color">字节为单位的IO</span>
                             </a>
                         
                     </div>
@@ -453,8 +449,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Paper/" class="post-category">
-                                Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                Basics
                             </a>
                         
                     </div>
@@ -466,7 +462,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-08-19
+                    2023-11-10
                 </div>
                 
 
@@ -475,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    629
+                    1.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    5 分
                 </div>
                 
 
@@ -505,32 +501,183 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
-
+                <p>根据设备的共性大致分为3类</p>
 <ul>
-<li>文章来自PPoPP，2022</li>
-<li>Merchandiser: Data Placement on Heterogeneous Memory for Task-Parallel HPC Applications with Load-Balance Awareness </li>
+<li>字符设备，以字节为单位的I/O传输，比如鼠标、键盘、触摸屏（CXL.mem也是以字节为单位传输，但是不是字符数据流）。</li>
+<li>块设备，以块为传输单位，比如SSD、磁盘。</li>
+<li>网络设备，<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/27aa9de078ec4377aa2cde3c33bce0ba.jpeg" alt="Linux驱动设备"></li>
 </ul>
-</div> 
+<h3 id="字符设备的抽象"><a href="#字符设备的抽象" class="headerlink" title="字符设备的抽象"></a>字符设备的抽象</h3><p>Linux如何抽象和描述这些设备的呢？这里主要讨论字符设备<code>include\linux\cdev.h</code>：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">cdev</span> <span class="token punctuation">{</span>
+	<span class="token keyword">struct</span> <span class="token class-name">kobject</span> kobj<span class="token punctuation">;</span>  <span class="token comment">//该驱动所属的kobject，可以通过sysfs接口将其挂载到所需要的sysfs节点，注意需要驱动开发人员手动去挂载，本身字符驱动不会进行挂载只会对kobj初始化，需要相应具体设备驱动进行挂载。</span>
+	<span class="token keyword">struct</span> <span class="token class-name">module</span> <span class="token operator">*</span>owner<span class="token punctuation">;</span>  <span class="token comment">//字符设备驱动所在的内核模块对象指针。</span>
+	<span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">file_operations</span> <span class="token operator">*</span>ops<span class="token punctuation">;</span> <span class="token comment">//文件操作 openc、read、write等，和应用程序交互的枢纽。</span>
+	<span class="token keyword">struct</span> <span class="token class-name">list_head</span> list<span class="token punctuation">;</span>  <span class="token comment">//用于将字符设备串成链表。</span>
+	<span class="token class-name">dev_t</span> dev<span class="token punctuation">;</span>  <span class="token comment">//设备号（主设备和次设备组成）</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span> count<span class="token punctuation">;</span>  <span class="token comment">//同属主设备号的次设备号个数</span>
+<span class="token punctuation">}</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Zhen Xie，University of California, Merced Argonne National Laboratory</li>
-<li>Jie Liu，University of California, Merced</li>
-<li>Jiajia Li，North Carolina State University</li>
-<li>Dong Li，University of California, Merced</li>
-</ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ea9867b9f36043af9a699eb42ec35696.png"></p>
-<p>图1.a给出了一个基于MPI的任务并行应用的例子。在DMRG中，一个哈密顿矩阵首先被分割成多个块，每个块被分配给一个MPI 进程(1-3行) 。然后每个MPI进程运行一个计算循环，作为输入(第5-7行)循环的一次迭代被认为是1个任务实例。因此，MPI进程中的任务是重复执行的。在每个迭代结束时，有一个全局的MPI进程之间的同步。</p>
-<p>图1.b给出了1个基于OpenMP的任务并行应用的例子，一个主循环运行了许多SpGEMM (C=A*B) 。在主循环的每一次迭代中，A首先被分割成若干个bins，部分 A*B 得到部分C</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2d6f15b49475435ba52e45722d3e969f.png"></p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>Input-Aware Memory Access Quantification<br>既然是从任务的角度来解决问题，那么如何确定什么样的数据放入快速内存中？<br>连串的、一定步长的，需要考虑左右两边数据的、随机的。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519a7d4c0e2149bf9fd8ddbdd870afcc.png"></p>
-<p>阿尔法的值，根据步长和数据类型来确定，由作者提前枚举好了的。综上给了两种方法来判断输入数据的将来被访问量，一种是用户直接通过API指定，如果没有指定的情况就是使用公式计算，依据具体计算方式设置阿尔法。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b690c63eb3a3414991abdf491177a583.png"></p>
-<p>迁移的决策模型应该是，作者的想法就是怎么把数据放置在不同PM的敏感性展现出来，区分出数据在不同异构放置的差别。<br>时间上的预测完全参考13年的一篇论文<br>梯度提升回归：每个学习算法准确率都不高。但是它们集成起来可以获得很好的准确率。这些学习算法依次应用。也就是说每个学习算法都是在前一个学习算法的错误中学习.</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/89e360308c2b400b8d7318f8e4b2efc6.png"></p>
-<p><strong>性能模型的设计</strong><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/03757318787c480091970cfc3d2290a2.png"></p>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
+
+<p>以下是一个简单字符设备demo只包含字符驱动的框架：</p>
+<h3 id="内核中创建字符驱动"><a href="#内核中创建字符驱动" class="headerlink" title="内核中创建字符驱动"></a>内核中创建字符驱动</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/module.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/fs.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/uaccess.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/init.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/cdev.h&gt;</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">DEMO_NAME</span> <span class="token string">"my_demo_dev"</span>  <span class="token comment">//设备名</span></span>
+<span class="token keyword">static</span> <span class="token class-name">dev_t</span> dev<span class="token punctuation">;</span>  <span class="token comment">//设备号</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">cdev</span> <span class="token operator">*</span>demo_cdev<span class="token punctuation">;</span>  <span class="token comment">//静态全局变量的方式创建字符设备</span>
+<span class="token keyword">static</span> <span class="token keyword">signed</span> count <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token comment">//打开设备</span>
+<span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">demodrv_open</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">inode</span> <span class="token operator">*</span>inode<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> major <span class="token operator">=</span> <span class="token function">MAJOR</span><span class="token punctuation">(</span>inode<span class="token operator">-&gt;</span>i_rdev<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> minor <span class="token operator">=</span> <span class="token function">MINOR</span><span class="token punctuation">(</span>inode<span class="token operator">-&gt;</span>i_rdev<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"%s: major=%d, minor=%d\n"</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">,</span> major<span class="token punctuation">,</span> minor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 释放设备</span>
+<span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">demodrv_release</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">inode</span> <span class="token operator">*</span>inode<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//读取设备</span>
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span>
+<span class="token function">demodrv_read</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span> <span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"%s enter\n"</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//写入设备</span>
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span>
+<span class="token function">demodrv_write</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> count<span class="token punctuation">,</span> <span class="token class-name">loff_t</span> <span class="token operator">*</span>f_pos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"%s enter\n"</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token comment">//定义操作集合</span>
+<span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">file_operations</span> demodrv_fops <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">.</span>owner <span class="token operator">=</span> THIS_MODULE<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>open <span class="token operator">=</span> demodrv_open<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>release <span class="token operator">=</span> demodrv_release<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>read <span class="token operator">=</span> demodrv_read<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>write <span class="token operator">=</span> demodrv_write
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> __init <span class="token function">simple_char_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> ret<span class="token punctuation">;</span>
+
+	ret <span class="token operator">=</span> <span class="token function">alloc_chrdev_region</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>dev<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> count<span class="token punctuation">,</span> DEMO_NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//自动分配主设备号，避免重复</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>ret<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"failed to allocate char device region"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> ret<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	demo_cdev <span class="token operator">=</span> <span class="token function">cdev_alloc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//动态创建字符设备</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>demo_cdev<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"cdev_alloc failed\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> unregister_chrdev<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">cdev_init</span><span class="token punctuation">(</span>demo_cdev<span class="token punctuation">,</span> <span class="token operator">&amp;</span>demodrv_fops<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//初始化cdve结构体，建立设备与驱动操作方法集file_operations之间的链接关系</span>
+	
+	ret <span class="token operator">=</span> <span class="token function">cdev_add</span><span class="token punctuation">(</span>demo_cdev<span class="token punctuation">,</span> dev<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//将字符设备添加到系统（注册字符设备）[字符设备结构体，设备号，多少次设备号]</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>ret<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"cdev_add failed\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> cdev_fail<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"succeeded register char device: %s\n"</span><span class="token punctuation">,</span> DEMO_NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"Major number = %d, minor number = %d\n"</span><span class="token punctuation">,</span>
+			<span class="token function">MAJOR</span><span class="token punctuation">(</span>dev<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">MINOR</span><span class="token punctuation">(</span>dev<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+cdev_fail<span class="token operator">:</span>
+	<span class="token function">cdev_del</span><span class="token punctuation">(</span>demo_cdev<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//从系统中删除这个结构体</span>
+unregister_chrdev<span class="token operator">:</span>
+	<span class="token function">unregister_chrdev_region</span><span class="token punctuation">(</span>dev<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//释放主设备号</span>
+
+	<span class="token keyword">return</span> ret<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token keyword">void</span> __exit <span class="token function">simple_char_exit</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"removing device\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>demo_cdev<span class="token punctuation">)</span>
+		<span class="token function">cdev_del</span><span class="token punctuation">(</span>demo_cdev<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token function">unregister_chrdev_region</span><span class="token punctuation">(</span>dev<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">module_init</span><span class="token punctuation">(</span>simple_char_init<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">module_exit</span><span class="token punctuation">(</span>simple_char_exit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">MODULE_AUTHOR</span><span class="token punctuation">(</span><span class="token string">"kylin"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">MODULE_LICENSE</span><span class="token punctuation">(</span><span class="token string">"GPL v2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">MODULE_DESCRIPTION</span><span class="token punctuation">(</span><span class="token string">"simpe character device"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>编译这个内核模块：</p>
+<pre class="line-numbers language-Makefile" data-language="Makefile"><code class="language-Makefile">BASEINCLUDE ?= /lib/modules/`uname -r`/build
+
+mydemo-objs := simple_char.o 
+
+obj-m	:=   mydemo.o
+all : 
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) modules;
+
+clean:
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) clean;
+	rm -f *.ko;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>make</code>编译后生成<code>mydemo.ko</code>, 然后加载这个模块</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> insmod mydemo.ko<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>加载内核模块后可以在<code>dmesg</code>命令输出看到<code>simple_char_init</code>函数成功初始化的输出。<br><code>/proc/devices</code>可以看到所有的设备名称和设备编号。</p>
+<h3 id="设备节点"><a href="#设备节点" class="headerlink" title="设备节点"></a>设备节点</h3><p>内核模块加载后还需要在<code>/dev/</code>目录下生成对应的节点，249是刚刚加载这个内核模块时分配的主设备号。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">mknod</span> /dev/demo_drv c <span class="token number">249</span> <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>设备节点属于特殊的文件，也叫设备文件。连接内核空间驱动和用户空间应用程序的桥梁，用户操作硬件设备变成了操作文件。设备节点的生成方式有<code>mknod</code>手动生成，也可以<code>udev</code>机制动态生成。<br><code>ls -l</code>可以查看<code>/dev/</code>目录的情况，其中<code>c</code>表示字符设备，<code>b</code>表示块设备。</p>
+<h3 id="用户空间对字符设备的调用"><a href="#用户空间对字符设备的调用" class="headerlink" title="用户空间对字符设备的调用"></a>用户空间对字符设备的调用</h3><p>内核完成对这个设备加载后，用户空间操作这个字符驱动设备</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fcntl.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h&gt;</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">DEMO_DEV_NAME</span> <span class="token string">"/dev/demo_drv"</span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">char</span> buffer<span class="token punctuation">[</span><span class="token number">64</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> fd<span class="token punctuation">;</span>
+
+	fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span>DEMO_DEV_NAME<span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//打开设备[设备文件名刚刚手动挂载的那个名字，文件打开属性]</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>fd <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"open device %s failded\n"</span><span class="token punctuation">,</span> DEMO_DEV_NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> buffer<span class="token punctuation">,</span> <span class="token number">64</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//调用读函数</span>
+	<span class="token function">close</span><span class="token punctuation">(</span>fd<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//关闭设备</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里read的调用是来自之前提到的<code>file_operations</code>，这个方法集结构体是由<code>cdev_init</code>方法和用户空间建立联系的。执行成功返回一个文件描述符（文件句柄）。应用程序的<code>open</code>方法执行时会通过系统调用进入内核空间，内核空间的虚拟文件系统层经过复杂的转换，最后会调用设备驱动的<code>file_operations</code>方法集里的<code>open</code>方法。 </p>
+<h3 id="misc机制"><a href="#misc机制" class="headerlink" title="misc机制"></a>misc机制</h3><p>misc device被称为杂项设备，Linux内核把一些不符合预先确定的字符设备划分为杂项设备，这类设备的主设备号是10，次设备号动态分配，Linux内核使用struct miscdevice数据结构描述这类设备。使用misc机制创建驱动的过程和上面差不多，其中misc的设备文件可以自己建好，和设备名一样（之前手动建的可以换名字）</p>
+<blockquote>
+<p>还有IO阻塞，异步通信、IO复用等，但是和CXL.mem应该关系不大，所以就简单看看，不写笔记了。</p>
+</blockquote>
+
                 
             </div>
             <hr/>
@@ -556,7 +703,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/">http://ytirus.github.io/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/</a>
+                    <a href="http://ytirus.github.io/2023/11/10/Linux%E5%86%85%E6%A0%B8%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/">http://ytirus.github.io/2023/11/10/Linux%E5%86%85%E6%A0%B8%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -594,12 +741,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
-                                </a>
-                            
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
+                                <a href="/tags/%E5%AD%97%E8%8A%82%E4%B8%BA%E5%8D%95%E4%BD%8D%E7%9A%84IO/">
+                                    <span class="chip bg-color">字节为单位的IO</span>
                                 </a>
                             
                         </div>
@@ -643,53 +786,48 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/">
+                <a href="/2023/11/10/Linux%E5%86%85%E6%A0%B8%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/bbc62466bd56426ba61a32a89ba0a1d2.png" class="responsive-img" alt="Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale">
                         
-                        <span class="card-title">Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale</span>
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Linux内核字符设备驱动">
+                        
+                        <span class="card-title">Linux内核字符设备驱动</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            面向仓库级内存分层的自适应分层系统。
+                            
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-20
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
-                    <a href="/tags/Warehouse-Scale-Computing/">
-                        <span class="chip bg-color">Warehouse-Scale Computing</span>
+                    <a href="/tags/%E5%AD%97%E8%8A%82%E4%B8%BA%E5%8D%95%E4%BD%8D%E7%9A%84IO/">
+                        <span class="chip bg-color">字节为单位的IO</span>
                     </a>
                     
                 </div>
@@ -703,47 +841,32 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">
+                <a href="/2023/11/09/Data-tiering-in-heterogeneous-memory-systems/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png" class="responsive-img" alt="Transparent Page Placement for CXL Enabled Tiered Memory">
                         
-                        <span class="card-title">Transparent Page Placement for CXL Enabled Tiered Memory</span>
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Data tiering in heterogeneous memory systems">
+                        
+                        <span class="card-title">Data tiering in heterogeneous memory systems</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            针对自己公司数据中心的工作负载的特点，修改内核页面放置策略
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-09
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            易百分
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
                 </div>
                 
             </div>

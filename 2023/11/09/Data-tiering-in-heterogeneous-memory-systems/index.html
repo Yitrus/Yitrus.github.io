@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness, Yi&#39;s Blog">
+    <meta name="keywords" content="Data tiering in heterogeneous memory systems, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness | Yi&#39;s Blog</title>
+    <title>Data tiering in heterogeneous memory systems | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/03757318787c480091970cfc3d2290a2.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Merchandiser Data Placement on Heterogeneous Memory for TaskParallel HPC Applications with LoadBalance Awareness</h1> -->
+                    <!-- <h1 class="description center-align post-title">Data tiering in heterogeneous memory systems</h1> -->
                 </div>
             </div>
         </div>
@@ -435,29 +435,12 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
-                            </a>
-                        
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/Paper/" class="post-category">
-                                Paper
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -466,7 +449,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-08-19
+                    2023-11-09
                 </div>
                 
 
@@ -475,14 +458,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    629
+                    367
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    1 分
                 </div>
                 
 
@@ -508,29 +491,17 @@
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
 <ul>
-<li>文章来自PPoPP，2022</li>
-<li>Merchandiser: Data Placement on Heterogeneous Memory for Task-Parallel HPC Applications with Load-Balance Awareness </li>
+<li>文章来自, (EuroSys), 2016</li>
+<li>Data tiering in heterogeneous memory systems</li>
 </ul>
 </div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>Zhen Xie，University of California, Merced Argonne National Laboratory</li>
-<li>Jie Liu，University of California, Merced</li>
-<li>Jiajia Li，North Carolina State University</li>
-<li>Dong Li，University of California, Merced</li>
+<li>再说吧</li>
 </ul>
-<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/ea9867b9f36043af9a699eb42ec35696.png"></p>
-<p>图1.a给出了一个基于MPI的任务并行应用的例子。在DMRG中，一个哈密顿矩阵首先被分割成多个块，每个块被分配给一个MPI 进程(1-3行) 。然后每个MPI进程运行一个计算循环，作为输入(第5-7行)循环的一次迭代被认为是1个任务实例。因此，MPI进程中的任务是重复执行的。在每个迭代结束时，有一个全局的MPI进程之间的同步。</p>
-<p>图1.b给出了1个基于OpenMP的任务并行应用的例子，一个主循环运行了许多SpGEMM (C=A*B) 。在主循环的每一次迭代中，A首先被分割成若干个bins，部分 A*B 得到部分C</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2d6f15b49475435ba52e45722d3e969f.png"></p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>Input-Aware Memory Access Quantification<br>既然是从任务的角度来解决问题，那么如何确定什么样的数据放入快速内存中？<br>连串的、一定步长的，需要考虑左右两边数据的、随机的。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/519a7d4c0e2149bf9fd8ddbdd870afcc.png"></p>
-<p>阿尔法的值，根据步长和数据类型来确定，由作者提前枚举好了的。综上给了两种方法来判断输入数据的将来被访问量，一种是用户直接通过API指定，如果没有指定的情况就是使用公式计算，依据具体计算方式设置阿尔法。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/b690c63eb3a3414991abdf491177a583.png"></p>
-<p>迁移的决策模型应该是，作者的想法就是怎么把数据放置在不同PM的敏感性展现出来，区分出数据在不同异构放置的差别。<br>时间上的预测完全参考13年的一篇论文<br>梯度提升回归：每个学习算法准确率都不高。但是它们集成起来可以获得很好的准确率。这些学习算法依次应用。也就是说每个学习算法都是在前一个学习算法的错误中学习.</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/89e360308c2b400b8d7318f8e4b2efc6.png"></p>
-<p><strong>性能模型的设计</strong><br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/03757318787c480091970cfc3d2290a2.png"></p>
-<h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>NVM的一个关键使用模型是更便宜的高容量易失性存储器。数据中心运营商一定会问，这种使用NVM取代大部分DRAM内存的模式是否会导致其应用程序大幅放缓？回答这个问题至关重要，因为巨大的性能影响将成为采用此类系统的障碍。</p>
+<p>本文对<code>代表性应用程序进行了全面研究</code>，包括键值存储 (MemC3)、内存数据库 (VoltDB) 和图形分析框架 (GraphMat)，这些应用程序位于支持 emu 的平台上混合存储技术。我们的结论是，确实可以混合使用<code>少量快速DRAM和大量较慢的NVM，而不会对应用程序的性能产生成比例的影响</code>。需要注意的是，这个结果只能通过仔细放置数据结构来实现。本文的贡献是设计和实现了一组库和自动工具，使程序员能够以最少的努力实现最佳的数据放置。</p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2>
                 
             </div>
             <hr/>
@@ -556,7 +527,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/">http://ytirus.github.io/2023/08/19/Merchandiser-Data-Placement-on-Heterogeneous-Memory-for-TaskParallel-HPC-Applications-with-LoadBalance-Awareness/</a>
+                    <a href="http://ytirus.github.io/2023/11/09/Data-tiering-in-heterogeneous-memory-systems/">http://ytirus.github.io/2023/11/09/Data-tiering-in-heterogeneous-memory-systems/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -593,15 +564,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
-                                </a>
-                            
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -647,30 +610,31 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/08/20/Towards-an-Adaptable-Systems-Architecture-for-Memory-Tiering-at-WarehouseScale/">
+                <a href="/2023/11/10/Linux%E5%86%85%E6%A0%B8%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/bbc62466bd56426ba61a32a89ba0a1d2.png" class="responsive-img" alt="Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale">
                         
-                        <span class="card-title">Towards an Adaptable Systems Architecture for Memory Tiering at WarehouseScale</span>
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Linux内核字符设备驱动">
+                        
+                        <span class="card-title">Linux内核字符设备驱动</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            面向仓库级内存分层的自适应分层系统。
+                            
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-20
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-10
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
                                 </a>
                             
                             
@@ -680,16 +644,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
-                    </a>
-                    
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
-                    <a href="/tags/Warehouse-Scale-Computing/">
-                        <span class="chip bg-color">Warehouse-Scale Computing</span>
+                    <a href="/tags/%E5%AD%97%E8%8A%82%E4%B8%BA%E5%8D%95%E4%BD%8D%E7%9A%84IO/">
+                        <span class="chip bg-color">字节为单位的IO</span>
                     </a>
                     
                 </div>
@@ -703,23 +659,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">
+                <a href="/2023/11/01/emerging-system-interconnects/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png" class="responsive-img" alt="Transparent Page Placement for CXL Enabled Tiered Memory">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd7ecaf067cf4e8b92b034b2f5f6984c.png" class="responsive-img" alt="Emerging System Interconnects">
                         
-                        <span class="card-title">Transparent Page Placement for CXL Enabled Tiered Memory</span>
+                        <span class="card-title">Emerging System Interconnects</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            针对自己公司数据中心的工作负载的特点，修改内核页面放置策略
+                            IEEE Micro theme article Emerging System Interconnects 2023年年初很多不错的作者在这里发表了短小的CXL相关的论文这里做个阅读合集。
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-01
                             </span>
                         <span class="publish-author">
                             
@@ -736,12 +692,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hybrid-Memory-Systems/">
-                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    <a href="/tags/O/">
+                        <span class="chip bg-color">O</span>
                     </a>
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
+                    <a href="/tags/CXL/">
+                        <span class="chip bg-color">CXL</span>
                     </a>
                     
                 </div>
@@ -872,13 +828,6 @@
 
 </main>
 
-
-<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-<script>
-    MathJax.Hub.Config({
-        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
-    });
-</script>
 
 
 

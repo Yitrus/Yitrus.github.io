@@ -475,7 +475,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    698
+                    712
                 </div>
                 
 
@@ -512,6 +512,7 @@
 
 <p>这篇和22年他们发的分解内存相似度极高。程序通过<code>malloc</code>申请内存，这个c语言库函数有个阈值是128k。大于128k调用<code>mmap</code>，小于调用<code>brk</code>（不过不同glibc的这个值可能不太一样）。如果申请的是比较大块的内存（超过 128K）时，会调用<code>mmap</code>在虚拟内存空间中的文件映射与匿名映射区创建出一块<code>VMA</code>内存区域，用<code>struct anon_vma</code>结构表示。在这篇论文里<code>mmap</code>的映射是文件映射。就是说将进程虚拟内存空间中某一段虚拟内存区域与磁盘中某个文件的某段区域进行映射。通过<code>mmap</code>只是给程序的某个进程分配了虚拟内存，还没完。这些虚拟地址和物理地址的关系是怎么建立的？以前通过<code>mmap</code>映射的是磁盘上的一个文件，那么就需要通过参数<code>fd</code>来指定要映射文件的描述符（file descriptor）。现在是去访问一个设备。一般来说内核访问一个设备需要设备驱动程序进行一系列操作包括在<code>/dev</code>目录下创建一个字符设备文件或块设备文件。<code>/dev</code>下的PCIe设备文件抽象了应用程序与底层硬件的交互,通过文件操作的统一接口完成对PCIe设备的访问。而这篇文章里DIRECTCXL驱动程序将基址寄存器和HDM映射到主机的保留系统内存空间中。Host-Managed Device Memory技术让设备内存访问对主机来说就像访问系统内存一样,通过加载/存储指令直接操作。对主机来说以前PM的物理地址只是排在DRAM后面的一段线性地址，那现在又如何看CXL设备的内存？从论文的描述来看CXL内存并不对主机透明，而是需要多少就现成分多少，DIRECTCXL驱动程序就创建多少<code>/dev/xx</code>。这篇文章里CXL内存设备的虚拟地址地址和物理地址的映射更像传统段式内存。如下图展示了程序该怎么使用CXL设备内存的整个流程。无论是NVM还是CXL作为物理内存块，它们首先都是由namespace定义一套内存的抽象（这个过程不是我们讨论的范围）。只是以前PM将namespace通过热插拔设置为node，而现在是设置为如下图的段式内存。另一个问题为什么放在<code>/dev/directcxl</code>之类的地方？因为他实现CXL的方式是基于PCIe的，是个设备。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd7ecaf067cf4e8b92b034b2f5f6984c.png"></p>
+<p>字符设备图片出处<br><a target="_blank" rel="noopener" href="https://jerrysheh.com/post/2720656c.html">https://jerrysheh.com/post/2720656c.html</a></p>
 
                 
             </div>
@@ -625,53 +626,36 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/11/01/emerging-system-interconnects/">
+                <a href="/2023/11/09/Data-tiering-in-heterogeneous-memory-systems/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd7ecaf067cf4e8b92b034b2f5f6984c.png" class="responsive-img" alt="Emerging System Interconnects">
                         
-                        <span class="card-title">Emerging System Interconnects</span>
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Data tiering in heterogeneous memory systems">
+                        
+                        <span class="card-title">Data tiering in heterogeneous memory systems</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            IEEE Micro theme article Emerging System Interconnects 2023年年初很多不错的作者在这里发表了短小的CXL相关的论文这里做个阅读合集。
+                            
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-01
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-09
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            易百分
                             
                         </span>
                     </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/O/">
-                        <span class="chip bg-color">O</span>
-                    </a>
-                    
-                    <a href="/tags/CXL/">
-                        <span class="chip bg-color">CXL</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -881,7 +865,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">112k</span>&nbsp;字
+                class="white-color">113.7k</span>&nbsp;字
             
             
             
