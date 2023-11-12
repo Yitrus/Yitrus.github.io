@@ -316,7 +316,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png)')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -533,7 +533,7 @@
 </ul>
 <p>另外一点是地址转换的开销，当内存变得很大之后，TLB很小缓存的地址转换的条目相对覆盖率就低了。转换开销主要是由于TLB未命中时缓慢的page table walk造成的。TLB的命中速度很快，但page table walk可能需要四次内存访问才能查询分层页表。较新的处理器由于采用了更深的页表结构，需要多达五次内存访问。大页面通过两种方式减少转换开销。1.由于大页面的单个条目映射了更大的地址范围，因此可以通过增加TLB覆盖率来降低TLB未命中的频率。2.通过减少需要访问的页表级数，加快单个walk速度。<br>但是大家在使用大页面的时候往往一个大页面只有很小一部分小页面被访问，迁移大页面又必须承受昂贵的开销。比如下图横坐标是0到511，每个点代表一个大页面，（a）右上角的点表示一个大页中机会所有的小页面都被访问到了，同时这个大页总的被访问次数也很大。最坏的情况是（b）的右上角，那些大页面只有很少的小页面被访问，同时整体访问频率又很高，不如放它们做小页面单飞更好。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/4d169f4812364c309dbd3b1a82623bb9.png"></p>
 <p><span class="label danger">事实上笔者自己在测这个地址转换开销的时候，并没有发现会大到哪里去，也可能是我打开方式不对</span></p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>The biggest limitation of prior systems(tiered memory systems) is their inability to effectively classify page hotness across diverse memory configurations and workloads. </p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>The biggest limitation of prior systems （tiered memory systems） is their inability to effectively classify page hotness across diverse memory configurations and workloads. </p>
 <h2 id="4-围绕该问题作者如何构建解决思路"><a href="#4-围绕该问题作者如何构建解决思路" class="headerlink" title="4. 围绕该问题作者如何构建解决思路"></a>4. 围绕该问题作者如何构建解决思路</h2><p>先放一个总体设计图，还是那几步，采样页面信息、分析、然后迁移。多了对于大页面的分析，分析大页面被拆分的好处。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png"></p>
 <p>PEBS采样的好处就是可以直接区分目前的地址是被当作小页还是大页了。同时这里硬件采样只采样了两个指令（事件），就还好一般不会找不到映射。这个后台线程根据单核CPU性能的3%控制采样的间隔。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a6823d64ee6142a493598c4e8eabc25c.png"></p>
 <p>为了平衡小页和大页记录热度的不公平（毕竟大页大一点被访问的概率也大一些），作者设计了热度因子。主要笔者觉得非常棒的点在于这种zipf分布的直方图，符合访问到热度分布，然后又将页面热度做了很多分层，适合不同的快速层内存容量。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/54629799caed455cb4bd9a7155ca571d.png"></p>
@@ -542,10 +542,10 @@
 <p>最后是设计了大页面的拆分，绿色部分是收益，我们可以从箭头看到，白色直方图统计大页和小页，灰色直方图只统计小页，那么之间的差值就是如果他不是大页，那么热的bin还会增加多少。差值越大说明越不该用大页。于是设计了一个拆分大页面的阈值。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c79d262302d14c8892e6a1dcc44089b8.png"></p>
 <h2 id="5-从结果看，作者如何有力证明他解决了问题"><a href="#5-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="5. 从结果看，作者如何有力证明他解决了问题"></a>5. 从结果看，作者如何有力证明他解决了问题</h2><p>作者实验环境：</p>
 <ul>
-<li>DRAM + NVM (Optane DCPMM, load: 300ns) </li>
-<li>DRAM + emulated CXL memory (cross NUMA DRAM with increased latency, load: 177ns)</li>
+<li>DRAM + NVM （Optane DCPMM, load: 300ns）</li>
+<li>DRAM + emulated CXL memory （cross NUMA DRAM with increased latency, load: 177ns）</li>
 <li>A single socket for our evaluations to avoid NUMA effects</li>
-<li>The ratio of fast to capacity tier memory size as 1:2, 1:8, and 1:16（In the 1:2 configuration, the fast tier size is set to 33% (1/3) of the resident set size (RSS)     while in the 1:16 configuration, it is reduced to 5.9%(1/17).）</li>
+<li>The ratio of fast to capacity tier memory size as 1:2, 1:8, and 1:16（In the 1:2 configuration, the fast tier size is set to 33% （1/3） of the resident set size （RSS）     while in the 1:16 configuration, it is reduced to 5.9%（1/17）.）</li>
 </ul>
 <p>性能评估图显示好于7个分层内存，他们都发表于A类。</p>
 <h2 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6. 缺陷和改进思路"></a>6. 缺陷和改进思路</h2><p>在分层中使用混合页面的工作比较少，主要在于大页面带来的内存膨胀、内存碎片等问题，解决这些问题可能比使用大页面节省的开销更多。这篇工作只讨论拆分大页面，没有启用大页面的设计。同时在使用大页面的评估方面，还有好多前人的工作没讨论到。</p>
@@ -679,7 +679,7 @@
                 <a href="/2023/11/10/Memtis-Efficient-Memory-Tiering-with-Dynamic-Page-Classification-and-Page-Size-Determination/">
                     <div class="card-image">
                         
-                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png)" class="responsive-img" alt="Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png" class="responsive-img" alt="Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination">
                         
                         <span class="card-title">Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</span>
                     </div>
@@ -920,7 +920,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">116.2k</span>&nbsp;字
+                class="white-color">116.4k</span>&nbsp;字
             
             
             
