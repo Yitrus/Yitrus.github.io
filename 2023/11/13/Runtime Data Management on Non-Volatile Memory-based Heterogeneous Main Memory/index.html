@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination, Yi&#39;s Blog">
+    <meta name="keywords" content="Runtime Data Management on Non-Volatile Memory-based Heterogeneous Main Memory, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination | Yi&#39;s Blog</title>
+    <title>Runtime Data Management on Non-Volatile Memory-based Heterogeneous Main Memory | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</h1> -->
+                    <!-- <h1 class="description center-align post-title">Runtime Data Management on Non-Volatile Memory-based Heterogeneous Main Memory</h1> -->
                 </div>
             </div>
         </div>
@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hybrid-Memory-Systems/">
-                                <span class="chip bg-color">Hybrid Memory Systems</span>
+                            <a href="/tags/B/">
+                                <span class="chip bg-color">B</span>
                             </a>
                         
-                            <a href="/tags/A/">
-                                <span class="chip bg-color">A</span>
+                            <a href="/tags/Hybrid-Memory-Systems/">
+                                <span class="chip bg-color">Hybrid Memory Systems</span>
                             </a>
                         
                     </div>
@@ -466,7 +466,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-11-10
+                    2023-11-13
                 </div>
                 
 
@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.3k
+                    774
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    3 分
                 </div>
                 
 
@@ -508,56 +508,48 @@
                 <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
 
 <ul>
-<li>文章来自ACM Symposium on Operating Systems Principles, (SOSP), 2023</li>
-<li>Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</li>
+<li>文章来自Journal of Computer Science and Technology, (JCTS), 2021</li>
+<li>Unimem: Runtime Data Management on Non-Volatile Memory-based Heterogeneous Main Memory</li>
 </ul>
 </div> 
 
 <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
-<li>ATaehyung Lee, Young Ik Eom,（韩国）成均馆大学(SKKU)</li>
-<li>Sumit Kumar Monga,弗吉尼亚理工大学（六所提供预备役军官训练团项目的美国高等军事院校之一）</li>
-<li>Changwoo Min,Igalia公司（Open Source Consultancy and Development）</li>
+<li>Kai Wu, Yingchao Huang, Dong Li, University of California, Merced</li>
 </ul>
-<h2 id="2-其他学者解决这个问题的思路和缺陷"><a href="#2-其他学者解决这个问题的思路和缺陷" class="headerlink" title="2. 其他学者解决这个问题的思路和缺陷"></a>2. 其他学者解决这个问题的思路和缺陷</h2><p>以前做分层内存主要考虑2点：1.怎么样去监控目前有哪些页面是热页面，因为热页面会随着时间而产生改变，同时局部性也不一定有效。2.什么时候什么办法将热/冷页面迁移到它该在的地方。</p>
-<p>以前大家的方法基本分成以下3种来监控热页面：</p>
-<ul>
-<li>缺页异常时将页面进行迁移或者收集数据，但是缺页异常在程序执行的关键路径上，此时再去执行其他的操作很容易产生更高的延迟。</li>
-<li>基于页表的页面扫描，在虚拟地址和物理地址转换的过程中会使用页表，页表上有一个A位的访问位，每次页面被访问后都会置位。通过定期扫描页表，扫描后再清空置位来搜集页面访问信息。但是如下图所示，你对页表的扫描间隔、扫描的采样粒度会影响CPU开销以及准确度。</li>
-<li>基于硬件的采样，不同设备都会有硬件计数器PMU以及PEBS，这些采样时可以记录物理地址和pid等信息，也会随着采样粒度更小而开销更大。除此之外，如果硬件设备更换,它的性能监控计数器（PMC）的寄存器地址可能会有变化。这时需要重新查看新硬件的编程手册,确定PMC寄存器的新地址,然后修改软件程序中的寄存器访问代码,将其映射到新的地址上。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cad3789c063a409294252b6a18309f12.png"></li>
-</ul>
-<p>页面放置也可以大致分为3种类型：</p>
-<ul>
-<li>最近访问的页面，这依赖于时间局部性，但是它往往被记录的时间不够就不能了解这个页面很长一段时间的访问历史。</li>
-<li>想要捕获页面的访问历史，目前的方法还比较局限，大家会设计位图或者一定的数据结构去记录，或者干脆是改进LRU.</li>
-<li>还有的方法通过设置一个阈值来表示页面到底是冷的或者是热的，这就会容易出现如下图的情况，不同工作负载运行在上面，但是他们在不同时刻你定义的热要么多于DRAM（我们高性能但有限的快速内存，要么远远少于DRAM），这使得很多不同程度冷的页面也混合到了快速内存层，这就产生了无效的页面分类。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d46af68f858d4fdc95a3c8d81589c840.png"></li>
-</ul>
-<p>另外一点是地址转换的开销，当内存变得很大之后，TLB很小缓存的地址转换的条目相对覆盖率就低了。转换开销主要是由于TLB未命中时缓慢的page table walk造成的。TLB的命中速度很快，但page table walk可能需要四次内存访问才能查询分层页表。较新的处理器由于采用了更深的页表结构，需要多达五次内存访问。大页面通过两种方式减少转换开销。1.由于大页面的单个条目映射了更大的地址范围，因此可以通过增加TLB覆盖率来降低TLB未命中的频率。2.通过减少需要访问的页表级数，加快单个walk速度。<br>但是大家在使用大页面的时候往往一个大页面只有很小一部分小页面被访问，迁移大页面又必须承受昂贵的开销。比如下图横坐标是0到511，每个点代表一个大页面，（a）右上角的点表示一个大页中机会所有的小页面都被访问到了，同时这个大页总的被访问次数也很大。最坏的情况是（b）的右上角，那些大页面只有很少的小页面被访问，同时整体访问频率又很高，不如放它们做小页面单飞更好。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/4d169f4812364c309dbd3b1a82623bb9.png"></p>
-<p><span class="label danger">事实上笔者自己在测这个地址转换开销的时候，并没有发现会大到哪里去，也可能是我打开方式不对</span></p>
-<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>The biggest limitation of prior systems （tiered memory systems） is their inability to effectively classify page hotness across diverse memory configurations and workloads. </p>
-<h2 id="4-围绕该问题作者如何构建解决思路"><a href="#4-围绕该问题作者如何构建解决思路" class="headerlink" title="4. 围绕该问题作者如何构建解决思路"></a>4. 围绕该问题作者如何构建解决思路</h2><p>先放一个总体设计图，还是那几步，采样页面信息、分析、然后迁移。多了对于大页面的分析，分析大页面被拆分的好处。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png"></p>
-<p>PEBS采样的好处就是可以直接区分目前的地址是被当作小页还是大页了。同时这里硬件采样只采样了两个指令（事件），就还好一般不会找不到映射。这个后台线程根据单核CPU性能的3%控制采样的间隔。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a6823d64ee6142a493598c4e8eabc25c.png"></p>
-<p>为了平衡小页和大页记录热度的不公平（毕竟大页大一点被访问的概率也大一些），作者设计了热度因子。主要笔者觉得非常棒的点在于这种zipf分布的直方图，符合访问到热度分布，然后又将页面热度做了很多分层，适合不同的快速层内存容量。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/54629799caed455cb4bd9a7155ca571d.png"></p>
-<p>设计冷热阈值是根据系统目前DRAM的含量来做的，从值最大的bin开始加，一直到装满DRAM则前一个bin就是热阈值，后面就是温阈值，由于温阈值只是作为热页面候选页，所以冷阈值就直接-1得到，只给温页面一个bin。<span class="label danger">不太理解为啥只给一个bin，这显得这个阈值一点也不动态，其实可能根本不需要这个T阈值，应该可以做出更灵活的方法</span>同时如果热的bins加上最后一个bin马上就满了，那么选择不要最后那个bin了，给页面动态迁移留出空间。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9ddb01fa0d014f06be208f1e23e204e5.png"></p>
-<p>笔者以前也想过这个问题，我收集了一批又一批数据，可是现有的热度会变啊，我以前的数据怎么办呢？这里作者将他们以到后一个bin做变冷的处理，很简单机智。同时页面迁移交给采样线程和迁移线程来做，做的时机就是采样和冷处理后。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7cdea7dfced74152bad98f62799c9b32.png"></p>
-<p>最后是设计了大页面的拆分，绿色部分是收益，我们可以从箭头看到，白色直方图统计大页和小页，灰色直方图只统计小页，那么之间的差值就是如果他不是大页，那么热的bin还会增加多少。差值越大说明越不该用大页。于是设计了一个拆分大页面的阈值。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c79d262302d14c8892e6a1dcc44089b8.png"></p>
-<h2 id="5-从结果看，作者如何有力证明他解决了问题"><a href="#5-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="5. 从结果看，作者如何有力证明他解决了问题"></a>5. 从结果看，作者如何有力证明他解决了问题</h2><p>作者实验环境：</p>
-<ul>
-<li>DRAM + NVM （Optane DCPMM, load: 300ns）</li>
-<li>DRAM + emulated CXL memory （cross NUMA DRAM with increased latency, load: 177ns）</li>
-<li>A single socket for our evaluations to avoid NUMA effects</li>
-<li>The ratio of fast to capacity tier memory size as 1:2, 1:8, and 1:16（In the 1:2 configuration, the fast tier size is set to 33% （1/3） of the resident set size （RSS）     while in the 1:16 configuration, it is reduced to 5.9%（1/17）.）</li>
-</ul>
-<p>性能评估图显示好于7个分层内存，他们都发表于A类。</p>
-<h2 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6. 缺陷和改进思路"></a>6. 缺陷和改进思路</h2><p>在分层中使用混合页面的工作比较少，主要在于大页面带来的内存膨胀、内存碎片等问题，解决这些问题可能比使用大页面节省的开销更多。这篇工作只讨论拆分大页面，没有启用大页面的设计。同时在使用大页面的评估方面，还有好多前人的工作没讨论到。</p>
-<p>采样时CPU的消耗、直方图的数目、计算阈值时的α、直方图的降温周期、页面拆分的参数β，对于参数敏感性的评估不充分。</p>
-<p>作者好像没说清楚他每个数据是怎么存的？就是怎么做到知道哪个页面当前在哪个bin的，因为你迁移的时候需要用到，你拆分大页面的时候也需要用到。</p>
-<h2 id="7-创新点"><a href="#7-创新点" class="headerlink" title="7. 创新点"></a>7. 创新点</h2><p>对现有的分层内存系统进行了比较全面的分析和总结。</p>
-<p>Memtis的设计解决了作者发现的一个问题，即目前热页面采样不准确开销大、迁移并没有完全发挥DRAM效率。在不考虑大页面的情况下，Memtis相比于其他工作是有明显的优势的。</p>
-<h2 id="8-积累"><a href="#8-积累" class="headerlink" title="8. 积累"></a>8. 积累</h2><ul>
-<li>性能评估那张图可以多看看，和自己的工作看有没有出入。</li>
-<li>性能评估分类比较完整的，workload可以借鉴借鉴。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/cosmoss-jigu/memtis/tree/main/memtis-userspace#tips-for-setting-other-systems">开源</a></li>
-</ul>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>正如我们在第 2 节中所示，在<span class="label danger">我们将一些数据对象从内存带宽较小的NVM转移到DRAM后，性能有了很大的提高。然而，将该数据对象从访问延迟较长的NVM移至DRAM后，我们并没有获得这样的性能提升。</span>我们声称此类数据对象对内存带宽敏感。类似地，我们发现一些数据对象仅对内存延迟敏感，或者对带宽和延迟都敏感。根据数据对象对带宽或延迟的敏感度来表征数据对象对于建模和预测数据放置的性能优势至关重要。</p>
+<p>如何平衡数据移动频率（即数据放置的实施）的不同要求？一方面，我们希望数据移动频繁，以便数据放置能够适应执行阶段内存访问模式的变化。另一方面，我们希望尽量减少数据移动以避免性能损失。第三，如何最大限度地减少数据移动对应用程序性能的影响？众所周知，数据移动在性能和能源成本方面非常昂贵。</p>
+<p>如果将数据对象放置在内存带宽较小的NVM和DRAM中存在很大的性能差异，我们就认为该数据对象是带宽敏感的。如果将数据对象放置在内存访问延迟较长的NVM和DRAM中存在很大的性能差异，我们就声称该数据对象对延迟敏感。</p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-创新点"><a href="#8-创新点" class="headerlink" title="8. 创新点"></a>8. 创新点</h2><h2 id="9-积累"><a href="#9-积累" class="headerlink" title="9. 积累"></a>9. 积累</h2><pre><code>每个标签结束后必须空一行:
+
+&lt;div class="note info"&gt;这里是 info 标签样式&lt;/div&gt; 
+
+&lt;div class="note info no-icon"&gt;这里是不带符号的 info 标签样式&lt;/div&gt; 
+
+&lt;div class="note primary"&gt;这里是 primary 标签样式&lt;/div&gt; 
+
+&lt;div class="note primary no-icon"&gt;这里是不带符号的 primary 标签样式&lt;/div&gt; 
+
+&lt;div class="note warning"&gt;这里是 warning 标签样式&lt;/div&gt; 
+
+&lt;div class="note warning no-icon"&gt;这里是不带符号的 warning 标签样式&lt;/div&gt; 
+
+&lt;div class="note danger"&gt;这里是 danger 标签样式&lt;/div&gt; 
+
+&lt;div class="note danger no-icon"&gt;这里是不带符号的 danger 标签样式&lt;/div&gt;
+
+然后是行内标签，比加粗更能显示重点，Fulid移植的。
+&lt;span class="label primary"&gt;Label primary&lt;/span&gt;
+
+&lt;span class="label default"&gt;Label default&lt;/span&gt;
+
+&lt;span class="label info"&gt;Label info&lt;/span&gt;
+
+&lt;span class="label success"&gt;Label success&lt;/span&gt;
+
+&lt;span class="label warning"&gt;Label warning&lt;/span&gt;
+
+&lt;span class="label danger"&gt;Label danger&lt;/span&gt;
+</code></pre>
 
                 
             </div>
@@ -584,7 +576,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/11/10/Memtis-Efficient-Memory-Tiering-with-Dynamic-Page-Classification-and-Page-Size-Determination/">http://ytirus.github.io/2023/11/10/Memtis-Efficient-Memory-Tiering-with-Dynamic-Page-Classification-and-Page-Size-Determination/</a>
+                    <a href="http://ytirus.github.io/2023/11/13/Runtime%20Data%20Management%20on%20Non-Volatile%20Memory-based%20Heterogeneous%20Main%20Memory/">http://ytirus.github.io/2023/11/13/Runtime%20Data%20Management%20on%20Non-Volatile%20Memory-based%20Heterogeneous%20Main%20Memory/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -622,12 +614,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hybrid-Memory-Systems/">
-                                    <span class="chip bg-color">Hybrid Memory Systems</span>
+                                <a href="/tags/B/">
+                                    <span class="chip bg-color">B</span>
                                 </a>
                             
-                                <a href="/tags/A/">
-                                    <span class="chip bg-color">A</span>
+                                <a href="/tags/Hybrid-Memory-Systems/">
+                                    <span class="chip bg-color">Hybrid Memory Systems</span>
                                 </a>
                             
                         </div>
@@ -671,9 +663,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2023/11/13/Runtime%20Data%20Management%20on%20Non-Volatile%20Memory-based%20Heterogeneous%20Main%20Memory/">
                     <div class="card-image">
@@ -690,9 +683,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-13
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -705,6 +698,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -727,19 +721,18 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/11/10/Linux%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/">
+                <a href="/2023/11/10/Memtis-Efficient-Memory-Tiering-with-Dynamic-Page-Classification-and-Page-Size-Determination/">
                     <div class="card-image">
                         
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png" class="responsive-img" alt="Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination">
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="Linux进程管理">
-                        
-                        <span class="card-title">Linux进程管理</span>
+                        <span class="card-title">Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            将页面热度按照zipf做分类，提高DRAM实际利用率，整体性能优于或者持平目前的分层内存工作。设计大页面拆分的时机和方式。
                         
                     </div>
                     <div class="publish-info">
@@ -750,8 +743,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Basics/" class="post-category">
-                                    Basics
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
                                 </a>
                             
                             
@@ -761,8 +754,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/process/">
-                        <span class="chip bg-color">process</span>
+                    <a href="/tags/Hybrid-Memory-Systems/">
+                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    </a>
+                    
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
                     </a>
                     
                 </div>
