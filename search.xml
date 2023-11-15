@@ -8,7 +8,7 @@
       <link href="/2023/11/14/A-Quantitative-Approach-for-Adopting-Disaggregated-Memory-in-HPC-Systems/"/>
       <url>/2023/11/14/A-Quantitative-Approach-for-Adopting-Disaggregated-Memory-in-HPC-Systems/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>The International Conference for High Performance Computing, Networking, Storage and Analysis, (SC), 2023</li><li>A Quantitative Approach for Adopting Disaggregated Memory in HPC Systems</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Jacob Wahlgren, Gabin Schieffer, Ivy Peng, KTH瑞典皇家理工学院</li><li>Maya Gokhale, 劳伦斯利弗莫尔国家实验室（LLNL, 美国能源部所属国家研究机构）</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h3 id="2-1内存分解"><a href="#2-1内存分解" class="headerlink" title="2.1内存分解"></a>2.1内存分解</h3><p>最近的研究发现，大量节点内存仍未得到利用[24]. 在HPC环境中，资源分配更加粗粒度，因为作业通常不共享节点。加上每个节点的高内存容量，这意味着内存通常是未充分利用的资源。最近对领先设施的研究发现，只有不到15%的作业使用超过75%的节点内存，并且50%的时间使用的内存不足总内存的12%[8,33,36,37]。另一方面，作业不用使用多于配置的特定数量的内存资源，就会OOM。（很少量的作业需要大内存，而且需要大内存的和时间是短短暂的。）</p><p>使用内存分解来提高内存利用率，其想法是通过远程内存池按需提供一部分内存资源。在基于内存池的系统中，每个节点都有固定的本地内存和可变数量的结构连接远程内存，实际上是多层内存系统的一种形式[14]。之前的工作已经探索使用节点本地持久内存（例如英特尔傲腾DC PM）作为第二内存层[12,38]。由于Optane已停产，并且随着缓存一致性互连协议（即Compute Express Link（CXL）3类设备）的最新进展，<span class="label primary">内存池成为实现第二层的新兴选项</span>[44]。</p><p>虽然分解内存是一种多层内存，但它与传统的非均匀内存访问（NUMA）系统不同，后者是对称的，每个NUMA域包含相同的计算和内存资源，优化重点是将计算转移到与访问内存页位于同一域的core上。相反，分层内存系统可能是不对称的，其中某些层无需CPU，并且优化重点是将热页放置在更快的层中[24]。</p><p>通过共享内存池干扰可能会导致一项作业由于其他节点上的作业而导致不可预测的性能下降。例如，性能变化的原因之一是不同节点上不相关的作业竞争计算节点和内存池之间的链路带宽。对多层内存的误解包括内存带宽低于同构内存。事实上，从硬件角度来看，<span class="label primary">添加额外的内存层（通道）可以增加聚合带宽</span>。另一个误解是共享内存池应用程序性能总是会下降。分布式内存HPC应用程序可以选择通过扩展到更多计算节点来最大限度地减少对池化内存层的暴露。</p><div class="note info">其实有个大前提，HPC本质还是计算密集型的，但是由于计算规模变大对内存需求也就大了，于是会在大内存里讨论HPC，而使用的很多方法是偏向于以前HPC的比如数据结构、对象级粒度、Roofline，这些笔者感觉在纯做内存那条线好像考虑的比较少，而涉及到HPC就讨论非常频繁了。</div><h3 id="2-2-Roofline模型"><a href="#2-2-Roofline模型" class="headerlink" title="2.2 Roofline模型"></a>2.2 Roofline模型</h3><p>Roofline模型[51]被提出来对具有算术强度𝐼的程序可达到的峰值性能𝑃进行建模。X轴为算术强度𝐼（Arithmetic Intensity）定义为从主内存传输的每个字节的浮点运算数量<strong>Flops/Bytes</strong>, 这个值越高，代表运算的需求越高（每比特浮点运算）。Y轴是<strong>Flop/s</strong> = Min（peak Flops峰值计算能力𝐹， 𝐼 * peak bandwidth峰值内存带宽𝐵（B/s））</p><p>Roofline模型可以进一步扩展以模拟其他限制因素。例如，可以调整存储器带宽的斜率以包括存储器干扰的影响。图5中的虚线表示如果向基准系统添加额外的内存层，则总内存带宽会增加。为了进行细粒度测量，我们将分析器设置为量化每秒浮点数的吞吐量和每秒字节数的内存访问量。图5报告了表2中评估的应用程序中每个阶段的测量算术强度和获得的吞吐量。如图5所示，每个应用程序通常至少包含两个阶段，其中第一阶段（表示为p1）表示初始化阶段。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7429c10833e141138561ba6fdbe89610.png"></p><p>这个曲线其实反应的是当前的短板。先分析线条</p><ul><li>在曲线上升期，peak Flops计算能力𝐹是大的值，不是短板。只要程序每比特含的计算量大，带宽峰值一定，计算吞吐量就能持续增加。</li><li>曲线平缓后说明计算能力𝐹成为了短板，应该考虑将任务分给其他计算节点之类的操作了。</li><li>对于虚线，如果程序包含的每比特浮点计算量一定，增加带宽的操作也可以提高程序吞吐量。</li><li>曲线平缓后会是一个固定的值，再增加吞吐量或者程序包含的每比特浮点计算量都无济于事。<br>对于图中的点，workload的特征表现如下：</li><li>前提是CPU的计算资源是没办法池化的，但是内存可以池化，你就可选择更多的通道，增加聚合带宽。</li><li>在斜线范围内，对于没有靠近屋檐的程序，是由于没有获得足够的带宽。因为这时计算能力并不是整个系统的瓶颈，如果能达到峰值的带宽，吞吐量还能提升。</li><li>对于横线范围下的程序，计算能力成为瓶颈后且不想加入新的计算节点，那最好的情况是min里两个者相等，这是这个程序所需带宽最大值了。<br>（但值得注意的是，这只是一个理想模型，他还有很多其他因素没有考虑进去，比如HPC在同步点的通信开销之类的）</li></ul><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>如何在HPC环境中使用内存池。云环境的内存池大多和虚拟化有关HPC不需要，且云提供商的目的是服务质量和成本，HPC计算性能是首要目标。这使得使用内存池也得满足</p><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>一些现有的工作侧重于了解性能下降或优化分解内存上的数据放置[18,24,30,39,48]。然而，本文并没有提供数据放置的其他优化工作，而是构建了一个<span class="label primary">通用框架来研究应用程序的内存行为并确定优化优先级和限制</span>，以及影响部署选项。移植工作量低，因为架构变化导致程序重写之类的开销。性能变化低。计算设施收益：可持续性、组件单独升级、低成本。</p><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>我们采用了三层自上而下的方法:</p><ul><li>在第一层，我们确定了应用程序对内存系统的内在要求，与确切的系统架构无关。这些内在要求包括算术强度、内存容量使用、带宽使用和访问模式。</li><li>第二层将应用需求扩展到一般多层内存系统，并利用内存roofline模型。 </li><li>最后一个层次是在图2所示的高性能计算架构上，研究下层由内存池支持时的特定内存干扰挑战。</li></ul><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e77b0cd0f54b49b3aa03a5be7577ff32.png" alt="图2"><br>图4展示了实验工作流程，其中每个执行层次都收集了剖析信息，这些信息可分别进行可视化显示。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/42372e86afbe44e3858ce05ec18a507d.png" alt="A step-by-step overview of the profiling workflow with example commands."><br>使用硬件性能计数器捕获需要的指标，比如内存访问。如果架构改变或者多层存储器改变，只需要改变选定的性能事件。</p><h3 id="5-1工作负载特征-容量带宽弹性"><a href="#5-1工作负载特征-容量带宽弹性" class="headerlink" title="5.1工作负载特征-容量带宽弹性"></a>5.1工作负载特征-容量带宽弹性</h3><p>感兴趣的是<span class="label primary">识别并抽象出应用程序在不同内存配置的系统上执行时仍能保持的特性</span>。表2总结了本文使用的评估应用程序和输入问题列表。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e1a92a68adf249a5bf48e61fb000b334.png" alt="用于分析的workloads"></p><p>在部署高性能计算应用程序时，容量和带宽是与内存相关的两个主要考虑因素。在典型的决策流程中，用户需要估算作业的总内存占用和每个节点的峰值内存使用量，然后将其与每个计算节点的内存容量进行比较，以确定所需的最小节点数。</p><p><span class="label info">当内存带宽成为限制因素时，用户可能会决定进一步增加节点数量，以获得更高的总内存带宽</span>。我们提出了内存带宽-容量缩放曲线（如图6所示），以帮助用户<span class="label primary">量化容量和带宽使用之间的关系</span>。该曲线是利用我们的剖析器中的内存访问采样建立的。在按页面测量并汇总内存访问次数后，我们将页面按访问次数降序排序。然后，我们建立<strong>访问量的累积分布</strong>，与内存占用百分比进行比较。每个应用程序都使用3个大小变化约为2倍的输入问题进行测试。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/fc92947cae88430d82c45ee935b3a692.png"><br>这种缩放曲线分析是一个简洁的可视化工具，可以帮助HPC用户统一内存需求的两个维度，即带宽和容量，并估计更大规模问题的需求。</p><ul><li>HPL和Hypre在整个内存占用空间中表现出相对均匀的内存访问。（随着被访问的内存逐渐增加，访问量也是平缓增加的）这种特性与传统的数值代码一致，几乎所有的主存对象都被访问来进行计算。</li><li>BFS和XSBench在执行过程中只有一小部分内存占用被主动访问。我们检查源代码发现BFS分配了大的图结构，而在执行过程中只会访问邻接数据。类似地，XSBench分配大型网格结构，而仅查找采样点。</li><li>NekRS、HPL、Hypre和XSBench这四个应用程序对于1×、2×和4×输入问题具有重叠的缩放曲线，说明输入的问题规模不影响他们的表现模式。</li><li>当输入问题增加时，BFS的缩放曲线向x轴左侧移动，表明访问分布变得更加倾斜，具有更多访问的页面百分比更少。</li><li>SuperLU的变化表明热点页的分布从偏斜分布转向更均匀的分布。</li></ul><p>（事实上这个和带宽的关系是指访问量，还有些牵强啊。）</p><h3 id="5-2工作负载特征-预取"><a href="#5-2工作负载特征-预取" class="headerlink" title="5.2工作负载特征-预取"></a>5.2工作负载特征-预取</h3><p>预取的适用性是由应用程序的算法和访问模式决定的。应用程序在不同的系统上执行，预取的适用性也得以保留。在分解内存的情况下，预取掩盖更高的访问延迟。这里主要讨论对于HPC来说是否开启预取，因为在同样内存分解的云环境中预取是损害性能的。</p><p>量化预取的适用性使用之前提出的两个指标，即准确率和覆盖率[29]. 1.准确度衡量的是程序实际访问的预取缓存行的比率。2.覆盖率衡量在按需访问之前预取的缓存行访问的比率。</p><p>分析基于L2高速缓存，core硬件预检器位于L2高速缓存，LLC是独占的L3高速缓存。作者的测量结果就说明预取有好处，但是会增加流量，不过仍然有好处。</p><h3 id="5-3多层内存"><a href="#5-3多层内存" class="headerlink" title="5.3多层内存"></a>5.3多层内存</h3><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/59098ca6575a41439361eb768ae89495.png"></p><h2 id="6-从结果看，作者如何有力证明他解决了问题"><a href="#6-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="6. 从结果看，作者如何有力证明他解决了问题"></a>6. 从结果看，作者如何有力证明他解决了问题</h2><p>我们的方法应用于一系列不同的应用程序，包括NekRS、SuperLU、Hypre、HPL、BFS和XSBench。最后，在两个案例研究中，我们表明我们的方法的结果可以指导应用程序级的数据放置优化，减少50%的远程访问并将BFS的性能提高13%，并指导系统级调度以减少同一地点工作的绩效差异。</p><h2 id="7-缺陷和改进思路"><a href="#7-缺陷和改进思路" class="headerlink" title="7. 缺陷和改进思路"></a>7. 缺陷和改进思路</h2><h2 id="8-实验平台"><a href="#8-实验平台" class="headerlink" title="8. 实验平台"></a>8. 实验平台</h2><p>我们为图2中的内存池配置了一个仿真平台。该方法使用双插槽系统中的插槽互连来仿真一致的分解内存系统。[24,30,53]中使用了类似的方法。默认的首次接触页面分配策略将分配分配到本地NUMA节点上，直到满为止，然后再溢出到其他NUMA节点（远程内存）。</p><p>该仿真平台使用具有两个插槽和每个插槽一个NUMA节点的Intel Xeon测试台。如图3所示，一个socket代表一个计算节点，另一个socket上的内存代表一个内存池。第二个socket上的核心未使用。它们之间的UPI互连代表远程链路。Socket内带宽为73GB/s，延迟为111ns，socket间带宽为34GB/s，延迟为202ns。 Linux内核版本是5.14。为了获得一致的结果，我们禁用NUMA平衡和透明大页面（THP）。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2385095697584c9383e915b8ec52e02c.png" alt="图3"></p><h2 id="9-具体实现方式"><a href="#9-具体实现方式" class="headerlink" title="9. 具体实现方式"></a>9. 具体实现方式</h2><p>第一层级的分析中，使用硬件计数器收集每秒浮点数计算的次数、加载的字节数<code>OFFCORE_RESPONSE:L3_MISS</code>，使用Roofline模型计算。内存使用量通过<code>procfs</code>中的<code>numa_maps</code>文件采样进行测量，在用户态来做就相当于<code>cat /proc/[pid]/numa_maps</code>进程的NUMA内存策略和分配的信息。内存访问模式1.基于精确事件的采样（PEBS）可以记录缺失的虚拟地址。2.硬件计数器和预取相关的部分。</p><p>第二层的分析中考虑1.远程容量比率（远程容量/总容量）作者意思是<code>numa_maps</code>文件也有2.远程访问比率（访问下一层内存数/总访问数）访问数是通过非core事件<code>LOCAL_DRAM</code>和<code>REMOTE_DRAM</code>采样得到的。</p><p>第三层干扰敏感度决定了由于远程内存干扰而导致的性能下降，而引起的干扰决定了应用程序对其他应用程序造成的干扰程度。使用Intel PCM中的UPI计数器sktXtraffic测量系统级别的注入流量。<span class="github-emoji"><span>👍</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> 开发了一个名为LBench的基准测试，用于注入和量化内存池链接上的干扰。该基准测试在内存池上分配一个数组，并在该数组上执行类似于 Empirical Roofline Toolkit[51]的简单数值内核。我们将干扰级别（表示为𝐿𝑜𝐼）定义为生成的链路流量与峰值链路流量相比的百分比。𝐿𝑜𝐼通过改变内核中每个数组元素的浮点运算数量来配置。</p><p>讨论预取收益时使用的硬件计数器：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d9a1181add3d47e4b7a0e27b6f41fddb.png"></p><pre><code>每个标签结束后必须空一行:&lt;div class="note info"&gt;这里是 info 标签样式&lt;/div&gt; &lt;div class="note info no-icon"&gt;这里是不带符号的 info 标签样式&lt;/div&gt; &lt;div class="note primary"&gt;这里是 primary 标签样式&lt;/div&gt; &lt;div class="note primary no-icon"&gt;这里是不带符号的 primary 标签样式&lt;/div&gt; &lt;div class="note warning"&gt;这里是 warning 标签样式&lt;/div&gt; &lt;div class="note warning no-icon"&gt;这里是不带符号的 warning 标签样式&lt;/div&gt; &lt;div class="note danger"&gt;这里是 danger 标签样式&lt;/div&gt; &lt;div class="note danger no-icon"&gt;这里是不带符号的 danger 标签样式&lt;/div&gt;然后是行内标签，比加粗更能显示重点，Fulid移植的。&lt;span class="label primary"&gt;Label primary&lt;/span&gt;&lt;span class="label default"&gt;Label default&lt;/span&gt;&lt;span class="label info"&gt;Label info&lt;/span&gt;&lt;span class="label success"&gt;Label success&lt;/span&gt;&lt;span class="label warning"&gt;Label warning&lt;/span&gt;&lt;span class="label danger"&gt;Label danger&lt;/span&gt;</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>The International Conference for High Performance Computing, Networking, Storage and Analysis, (SC), 2023</li><li>A Quantitative Approach for Adopting Disaggregated Memory in HPC Systems</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Jacob Wahlgren, Gabin Schieffer, Ivy Peng, KTH瑞典皇家理工学院</li><li>Maya Gokhale, 劳伦斯利弗莫尔国家实验室（LLNL, 美国能源部所属国家研究机构）</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><h3 id="2-1内存分解"><a href="#2-1内存分解" class="headerlink" title="2.1内存分解"></a>2.1内存分解</h3><p>最近的研究发现，大量节点内存仍未得到利用[24]. 在HPC环境中，资源分配更加粗粒度，因为作业通常不共享节点。加上每个节点的高内存容量，这意味着内存通常是未充分利用的资源。最近对领先设施的研究发现，只有不到15%的作业使用超过75%的节点内存，并且50%的时间使用的内存不足总内存的12%[8,33,36,37]。另一方面，作业不用使用多于配置的特定数量的内存资源，就会OOM。（很少量的作业需要大内存，而且需要大内存的和时间是短短暂的。）</p><p>使用内存分解来提高内存利用率，其想法是通过远程内存池按需提供一部分内存资源。在基于内存池的系统中，每个节点都有固定的本地内存和可变数量的结构连接远程内存，实际上是多层内存系统的一种形式[14]。之前的工作已经探索使用节点本地持久内存（例如英特尔傲腾DC PM）作为第二内存层[12,38]。由于Optane已停产，并且随着缓存一致性互连协议（即Compute Express Link（CXL）3类设备）的最新进展，<span class="label primary">内存池成为实现第二层的新兴选项</span>[44]。</p><p>虽然分解内存是一种多层内存，但它与传统的非均匀内存访问（NUMA）系统不同，后者是对称的，每个NUMA域包含相同的计算和内存资源，优化重点是将计算转移到与访问内存页位于同一域的core上。相反，分层内存系统可能是不对称的，其中某些层无需CPU，并且优化重点是将热页放置在更快的层中[24]。</p><p>通过共享内存池干扰可能会导致一项作业由于其他节点上的作业而导致不可预测的性能下降。例如，性能变化的原因之一是不同节点上不相关的作业竞争计算节点和内存池之间的链路带宽。对多层内存的误解包括内存带宽低于同构内存。事实上，从硬件角度来看，<span class="label primary">添加额外的内存层（通道）可以增加聚合带宽</span>。另一个误解是共享内存池应用程序性能总是会下降。分布式内存HPC应用程序可以选择通过扩展到更多计算节点来最大限度地减少对池化内存层的暴露。</p><div class="note info">其实有个大前提，HPC本质还是计算密集型的，但是由于计算规模变大对内存需求也就大了，于是会在大内存里讨论HPC，而使用的很多方法是偏向于以前HPC的比如数据结构、对象级粒度、Roofline，这些笔者感觉在纯做内存那条线好像考虑的比较少，而涉及到HPC就讨论非常频繁了。</div><h3 id="2-2-Roofline模型"><a href="#2-2-Roofline模型" class="headerlink" title="2.2 Roofline模型"></a>2.2 Roofline模型</h3><p>Roofline模型[51]被提出来对具有算术强度𝐼的程序可达到的峰值性能𝑃进行建模。X轴为算术强度𝐼（Arithmetic Intensity）定义为从主内存传输的每个字节的浮点运算数量<strong>Flops/Bytes</strong>, 这个值越高，代表运算的需求越高（每比特浮点运算）。Y轴是<strong>Flop/s</strong> = Min（peak Flops峰值计算能力𝐹， 𝐼 * peak bandwidth峰值内存带宽𝐵（B/s））</p><p>Roofline模型可以进一步扩展以模拟其他限制因素。例如，可以调整存储器带宽的斜率以包括存储器干扰的影响。图5中的虚线表示如果向基准系统添加额外的内存层，则总内存带宽会增加。为了进行细粒度测量，我们将分析器设置为量化每秒浮点数的吞吐量和每秒字节数的内存访问量。图5报告了表2中评估的应用程序中每个阶段的测量算术强度和获得的吞吐量。如图5所示，每个应用程序通常至少包含两个阶段，其中第一阶段（表示为p1）表示初始化阶段。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7429c10833e141138561ba6fdbe89610.png"></p><p>这个曲线其实反应的是当前的短板。先分析线条</p><ul><li>在曲线上升期，peak Flops计算能力𝐹是大的值，不是短板。只要程序每比特含的计算量大，带宽峰值一定，计算吞吐量就能持续增加。</li><li>曲线平缓后说明计算能力𝐹成为了短板，应该考虑将任务分给其他计算节点之类的操作了。</li><li>对于虚线，如果程序包含的每比特浮点计算量一定，增加带宽的操作也可以提高程序吞吐量。</li><li>曲线平缓后会是一个固定的值，再增加吞吐量或者程序包含的每比特浮点计算量都无济于事。<br>对于图中的点，workload的特征表现如下：</li><li>前提是CPU的计算资源是没办法池化的，但是内存可以池化，你就可选择更多的通道，增加聚合带宽。</li><li>在斜线范围内，对于没有靠近屋檐的程序，是由于没有获得足够的带宽。因为这时计算能力并不是整个系统的瓶颈，如果能达到峰值的带宽，吞吐量还能提升。</li><li>对于横线范围下的程序，计算能力成为瓶颈后且不想加入新的计算节点，那最好的情况是min里两个者相等，这是这个程序所需带宽最大值了。<br>（但值得注意的是，这只是一个理想模型，他还有很多其他因素没有考虑进去，比如HPC在同步点的通信开销之类的）</li></ul><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>如何在HPC环境中使用内存池。云环境的内存池大多和虚拟化有关HPC不需要，且云提供商的目的是服务质量和成本，HPC计算性能是首要目标。这使得使用内存池也得满足</p><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p>一些现有的工作侧重于了解性能下降或优化分解内存上的数据放置[18,24,30,39,48]。然而，本文并没有提供数据放置的其他优化工作，而是构建了一个<span class="label primary">通用框架来研究应用程序的内存行为并确定优化优先级和限制</span>，以及影响部署选项。移植工作量低，因为架构变化导致程序重写之类的开销。性能变化低。计算设施收益：可持续性、组件单独升级、低成本。</p><h2 id="5-实验平台"><a href="#5-实验平台" class="headerlink" title="5. 实验平台"></a>5. 实验平台</h2><p>我们为图2中的内存池配置了一个仿真平台。该方法使用双插槽系统中的插槽互连来仿真一致的分解内存系统。[24,30,53]中使用了类似的方法。默认的首次接触页面分配策略将分配分配到本地NUMA节点上，直到满为止，然后再溢出到其他NUMA节点（远程内存）。</p><p>该仿真平台使用具有两个插槽和每个插槽一个NUMA节点的Intel Xeon测试台。如图3所示，一个socket代表一个计算节点，另一个socket上的内存代表一个内存池。第二个socket上的核心未使用。它们之间的UPI互连代表远程链路。Socket内带宽为73GB/s，延迟为111ns，socket间带宽为34GB/s，延迟为202ns。 Linux内核版本是5.14。为了获得一致的结果，我们禁用NUMA平衡和透明大页面（THP）。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2385095697584c9383e915b8ec52e02c.png" alt="图3"></p><h2 id="6-围绕该问题作者如何构建解决思路"><a href="#6-围绕该问题作者如何构建解决思路" class="headerlink" title="6. 围绕该问题作者如何构建解决思路"></a>6. 围绕该问题作者如何构建解决思路</h2><p>我们采用了三层自上而下的方法:</p><ul><li>在第一层，我们确定了应用程序对内存系统的内在要求，与确切的系统架构无关。这些内在要求包括算术强度、内存容量使用、带宽使用和访问模式。</li><li>第二层将应用需求扩展到一般多层内存系统，并利用内存roofline模型。 </li><li>最后一个层次是在图2所示的高性能计算架构上，研究下层由内存池支持时的特定内存干扰挑战。</li></ul><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e77b0cd0f54b49b3aa03a5be7577ff32.png" alt="图2"><br>图4展示了实验工作流程，其中每个执行层次都收集了剖析信息，这些信息可分别进行可视化显示。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/42372e86afbe44e3858ce05ec18a507d.png" alt="A step-by-step overview of the profiling workflow with example commands."><br>使用硬件性能计数器捕获需要的指标，比如内存访问。如果架构改变或者多层存储器改变，只需要改变选定的性能事件。</p><h3 id="6-1工作负载特征-容量带宽弹性"><a href="#6-1工作负载特征-容量带宽弹性" class="headerlink" title="6.1工作负载特征-容量带宽弹性"></a>6.1工作负载特征-容量带宽弹性</h3><p>感兴趣的是<span class="label primary">识别并抽象出应用程序在不同内存配置的系统上执行时仍能保持的特性</span>。表2总结了本文使用的评估应用程序和输入问题列表。identifying and abstracting  the properties that persist even when the application is executed on  systems with different memory configurations.</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/e1a92a68adf249a5bf48e61fb000b334.png" alt="用于分析的workloads"></p><p>在部署高性能计算应用程序时，容量和带宽是与内存相关的两个主要考虑因素。在典型的决策流程中，用户需要估算作业的总内存占用和每个节点的峰值内存使用量，然后将其与每个计算节点的内存容量进行比较，以确定所需的最小节点数。</p><p><span class="label info">当内存带宽成为限制因素时，用户可能会决定进一步增加节点数量，以获得更高的总内存带宽</span>。我们提出了内存带宽-容量缩放曲线（如图6所示），以帮助用户<span class="label primary">量化容量和带宽使用之间的关系</span>。该曲线是利用我们的剖析器中的内存访问采样建立的。在按页面测量并汇总内存访问次数后，我们将页面按访问次数降序排序。然后，我们建立<strong>访问量的累积分布</strong>，与内存占用百分比进行比较。每个应用程序都使用3个大小变化约为2倍的输入问题进行测试。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/fc92947cae88430d82c45ee935b3a692.png"><br>这种缩放曲线分析是一个简洁的可视化工具，可以帮助HPC用户统一内存需求的两个维度，即带宽和容量，并估计更大规模问题的需求。</p><ul><li>HPL和Hypre在整个内存占用空间中表现出相对均匀的内存访问。（随着被访问的内存逐渐增加，访问量也是平缓增加的）这种特性与传统的数值代码一致，几乎所有的主存对象都被访问来进行计算。</li><li>BFS和XSBench在执行过程中只有一小部分内存占用被主动访问。我们检查源代码发现BFS分配了大的图结构，而在执行过程中只会访问邻接数据。类似地，XSBench分配大型网格结构，而仅查找采样点。</li><li>NekRS、HPL、Hypre和XSBench这四个应用程序对于1×、2×和4×输入问题具有重叠的缩放曲线，说明输入的问题规模不影响他们的表现模式。</li><li>当输入问题增加时，BFS的缩放曲线向x轴左侧移动，表明访问分布变得更加倾斜，具有更多访问的页面百分比更少。</li><li>SuperLU的变化表明热点页的分布从偏斜分布转向更均匀的分布。</li></ul><p>（事实上这个和带宽的关系是指访问量，还有些牵强啊。）</p><h3 id="6-2工作负载特征-预取"><a href="#6-2工作负载特征-预取" class="headerlink" title="6.2工作负载特征-预取"></a>6.2工作负载特征-预取</h3><p>预取的适用性是由应用程序的算法和访问模式决定的。应用程序在不同的系统上执行，预取的适用性也得以保留。在分解内存的情况下，预取掩盖更高的访问延迟。这里主要讨论对于HPC来说是否开启预取，因为在同样内存分解的云环境中预取是损害性能的。</p><p>量化预取的适用性使用之前提出的两个指标，即准确率和覆盖率[29]. 1.准确度衡量的是程序实际访问的预取缓存行的比率。2.覆盖率衡量在按需访问之前预取的缓存行访问的比率。</p><p>分析基于L2高速缓存，core硬件预检器位于L2高速缓存，LLC是独占的L3高速缓存。作者的测量结果就说明预取有好处，但是会增加流量，不过仍然有好处。</p><h3 id="6-3多层内存-分层访问"><a href="#6-3多层内存-分层访问" class="headerlink" title="6.3多层内存-分层访问"></a>6.3多层内存-分层访问</h3><p>量化每层内存容量、带宽和访问的比率。柱状图图是远端访问的内存占总内存访问的百分比。均匀的虚线是远端和近端容量占比。不均匀的虚线是一个固定值，因为带宽峰值和硬件相关， $R_{BW}^{remort}$ 是内存访问瓶颈的转折点。</p><ul><li>其中 $R_{access}^{remort}$ 值低于 $R_{BW}^{remort}$ 表示内存访问瓶颈受到快速层带宽的限制。理想情况应该是两层的这两个比是一样的，才能充分利用流量。</li><li>如果 $R_{access}^{remort}$ 值高于 $R_{BW}^{remort}$ ，则表示对较慢层的内存访问过多，导致较慢层成为内存限制访问性能。</li></ul><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/59098ca6575a41439361eb768ae89495.png"></p><p>通过利用分析器中的两个参考点和内存访问指标，可以识别多层内存的优化机会并确定优先级。</p><ul><li>图9a两条参考线很接近，大多数应用程序（HPL和XS Bench除外）的远程内存访问比率接近两条优化参考线，表明优化空间很小，用户不应该花费精力进行优化数据放置。</li><li>相比之下，图9c提供了两条参考线的大量优化机会。例如，根据容量比，HPL、NekRS和BFS都表现出高于𝑅𝐶𝑎𝑝（以红色虚线表示）之上的过度访问。如果热度分布均匀应该是更按照容量比来访问的，这表明在PM的那部分更热。</li><li>图9c几乎所有应用程序的第二阶段 (p2) 都大大高于带宽比 (𝑅𝐵𝑊) 参考值。（这也可以理解，首先你远端层本身访问就多了，再加上你带宽本来比别人低，所以在这个指标上偏离的更加遥远了）虽然这表明还有很大的优化空间，但也可能意味着内存层的设计不平衡。</li><li>XSBench在所有应用程序中脱颖而出，因为所有配置中的远程访问比率都很低（低于6%）。这意味着远程存储器的额外带宽没有被利用。然而，考虑到XSBench的预取覆盖率&lt;1%，应用程序对内存延迟的增加高度敏感。因此，通过最小化远程内存暴露来减少延迟比增加聚合内存带宽更重要。（作者这个解释笔者不太认可啊。前面说XSBench是大型网络结构只有一小部分被访问，那说明那部分都被分配去本地了呀）</li></ul><h3 id="6-4多层内存-访问的阶段性变化"><a href="#6-4多层内存-访问的阶段性变化" class="headerlink" title="6.4多层内存-访问的阶段性变化"></a>6.4多层内存-访问的阶段性变化</h3><p>高性能计算应用通常由多个阶段组成。如图5和图9所示，应用程序中各阶段的运算强度和内存访问模式可能截然不同。一个core的数据放置方案可能会损害其他core。这种全局优化是一个NP完全背包问题。 </p><ul><li>静态解决方案利用离线剖析来修改分配位置，将内存变量直接放置在合适的内存层上。需要大量的移植工作，通常无法适应新的输入问题或系统架构。</li><li>动态解决方案则通过运行时检测访问模式，将性能关键的内存页迁移到快速层。方法对用户透明。但是，高性能计算终端用户通常无法接受性能变化和不确定性能。此外，在高端HPC硬件上，应用程序中的各个阶段通常时间很短，而运行时解决方案需要时间来适应。</li></ul><h3 id="6-5对内存池的干扰-干扰敏感度"><a href="#6-5对内存池的干扰-干扰敏感度" class="headerlink" title="6.5对内存池的干扰-干扰敏感度"></a>6.5对内存池的干扰-干扰敏感度</h3><p>由于多个节点可能共享内存池，因此一个独特的挑战是来自其他节点上共同运行的作业的内存干扰。我们使用LBench来量化表2中的应用程序的内存干扰的影响，主要用于注入链路的拥塞。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/dcfdd670c5e442c5aaa9ca7de6c174d0.png"></p><p>从这里来看多多少少都会有影响。应用程序对内存池内存干扰的敏感度由其远程内存访问引起，并与其运算强度成反比。应用程序用户需要量化应用程序在目标分解内存系统上对内存干扰的敏感度，以确定其在系统上的部署配置。<strong>对于内存干扰敏感度较低的应用，用户可以配置作业部署，充分利用内存池的更多容量，减少支持作业所需的计算节点数量。对于高度敏感的应用，用户可以选择部署具有更多计算节点的作业，以减少远程内存访问，甚至完全避免远程内存，从而满足其性能要求。</strong>我们的量化方法为高性能计算终端用户提供了一个做出明智决策和权衡的工具，提高了用户对新系统架构的信心。</p><h3 id="6-5对内存池的干扰-应用程序造成的内存干扰"><a href="#6-5对内存池的干扰-应用程序造成的内存干扰" class="headerlink" title="6.5对内存池的干扰-应用程序造成的内存干扰"></a>6.5对内存池的干扰-应用程序造成的内存干扰</h3><p>我们通过与闲置系统相比，通过与LBENCE共同运行应用程序并计算相对放缓的应用程序来量化应用程序系统上应用程序的干扰系数。图11的右面板报告了50％内存池设置的应用程序的测量干扰系数。结果表明，NEKR和Hypre可以将最大的内存干扰引入其他共同运行的作业，而HPL和XSBench引入了最低的干扰。图11中的传播突出了由工作量引起的干扰系数的差异。例如，在HYPRE中，计算阶段会导致高干扰系数，而初始化阶段会导致低干扰系数。</p><h2 id="7-具体实现方式"><a href="#7-具体实现方式" class="headerlink" title="7. 具体实现方式"></a>7. 具体实现方式</h2><p>第一层级的分析中，使用硬件计数器收集每秒浮点数计算的次数、加载的字节数<code>OFFCORE_RESPONSE:L3_MISS</code>，使用Roofline模型计算。内存使用量通过<code>procfs</code>中的<code>numa_maps</code>文件采样进行测量，在用户态来做就相当于<code>cat /proc/[pid]/numa_maps</code>进程的NUMA内存策略和分配的信息。内存访问模式1.基于精确事件的采样（PEBS）可以记录缺失的虚拟地址。2.硬件计数器和预取相关的部分。</p><p>第二层的分析中考虑1.远程容量比率（远程容量/总容量）作者意思是<code>numa_maps</code>文件也有2.远程访问比率（访问下一层内存数/总访问数）访问数是通过非core事件<code>LOCAL_DRAM</code>和<code>REMOTE_DRAM</code>采样得到的。</p><p>第三层干扰敏感度决定了由于远程内存干扰而导致的性能下降，而引起的干扰决定了应用程序对其他应用程序造成的干扰程度。使用Intel PCM中的UPI计数器sktXtraffic测量系统级别的注入流量。<span class="github-emoji"><span>👍</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> 开发了一个名为LBench的基准测试，用于注入和量化内存池链接上的干扰。该基准测试在内存池上分配一个数组，并在该数组上执行类似于 Empirical Roofline Toolkit[51]的简单数值内核。我们将干扰级别（表示为𝐿𝑜𝐼）定义为生成的链路流量与峰值链路流量相比的百分比。𝐿𝑜𝐼通过改变内核中每个数组元素的浮点运算数量来配置。</p><p>讨论预取收益时使用的硬件计数器：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d9a1181add3d47e4b7a0e27b6f41fddb.png"></p><h2 id="8-从结果看，作者如何有力证明他解决了问题"><a href="#8-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="8. 从结果看，作者如何有力证明他解决了问题"></a>8. 从结果看，作者如何有力证明他解决了问题</h2><p>在两个案例研究中，我们表明我们的方法的结果可以指导应用程序级的数据放置优化，减少50%的远程访问并将BFS的性能提高13%，并指导系统级调度以减少同一地点工作的绩效差异。</p><h2 id="9-缺陷和改进思路"><a href="#9-缺陷和改进思路" class="headerlink" title="9. 缺陷和改进思路"></a>9. 缺陷和改进思路</h2><p>很难评，最后案例分析的意思是一边跑代码，一边调参数？</p><pre><code>每个标签结束后必须空一行:&lt;div class="note info"&gt;这里是 info 标签样式&lt;/div&gt; &lt;div class="note info no-icon"&gt;这里是不带符号的 info 标签样式&lt;/div&gt; &lt;div class="note primary"&gt;这里是 primary 标签样式&lt;/div&gt; &lt;div class="note primary no-icon"&gt;这里是不带符号的 primary 标签样式&lt;/div&gt; &lt;div class="note warning"&gt;这里是 warning 标签样式&lt;/div&gt; &lt;div class="note warning no-icon"&gt;这里是不带符号的 warning 标签样式&lt;/div&gt; &lt;div class="note danger"&gt;这里是 danger 标签样式&lt;/div&gt; &lt;div class="note danger no-icon"&gt;这里是不带符号的 danger 标签样式&lt;/div&gt;然后是行内标签，比加粗更能显示重点，Fulid移植的。&lt;span class="label primary"&gt;Label primary&lt;/span&gt;&lt;span class="label default"&gt;Label default&lt;/span&gt;&lt;span class="label info"&gt;Label info&lt;/span&gt;&lt;span class="label success"&gt;Label success&lt;/span&gt;&lt;span class="label warning"&gt;Label warning&lt;/span&gt;&lt;span class="label danger"&gt;Label danger&lt;/span&gt;</code></pre>]]></content>
       
       
       <categories>
@@ -78,9 +78,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -155,9 +155,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -485,9 +485,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -539,9 +539,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> NUMA </tag>
             
@@ -809,9 +809,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> Warehouse-Scale Computing </tag>
             
@@ -838,9 +838,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -865,9 +865,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -973,9 +973,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -1000,9 +1000,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -1027,9 +1027,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> 细粒度 </tag>
             
@@ -1137,9 +1137,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
