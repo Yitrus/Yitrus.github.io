@@ -483,14 +483,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    5.5k
+                    5.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    19 分
+                    18 分
                 </div>
                 
 
@@ -539,7 +539,10 @@
 <li>在曲线上升期，peak Flops计算能力𝐹是大的值，不是短板。只要程序每比特含的计算量大，带宽峰值一定，计算吞吐量就能持续增加。</li>
 <li>曲线平缓后说明计算能力𝐹成为了短板，应该考虑将任务分给其他计算节点之类的操作了。</li>
 <li>对于虚线，如果程序包含的每比特浮点计算量一定，增加带宽的操作也可以提高程序吞吐量。</li>
-<li>曲线平缓后会是一个固定的值，再增加吞吐量或者程序包含的每比特浮点计算量都无济于事。<br>对于图中的点，workload的特征表现如下：</li>
+<li>曲线平缓后会是一个固定的值，再增加吞吐量或者程序包含的每比特浮点计算量都无济于事。</li>
+</ul>
+<p>对于图中的点，workload的特征表现如下：</p>
+<ul>
 <li>前提是CPU的计算资源是没办法池化的，但是内存可以池化，你就可选择更多的通道，增加聚合带宽。</li>
 <li>在斜线范围内，对于没有靠近屋檐的程序，是由于没有获得足够的带宽。因为这时计算能力并不是整个系统的瓶颈，如果能达到峰值的带宽，吞吐量还能提升。</li>
 <li>对于横线范围下的程序，计算能力成为瓶颈后且不想加入新的计算节点，那最好的情况是min里两个者相等，这是这个程序所需带宽最大值了。<br>（但值得注意的是，这只是一个理想模型，他还有很多其他因素没有考虑进去，比如HPC在同步点的通信开销之类的）</li>
@@ -599,37 +602,6 @@
 <p>讨论预取收益时使用的硬件计数器：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d9a1181add3d47e4b7a0e27b6f41fddb.png"></p>
 <h2 id="8-从结果看，作者如何有力证明他解决了问题"><a href="#8-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="8. 从结果看，作者如何有力证明他解决了问题"></a>8. 从结果看，作者如何有力证明他解决了问题</h2><p>在两个案例研究中，我们表明我们的方法的结果可以指导应用程序级的数据放置优化，减少50%的远程访问并将BFS的性能提高13%，并指导系统级调度以减少同一地点工作的绩效差异。</p>
 <h2 id="9-缺陷和改进思路"><a href="#9-缺陷和改进思路" class="headerlink" title="9. 缺陷和改进思路"></a>9. 缺陷和改进思路</h2><p>很难评，最后案例分析的意思是一边跑代码，一边调参数？</p>
-<pre><code>每个标签结束后必须空一行:
-
-&lt;div class="note info"&gt;这里是 info 标签样式&lt;/div&gt; 
-
-&lt;div class="note info no-icon"&gt;这里是不带符号的 info 标签样式&lt;/div&gt; 
-
-&lt;div class="note primary"&gt;这里是 primary 标签样式&lt;/div&gt; 
-
-&lt;div class="note primary no-icon"&gt;这里是不带符号的 primary 标签样式&lt;/div&gt; 
-
-&lt;div class="note warning"&gt;这里是 warning 标签样式&lt;/div&gt; 
-
-&lt;div class="note warning no-icon"&gt;这里是不带符号的 warning 标签样式&lt;/div&gt; 
-
-&lt;div class="note danger"&gt;这里是 danger 标签样式&lt;/div&gt; 
-
-&lt;div class="note danger no-icon"&gt;这里是不带符号的 danger 标签样式&lt;/div&gt;
-
-然后是行内标签，比加粗更能显示重点，Fulid移植的。
-&lt;span class="label primary"&gt;Label primary&lt;/span&gt;
-
-&lt;span class="label default"&gt;Label default&lt;/span&gt;
-
-&lt;span class="label info"&gt;Label info&lt;/span&gt;
-
-&lt;span class="label success"&gt;Label success&lt;/span&gt;
-
-&lt;span class="label warning"&gt;Label warning&lt;/span&gt;
-
-&lt;span class="label danger"&gt;Label danger&lt;/span&gt;
-</code></pre>
 
                 
             </div>
@@ -1011,7 +983,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">125k</span>&nbsp;字
+                class="white-color">127k</span>&nbsp;字
             
             
             

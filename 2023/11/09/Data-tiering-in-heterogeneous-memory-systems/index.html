@@ -475,14 +475,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.9k
+                    5.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    10 分
+                    18 分
                 </div>
                 
 
@@ -544,16 +544,37 @@
 <h2 id="6-环境配置"><a href="#6-环境配置" class="headerlink" title="6. 环境配置"></a>6. 环境配置</h2><p>混合内存仿真平台（HMEP）[39]由英特尔构建，用于支持混合内存系统软件堆栈的探索。 HMEP通过实施以下方式实现混合内存与实际应用的研究：(i)DRAM和模拟NVM的独立物理内存范围（使用自定义 BIOS），以及(ii)可配置延迟和时间的细粒度模拟NVM的带宽（使用自定义CPU微代码）。HMEP之前已在其他研究中使用过 [20,26,27,43,44,56]，并在其他地方详细描述过[39]。</p>
 <p>我们展示了六种HMEP配置的结果，代表了NVM的性能范围（表1）。在这些配置中，NVM的延迟范围为DRAM延迟的2倍到4倍（300ns、450ns和600ns），NVM的带宽范围为DRAM带宽的1/4倍到1/8倍（10GB/s到5GB/s）。此外，我们还评估了系统中NVM与DRAM大小的不同比例。我们使用1/T来指代DRAM大小为系统中总可用内存的1/T的设置。在所有测试中，我们为<strong>应用程序提供固定数量的总内存</strong>（等于DRAM和NVM的总和）。与这些设置相对应，我们还考虑了总内存的成本。一般来说，NVM成本源自之前的研究，预计基于NVM（PCM）的SSD比企业MLC NAND闪存SSD贵4倍[33]。基于DDR的DRAM[19]的普遍价格以及保守估计，本工作中假设的可直接寻址NVM设备将比基于NVM的SSD更昂贵（至少在最初），我们假设DRAM是5×按每比特成本计算，比NVM更贵。由于本文感兴趣的大型内存系统中的内存成本明显高于其他服务器组件，因此我们使用上述成本估算作为服务器总成本的代理。</p>
 <h2 id="7-从结果看，作者如何有力证明他解决了问题"><a href="#7-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="7. 从结果看，作者如何有力证明他解决了问题"></a>7. 从结果看，作者如何有力证明他解决了问题</h2><p>评估有两个目标。首先是表明所有三个应用程序的性能很大程度上取决于其中每个数据结构的放置选择。其次，我们的目标是证明我们的放置技术可以正确识别每个数据结构的访问模式，并通过X-Mem实现最佳数据放置。为了证明所有情况下的结果，我们提供了两个基线进行比较。第一种是纯NVM——其中应用程序的内存完全从NVM分配。仅NVM描述了混合内存系统中未经修改的应用程序的最坏情况性能。第二种是仅DRAM，它代表当所有访问的数据都分配在快速DRAM中时应用程序的最佳性能。</p>
-<h3 id="7-1-MLP-GraphMat"><a href="#7-1-MLP-GraphMat" class="headerlink" title="7.1 MLP  GraphMat"></a>7.1 MLP  GraphMat</h3><p>主要需要再认真看看的还是评估部分。</p>
+<p>红色柱状图是开销。</p>
+<h3 id="7-1-MLP-GraphMat"><a href="#7-1-MLP-GraphMat" class="headerlink" title="7.1 MLP GraphMat"></a>7.1 MLP GraphMat</h3><blockquote>
+<p>MLP(memory-level parallelism)可以帮助CPU更好地利用系统内存层次结构，从而减少内存访问延迟并提高计算效率。MLP的内存层次通常包括寄存器、高速缓存、主内存和可能还有其他级别的内存。当CPU执行指令时，它会不断地从不同的内存层次中获取数据，而不仅仅依赖于主内存。这可以通过预取数据到高速缓存、使用多级高速缓存、乱序执行指令等技术来实现。通过充分利用MLP，CPU可以在等待内存数据返回时执行其他指令，从而提高整体性能。MLP的具体实现和性能提升取决于处理器的架构和设计，以及编写的程序的特性。</p>
+</blockquote>
+<p>GraphMat采用顶点程序，并在后端将其映射为高度优化、可扩展的稀疏矩阵操作。GraphMat以迭代广义稀疏矩阵-稀疏向量乘法（或SPMV）的方式实现图算法，更新与顶点相关的一些数据（如 Pagerank）。下图是在代表Twitter follower网络[34]的大图上执行Pagerank算法[23]，32G. Graphmat具有三种主要数据结构：<strong>稀疏向量、顶点数据的稠密向量，最后是压缩稀疏行格式的图的邻接矩阵</strong>。顶点数据的稀疏向量是在每次迭代上构建的，并且由计算中活动顶点的数据组成。通过读取和写入稀疏向量而不是顶点的全稠密向量Graphmat实现了更好的缓存效率。从X-Mem的API可以发现对数据结构的访问量是很有倾向性的。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a03fdc9475da4447b0e1544061a016d8.png"></p>
+<p>图8显示了运行测试时GraphMat的带宽要求和有效延迟。有效延迟（显示为实际物理内存延迟的百分比）通过测量每次最后一级缓存缺失时由于待读取而导致的core停滞，近似于应用程序中的平均内存读取延迟。GraphMat可以实现很高的带宽使用率（读取带宽高达25GB/s，写入带宽高达15GB/s），<span class="label primary">但由于GraphMat能够利用CPU的MLP（内存级并行性），其有效延迟很低（大多低于20%）。 因此，GraphMat的性能对较低的带宽高度敏感，但对较高的延迟只有一定程度的敏感。</span>这就解释了为什么GraphMat的纯NVM性能会随着带宽的降低而降低，而不是随着延迟的增加而增加（图9a最高的那条线）。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a916317248884134b9aea76b6b686724.png"></p>
-<p>图 8 显示了运行测试时 GraphMat 的带宽要求和有效延迟。有效延迟（显示为实际物理内存延迟的百分比）通过测量每次最后一级缓存缺失时由于待读取而导致的内核停滞，近似于应用程序中的平均内存读取延迟。GraphMat 可以实现很高的带宽使用率（读取带宽高达 25GB/s，写入带宽高达 15GB/s），但由于 GraphMat 能够利用 CPU 的 MLP（内存级并行性 (MLP) ），其有效延迟很低（大多低于 20%）。 因此，GraphMat 的性能对较低的带宽高度敏感，但对较高的延迟只有一定程度的敏感。 这就解释了为什么 GraphMat 的纯 NVM 性能会随着带宽的降低而降低，而不是随着延迟的增加而增加（图 9a）。</p>
-<p>可以同时访问多个不同层次的内存，以加快计算和提高性能的能力。MLP的内存层次通常包括寄存器、高速缓存、主内存和可能还有其他级别的内存。</p>
-<p>MLP的重要性在于它可以帮助CPU更好地利用系统内存层次结构，从而减少内存访问延迟并提高计算效率。当CPU执行指令时，它会不断地从不同的内存层次中获取数据，而不仅仅依赖于主内存。这可以通过预取数据到高速缓存、使用多级高速缓存、乱序执行指令等技术来实现。</p>
-<p>通过充分利用MLP，CPU可以在等待内存数据返回时执行其他指令，从而提高整体性能。MLP的具体实现和性能提升取决于处理器的架构和设计，以及编写的程序的特性。在计算机体系结构和性能优化领域，MLP是一个重要的概念，用于改进计算机系统的性能。</p>
-<h3 id="7-2-VoltDB"><a href="#7-2-VoltDB" class="headerlink" title="7.2 VoltDB"></a>7.2 VoltDB</h3><h3 id="7-3-MemC3"><a href="#7-3-MemC3" class="headerlink" title="7.3 MemC3"></a>7.3 MemC3</h3><h3 id="7-4-实际部署"><a href="#7-4-实际部署" class="headerlink" title="7.4 实际部署"></a>7.4 实际部署</h3><h2 id="8-缺陷和改进思路"><a href="#8-缺陷和改进思路" class="headerlink" title="8. 缺陷和改进思路"></a>8. 缺陷和改进思路</h2><p>这里作者只对堆进行分配，现在人们在匿名和文件映射区也有关注。</p>
+<p>GraphMat仅适用于NVM的性能比仅适用于DRAM的性能差2.6倍至5.9倍，并且在较低峰值NVM带宽下性能下降尤其急剧。大部分性能差距可归因于稀疏向量，稀疏向量仅占GraphMat占用空间（32GB）的3.5%（但是他很热）。图9b描述了使用稀疏向量的SPMV操作对GraphMat整体运行时间的巨大贡献。超过1/16，性能会受到对大型邻接矩阵的统一（带宽限制）访问的限制。因此，1/2的性能是仅DRAM的1.09倍到1.29倍，比 1/16 略有改进，但成本更高。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/54382511dea94faeb3fd6d56ab3d74f4.png"></p>
+<h3 id="7-2-VoltDB"><a href="#7-2-VoltDB" class="headerlink" title="7.2 VoltDB"></a>7.2 VoltDB</h3><p>内存数据库利用架构和应用程序趋势来避免许多通常与基于磁盘的<strong>OLTP数据库</strong>相关的开销[12,13,15,51]。VoltDB就是这样的内存数据库之一，它是一种符合ACID的分布式主内存关系数据库，它实现了H-Store的无共享架构 [51]。将仓库数量设置为512个，VoltDB中的站点数量设置为8个，从而产生40GB内存占用。<strong>TPC-C</strong>吞吐量以每秒总事务数报告。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/197dc904cf5a493d9fc9d29a08d367f7.png"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/254aa90c9ef94399a85c33f3f940ab51.png"></p>
+<p>图11显示，VoltDB的性能只对内存延迟敏感，这可以解释为VoltDB中的随机访问（尤其是对索引的访问）造成了较高的有效延迟，有时甚至超过50%（图10b）。在TPC-C工作负载中，VoltDB的平均读取带宽为2.3GB/s，写入带宽仅为1.3GB/s（图10a），因此对较低的带宽并不敏感。</p>
+<p>VoltDB中的TPC-C包含28个此类数据结构，其中前10个数据结构（按大小）约占总内存占用的99%。表4说明了X-Mem的放置算法在这前10个数据结构中的应用。中间结果和其他数据结构使用默认的系统分配器在DRAM中分配。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a6ec47fb78054c699cc750e00110fe6c.png"></p>
+<p>1/16的性能比纯NVM提高了24%到48%。STOCK表和小型CUSTOMER表-在DRAM中。1/8（此处未显示以避免混乱）和1/4的性能并不比1/16好多少。在1/2时，X-Mem能够将VoltDB的所有数据结构放入DRAM中，除了非常大但不经常使用的“CUSTOMER NAME”.图11b显示了<strong>TPC-C事务</strong>的延迟分布，因为它是OLTP工作负载的重要指标。当我们转向NVM中包含更多数据的配置时，平均事务延迟会增加。然而，这种增加受到布局算法的调节，导致事务延迟接近DRAM，即使对于1/16配置也是如此。</p>
+<h3 id="7-3-MemC3"><a href="#7-3-MemC3" class="headerlink" title="7.3 MemC3"></a>7.3 MemC3</h3><p>作为大型数据中心中的缓存，键值存储变得越来越重要[21]。我们研究了Memcached[10] 的一个变体，称为MemC3[28]，这是开源Memcached的最新进展，它比现有实现提高了内存效率和吞吐量。 MemC3实现了布谷鸟哈希cuckoo hashing的变体，以避免Memcached中常见的昂贵的随机相关访问。此外，MemC3用乐观并发控制方案取代了Memcached的独占全局锁定。在加载阶段，MemC3服务器填充了大约64GB的数据集。密钥大小固定为16字节，值的大小范围从16B到8K，大致遵循Facebook发布的数据中ETC跟踪中值的分布 [21]。超过90%的值的大小为512字节或更小。然而，大于512字节的值几乎占据了缓存空间的50%工作负载的总内存占用量约为100GB。</p>
+<p>在执行阶段，客户端再次根据ETC请求跟踪中的值分布生成5000万个随机查询。工作负载读取繁重（95%GET和5%SET），并且当前不包含任何DELETE请求（和ycsb差不多竟然）。我们报告完成测试的总时间。图12显示MemC3的性能特征，客户端每次请求一种大小的值（从16B到8K）。图12a显示MemC3的读取带宽范围为1.8 GB/s至14GB/s，写入带宽范围为1GB/s至6.5GB/s，具体取决于值的大小。由于顺序性能的提高，有效延迟在较大值时减少（从48%到4%）（图12b）。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/2d40a9406d02470295476136fabd73cf.png"></p>
+<p>MemC3对<span class="label primary">较高延迟而不是较低带宽的敏感性</span>（如图13a中仅NVM的性能所示）可以通过工作负载中较小值的较大偏差来解释。图13b通过分解不同值大小的NVM-only开销进一步说明了这一事实。MemC3在启动时为cuckoo哈希表分配内存，并使用动态slab分配器来分配值，slab类型由slab分配的大小决定。哈希表和slabs均使用xmalloc进行分配，因此X-Mem中总共有9个数据结构（表5），因为每个板类型都被视为单独的数据结构。表5显示了由X-Mem放置算法确定的这些数据结构的优先级。请注意，X-Mem为各种板类型确定的优先级完全遵循图13b中仅NVM开销的值细分，这证明了X-Mem放置模型的准确性。在1/8分层中，只有12.5%的应用程序数据位于DRAM中，性能比仅NVM提高了8%到17%，因为X-Mem分配了MemC3的布谷鸟哈希DRAM。 1/4的表现甚至更好，将性能提高到仅DRAM的6%到13%，主要是因为X-Mem现在能够将大量小值放入DRAM中，并减少对NVM的随机访问次数。</p>
+<p><span class="label primary">表5还显示了为什么仅凭数据结构的访问频率不足以确定将其置于更快内存中的好处。例如，布谷鸟哈希和256B在访问频率和内存占用方面都比较接近，但由于访问模式不同，在每个内存区域的收益方面却形成了鲜明对比。</span></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d50257a5b9004017867774b9e337a2dd.png"></p>
+<h3 id="7-4-实际部署"><a href="#7-4-实际部署" class="headerlink" title="7.4 实际部署"></a>7.4 实际部署</h3><p>虽然用xmalloc和xfree替换malloc和free很简单，但根据实现情况，为各个数据结构分配唯一的标记可能需要更多的工作。在我们的例子中，修改VoltDB需要付出最多的努力，但仍然涉及不到50行代码的更改。对于面向对象的程序来说，工作量要低得多，因为可以定义特定于类的分配器来调用xmalloc，而不是将这些调用分散在代码中。虽然这个过程并不繁重，但仍然需要手动操作和对应用程序源代码的充分理解。我们计划探索自动标记应用程序数据结构的动态分配的技术，至少在托管语言和运行时的上下文中[24,32,50]。<span class="github-emoji"><span>👍</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> <span class="github-emoji"><span>👍</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> <span class="github-emoji"><span>👍</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<p>在剖析步骤中进行内存跟踪（使用Pin）会大大降低应用程序的运行速度（在我们的测试中最高可达40倍），因此只适合离线使用，不适用于生产。我们考虑过的一个方案是采用基于采样的剖析[55]。由于担心采样剖析器可能无法捕捉到指针追逐和strided扫描等紧密间隔的内存访问之间的关系，这个想法被搁置了。我们目前正在探索对x86 ISA的扩展，以实现必要的剖析，但无需昂贵的跟踪每次内存访问的过程。不过，剖析器仍然是初步部署的解决方案。我们还发现，<strong>在保留各种数据结构之间关系的同时，缩小工作负载的规模也很有用，这样可以减少剖析所花费的时间</strong>。</p>
+<p>当内存区域从DRAM迁移到NVM时，X-Mem通过等待mbind调用返回来执行“同步”迁移。在我们的实验中，这种迁移的开销可以忽略不计，因为与应用程序的整体运行时间相比，分配所花费的时间相对较少。表6显示了区域大小范围从64M到1G的迁移的原始开销。 1G区域可以比较小区域摊销5%到8%的迁移成本。然而，**使用1G区域的真正好处是它允许在大多数64位服务器上使用大型（1GB）硬件页面；与4K页的基准相比，迁移开销进一步减少了60%**。虽然我们了解在内存占用较大的应用程序中使用具有大页面的1G区域的好处[27]，但X-Mem的当前实现使用64 MB区域（默认情况下）来减少内部碎片。此外，由于Linux内核的限制，X-Mem使用4K硬件页面。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7974e5f219954ae0b7e2eecd5050c5db.png"></p>
+<h2 id="8-缺陷和改进思路"><a href="#8-缺陷和改进思路" class="headerlink" title="8. 缺陷和改进思路"></a>8. 缺陷和改进思路</h2><p>这里作者只对堆进行分配，现在人们在匿名和文件映射区也有关注。</p>
 <p>具体作者讲了很多从jmalloc来做的事情，没有看懂，再看看吧，emmmmmmmmmm</p>
 <h2 id="9-创新点"><a href="#9-创新点" class="headerlink" title="9. 创新点"></a>9. 创新点</h2><p>这个都想到了：<br>数据中心通常在部署之前使用影子基础设施来测试其代码。一种选择是定期分析此影子环境中的工作负载，并相应地重新分类应用程序数据。</p>
 <h2 id="10-积累"><a href="#10-积累" class="headerlink" title="10. 积累"></a>10. 积累</h2><p><a target="_blank" rel="noopener" href="https://lwn.net/Articles/636972/">惊, 原来论坛里MC的想法很早之前就讨论过了, 使用大页面和是否用LRU这些问题也都有讨论</a></p>
+<p>讨论了关于价格的事</p>
 
                 
             </div>
@@ -914,7 +935,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">125k</span>&nbsp;字
+                class="white-color">127k</span>&nbsp;字
             
             
             
