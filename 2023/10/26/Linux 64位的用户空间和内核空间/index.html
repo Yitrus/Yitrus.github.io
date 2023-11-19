@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="64位的用户空间和内核空间, Yi&#39;s Blog">
+    <meta name="keywords" content="X86架构下64位的用户空间和内核空间, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>64位的用户空间和内核空间 | Yi&#39;s Blog</title>
+    <title>X86架构下64位的用户空间和内核空间 | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">64位的用户空间和内核空间</h1> -->
+                    <!-- <h1 class="description center-align post-title">X86架构下64位的用户空间和内核空间</h1> -->
                 </div>
             </div>
         </div>
@@ -537,7 +537,7 @@
 <li>在程序运行的时候总该要调用各种函数吧，那么调用函数过程中使用到的局部变量和函数参数也需要一块内存区域来保存。这一块区域在虚拟内存空间中叫做<strong>栈</strong>。</li>
 </ol>
 <h2 id="虚拟内存是怎么被组织的？"><a href="#虚拟内存是怎么被组织的？" class="headerlink" title="虚拟内存是怎么被组织的？"></a><span class="label primary">虚拟内存是怎么被组织的？</span></h2><blockquote>
-<p>可以通过 cat /proc/pid/maps 或者 pmap pid 来查看某个进程的实际虚拟内存布局。</p>
+<p>可以通过<code>cat /proc/pid/maps</code>或者<code>pmap pid</code>来查看某个进程的实际虚拟内存布局。</p>
 </blockquote>
 <p>这涉及到具体的数据结构和红黑树，不是这篇blog重点，下面放一个概要图。</p>
 <p><img src="https://images.weserv.nl/?url=https://cdn.xiaolincoding.com//mysql/other/f28079c8b8fbf1853570302bee2a1929.png"></p>
@@ -547,11 +547,15 @@
 <li>物理内存896M以上的区域被内核划分为<strong>ZONE_HIGHMEM</strong>区域，我们称之为高端内存。这块动态映射区内核是使用 vmalloc 进行内存分配,将不连续的物理内存映射到连续的虚拟内存上。<br><img src="https://images.weserv.nl/?url=https://cdn.xiaolincoding.com//mysql/other/0bd4766b19d043bb4aebdd06bdf8e67c.png"></li>
 </ol>
 <p><img src="https://images.weserv.nl/?url=https://cdn.xiaolincoding.com//mysql/other/e1f2e689c2754b2af540c6d0b6ab327f.png"></p>
-<h2 id="与用户态内核态有什么联系？"><a href="#与用户态内核态有什么联系？" class="headerlink" title="与用户态内核态有什么联系？"></a>与用户态内核态有什么联系？</h2><p>内核空间用于存放操作系统内核的代码和数据，具有高特权级别，只能由内核态的代码访问。用户空间用于存放用户应用程序的代码和数据，具有较低的特权级别，只能由用户态的代码访问。这种分离允许操作系统保护其核心功能并确保系统的稳定性和安全性。用户应用程序需要通过系统调用来与内核进行通信和访问系统资源。</p>
-<h2 id="namespace又是什么？"><a href="#namespace又是什么？" class="headerlink" title="namespace又是什么？"></a>namespace又是什么？</h2><p>Kernel space - 在某个特定namespace内,操作系统内核执行的内存区域。<br>User space - 在某个特定namespace内,用户模式程序执行的内存区域。</p>
-<p>Namespace的类型有:<br>PID namespace - 进程ID的隔离Namespace<br>Network namespace - 网络设备和协议栈的隔离Namespace<br>Mount namespace - 文件系统挂载点的隔离Namespace<br>IPC namespace - 进程间通信的隔离Namespace<br>UTS namespace - 主机名和域名的隔离Namespace<br>User namespace - 用户和用户组的隔离Namespace</p>
-<p>通过namespace技术,内核可以为不同的用户空间提供隔离的系统资源,增强安全性和容器化。所以在讨论用户空间和内核空间时,需要明确是在哪个namespace环境下。比如docker容器内的用户空间和内核空间就与宿主机隔离开来。</p>
-<p>PS. 文章根据<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247522087&amp;idx=2&amp;sn=fe8f4cd34d68e0a10658dee88bd337df&amp;chksm=f98dd38dcefa5a9ba43a9d1ac96852532f53278915a6f6b9f5187b8c1c885c1e5848ebabbc86#rd">公众号@bin的技术小屋</a>做了一定增删。</p>
+<p>内核页面属于逻辑zone的那个不可移动类的。</p>
+<h2 id="与用户态内核态有什么联系？"><a href="#与用户态内核态有什么联系？" class="headerlink" title="与用户态内核态有什么联系？"></a>与用户态内核态有什么联系？</h2><ul>
+<li>内核空间用于存放操作系统内核的代码和数据，具有高特权级别，只能由内核态的代码访问。</li>
+<li>用户空间用于存放用户应用程序的代码和数据，具有较低的特权级别，只能由用户态的代码访问。</li>
+</ul>
+<p>这种分离允许操作系统保护其核心功能并确保系统的稳定性和安全性。用户应用程序需要通过系统调用来与内核进行通信和访问系统资源。</p>
+<h2 id="页表是物理页和虚拟页的纽带"><a href="#页表是物理页和虚拟页的纽带" class="headerlink" title="页表是物理页和虚拟页的纽带"></a>页表是物理页和虚拟页的纽带</h2><p>页表也是放在物理页中的。因为页表也是可以被放在LLC之类的靠近CPU的地方缓存的，大内存使用后page walk的开销对DRAM5-6次的访问发生次数到底是不是瓶颈？加上页面被动态迁移，就算是再大的内存，热的部分在DRAM里了，LLC可以存那个区域的PDE，这样更减少了page walk。</p>
+<p>page fault的发生是建立物理页和虚拟页对应的重要途径。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9e06fd08fdf24e6e8d72c2d4be13531a.jpeg"></p>
+<h2 id="分配虚拟页就是vma是malloc和mmap在做，但是他们区别是什么呢？"><a href="#分配虚拟页就是vma是malloc和mmap在做，但是他们区别是什么呢？" class="headerlink" title="分配虚拟页就是vma是malloc和mmap在做，但是他们区别是什么呢？"></a><span class="label primary">分配虚拟页就是vma是malloc和mmap在做，但是他们区别是什么呢？</span></h2><p>PS. 文章根据<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247522087&amp;idx=2&amp;sn=fe8f4cd34d68e0a10658dee88bd337df&amp;chksm=f98dd38dcefa5a9ba43a9d1ac96852532f53278915a6f6b9f5187b8c1c885c1e5848ebabbc86#rd">公众号@bin的技术小屋</a>做了一定增删。</p>
 
                 
             </div>
@@ -929,7 +933,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">127.9k</span>&nbsp;字
+                class="white-color">130k</span>&nbsp;字
             
             
             

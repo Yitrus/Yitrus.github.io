@@ -483,14 +483,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    2.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    8 分
                 </div>
                 
 
@@ -557,8 +557,11 @@
 <h2 id="DDR-T"><a href="#DDR-T" class="headerlink" title="DDR-T"></a>DDR-T</h2><p>Intel Optane Persistent Memory使用DDR-T与CPU传输数据。特别设计用于大型数据中心和需要大量内存的高性能计算环境。DDR-T内存模块通常具有非常高的存储容量，通常以TB（Terabytes，千兆字节）为单位来衡量，因此得名为”Terabyte”。这使得DDR-T非常适合大规模数据分析、虚拟化、人工智能和其他内存密集型应用。</p>
 <h2 id="PCIe（Peripheral-Component-Interconnect-Express）"><a href="#PCIe（Peripheral-Component-Interconnect-Express）" class="headerlink" title="PCIe（Peripheral Component Interconnect Express）"></a>PCIe（Peripheral Component Interconnect Express）</h2><p>PCIe是一种用于连接各种外部设备和扩展卡的高速总线标准。它通常用于连接图形卡、网络适配器、存储控制器、声卡等外部硬件设备。PCIe提供了高带宽和低延迟的数据传输通道，使外部设备能够与CPU和系统内存进行快速通信。PCIe通常不用于内存访问，而是用于连接外部设备，以扩展计算机的功能。</p>
 <h2 id="UPI"><a href="#UPI" class="headerlink" title="UPI"></a>UPI</h2><p>跨NUMA节点间数据的传输。</p>
-<h2 id="ISA"><a href="#ISA" class="headerlink" title="ISA"></a>ISA</h2><p>X86体系结构下ISA总线的直接内存存取控制器叫DMA</p>
-
+<h2 id="ISA"><a href="#ISA" class="headerlink" title="ISA"></a>ISA</h2><p>X86体系结构下ISA总线的直接内存存取控制器叫DMA.</p>
+<p>ZONE_DMA：用于那些无法对全部物理内存进行寻址的硬件设备，进行 DMA 时的内存分配。例如前边介绍的 ISA 设备只能对物理内存的前 16M 进行寻址。该区域的长度依赖于具体的处理器类型。</p>
+<p>内核态虚拟内存空间的前896M区域是直接映射到物理内存中的前896M区域中的，直接映射区中的映射关系是一比一映射。映射关系是固定的不会改变。<strong>直接映射区的前16M专门让内核用来为DMA分配内存，这块16M大小的内存区域我们称之为ZONE_DMA。</strong> X86体系结构下ISA总线的直接内存存取控制器叫DMA。16M到896M（不包含896M）这段区域，我们称之为 <strong>ZONE_NORMAL</strong>。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/57d7f3138355481fabd774aa88d22ba9.png"></p>
+<h2 id="DAX"><a href="#DAX" class="headerlink" title="DAX"></a>DAX</h2>
                 
             </div>
             <hr/>
@@ -736,9 +739,9 @@
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="64位的用户空间和内核空间">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="X86架构下64位的用户空间和内核空间">
                         
-                        <span class="card-title">64位的用户空间和内核空间</span>
+                        <span class="card-title">X86架构下64位的用户空间和内核空间</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -931,7 +934,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">127.9k</span>&nbsp;字
+                class="white-color">130k</span>&nbsp;字
             
             
             
