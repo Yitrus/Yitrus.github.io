@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.7k
+                    3.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    15 分
                 </div>
                 
 
@@ -509,8 +509,8 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="相关理论"><a href="#相关理论" class="headerlink" title="相关理论"></a>相关理论</h2><p>80%结果由20%原因引起<br>先找木桶短板再优化<br>采样-&gt;分析瓶颈和热点-&gt;定位问题-&gt;优化-&gt;测试</p>
-<h2 id="内核自带统计信息"><a href="#内核自带统计信息" class="headerlink" title=".内核自带统计信息"></a>.内核自带统计信息</h2><h3 id="proc文件系统"><a href="#proc文件系统" class="headerlink" title="proc文件系统"></a>proc文件系统</h3><p>让用户和内核内部数据结构交互，并不是真正意义上的文件系统，在内存且不占用磁盘，文件本身显示0字节，但查看就会返回大量信息。ps、top等shell命令就是从proc文件系统中读取信息的。</p>
+                <h2 id="0-相关理论"><a href="#0-相关理论" class="headerlink" title="0.相关理论"></a>0.相关理论</h2><p>80%结果由20%原因引起<br>先找木桶短板再优化<br>采样-&gt;分析瓶颈和热点-&gt;定位问题-&gt;优化-&gt;测试</p>
+<h2 id="1-内核自带统计信息"><a href="#1-内核自带统计信息" class="headerlink" title="1.内核自带统计信息"></a>1.内核自带统计信息</h2><h3 id="1-1-proc文件系统"><a href="#1-1-proc文件系统" class="headerlink" title="1.1 proc文件系统"></a>1.1 proc文件系统</h3><p>让用户和内核内部数据结构交互，并不是真正意义上的文件系统，在内存且不占用磁盘，文件本身显示0字节，但查看就会返回大量信息。ps、top等shell命令就是从proc文件系统中读取信息的。</p>
 <ul>
 <li><code>/proc/pagetypeinfo</code> 这是URL链表上有多少活跃和不活跃页面的统计</li>
 <li><code>/proc/zoneinfo</code> zone结构体的相关信息，按照node来显示的，会显示伙伴系统管理的页面数量、各种水位线页面的数量等</li>
@@ -526,9 +526,315 @@
 <li><code>proc/cmdline</code>系统启动时输入的内核命令行参数</li>
 <li><code>proc/kmsg</code>内核日志信息</li>
 </ul>
-<h3 id="sys文件系统"><a href="#sys文件系统" class="headerlink" title="sys文件系统"></a>sys文件系统</h3><p>子系统、设备驱动程序将sysfs作为与用户空间交互的接口</p>
-<h3 id="debugfs文件系统"><a href="#debugfs文件系统" class="headerlink" title="debugfs文件系统"></a>debugfs文件系统</h3><p>调试内核的内存文件系统，在运行中修改某些内核数据，将关心的数据映射到用户空间。<code>mount -t debugfs none /sys/kernel/debug</code></p>
-<h2 id="查看系统内存信息工具"><a href="#查看系统内存信息工具" class="headerlink" title="查看系统内存信息工具"></a>查看系统内存信息工具</h2><h3 id="top"><a href="#top" class="headerlink" title="top"></a>top</h3><p>前几行是<code>free -h</code>的信息，还有些可以交互的命令，比如<code>f</code>是显示隐藏的统计信息比如缺页等，<code>M</code>是按照使用内存排序<br>top显示的排序是:</p>
+<p>写一个内核模块在/proc创建benshushu目录，通过read节点读取内核模块某个全局变量值。通过write修改某个全局变量值</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//procfs的常用API在fs/proc/internal.h文件中有定义</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/module.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/proc_fs.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/uaccess.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/init.h&gt;</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NODE</span> <span class="token string">"benshushu/my_proc"</span></span>
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> param <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">proc_dir_entry</span> <span class="token operator">*</span>my_proc<span class="token punctuation">;</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">proc_dir_entry</span> <span class="token operator">*</span>my_root<span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">KS</span> <span class="token expression"><span class="token number">32</span></span></span>
+<span class="token keyword">static</span> <span class="token keyword">char</span> kstring<span class="token punctuation">[</span>KS<span class="token punctuation">]</span><span class="token punctuation">;</span>	<span class="token comment">/* should be less sloppy about overflows :) */</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span>
+<span class="token function">my_read</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span> <span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> nbytes <span class="token operator">=</span> <span class="token function">sprintf</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> <span class="token string">"%d\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token function">simple_read_from_buffer</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> lbuf<span class="token punctuation">,</span> ppos<span class="token punctuation">,</span> kstring<span class="token punctuation">,</span> nbytes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span> <span class="token function">my_write</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span>
+			<span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token class-name">ssize_t</span> rc<span class="token punctuation">;</span>
+	rc <span class="token operator">=</span> <span class="token function">simple_write_to_buffer</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> lbuf<span class="token punctuation">,</span> ppos<span class="token punctuation">,</span> buf<span class="token punctuation">,</span> lbuf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">sscanf</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> <span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"param has been set to %d\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> rc<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//文件函数操作集</span>
+<span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">file_operations</span> my_proc_fops <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">.</span>owner <span class="token operator">=</span> THIS_MODULE<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>read <span class="token operator">=</span> my_read<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>write <span class="token operator">=</span> my_write<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> __init <span class="token function">my_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment">//proc_mkdir在父目录中创建一个benshushu的目录，这里父目录NULL那就是指在/proc根目录下创建了</span>
+	my_root <span class="token operator">=</span> <span class="token function">proc_mkdir</span><span class="token punctuation">(</span><span class="token string">"benshushu"</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ERR</span><span class="token punctuation">(</span>my_root<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+		<span class="token function">pr_err</span><span class="token punctuation">(</span><span class="token string">"I failed to make benshushu dir\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+    <span class="token comment">//proc_create创建一个新的文件节点，名称是NODE宏定义，节点访问权限0(UGO模式)，父进程的proc_dir_entry对象NULL，my_proc_fops指向文件的操作函数。</span>
+	my_proc <span class="token operator">=</span> <span class="token function">proc_create</span><span class="token punctuation">(</span>NODE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>my_proc_fops<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ERR</span><span class="token punctuation">(</span>my_proc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+		<span class="token function">pr_err</span><span class="token punctuation">(</span><span class="token string">"I failed to make %s\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"I created %s\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token keyword">void</span> __exit <span class="token function">my_exit</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>my_proc<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">proc_remove</span><span class="token punctuation">(</span>my_proc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">proc_remove</span><span class="token punctuation">(</span>my_root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"Removed %s\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">module_init</span><span class="token punctuation">(</span>my_init<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">module_exit</span><span class="token punctuation">(</span>my_exit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">MODULE_LICENSE</span><span class="token punctuation">(</span><span class="token string">"GPL"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-Makefile" data-language="Makefile"><code class="language-Makefile">BASEINCLUDE ?= /lib/modules/`uname -r`/build
+
+proc-test-objs := proc_test.o 
+
+obj-m	:=   proc-test.o
+all : 
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) modules;
+
+clean:
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) clean;
+	rm -f *.ko;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="1-2-sys文件系统"><a href="#1-2-sys文件系统" class="headerlink" title="1.2 sys文件系统"></a>1.2 sys文件系统</h3><p>子系统、设备驱动程序将sysfs作为与用户空间交互的接口。<br>功能和上一个一样，sysfs的API又有所不同。</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/module.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/proc_fs.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/uaccess.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/init.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/device.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/platform_device.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/sysfs.h&gt;</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NODE</span> <span class="token string">"benshushu/my_sysfs"</span></span>
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> param <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">proc_dir_entry</span> <span class="token operator">*</span>my_sysfs<span class="token punctuation">;</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">proc_dir_entry</span> <span class="token operator">*</span>my_root<span class="token punctuation">;</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">platform_device</span> <span class="token operator">*</span>my_device<span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">KS</span> <span class="token expression"><span class="token number">32</span></span></span>
+<span class="token keyword">static</span> <span class="token keyword">char</span> kstring<span class="token punctuation">[</span>KS<span class="token punctuation">]</span><span class="token punctuation">;</span>	<span class="token comment">/* should be less sloppy about overflows :) */</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span>
+<span class="token function">my_read</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span> <span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> nbytes <span class="token operator">=</span> <span class="token function">sprintf</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> <span class="token string">"%d\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token function">simple_read_from_buffer</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> lbuf<span class="token punctuation">,</span> ppos<span class="token punctuation">,</span> kstring<span class="token punctuation">,</span> nbytes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span> <span class="token function">my_write</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span>
+			<span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token class-name">ssize_t</span> rc<span class="token punctuation">;</span>
+	rc <span class="token operator">=</span> <span class="token function">simple_write_to_buffer</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> lbuf<span class="token punctuation">,</span> ppos<span class="token punctuation">,</span> buf<span class="token punctuation">,</span> lbuf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">sscanf</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> <span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"param has been set to %d\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> rc<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//文件的操作集</span>
+<span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">file_operations</span> my_proc_fops <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">.</span>owner <span class="token operator">=</span> THIS_MODULE<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>read <span class="token operator">=</span> my_read<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>write <span class="token operator">=</span> my_write<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span> <span class="token function">data_show</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">device</span> <span class="token operator">*</span>d<span class="token punctuation">,</span>
+		<span class="token keyword">struct</span> <span class="token class-name">device_attribute</span> <span class="token operator">*</span>attr<span class="token punctuation">,</span>  <span class="token keyword">char</span> <span class="token operator">*</span>buf<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token function">sprintf</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> <span class="token string">"%d\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span> <span class="token function">data_store</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">device</span> <span class="token operator">*</span>d<span class="token punctuation">,</span>
+		 <span class="token keyword">struct</span> <span class="token class-name">device_attribute</span> <span class="token operator">*</span>attr<span class="token punctuation">,</span>
+		 <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> count<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token function">sscanf</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> <span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">dev_dbg</span><span class="token punctuation">(</span>d<span class="token punctuation">,</span> <span class="token string">": write %d into data\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token function">strnlen</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token function">DEVICE_ATTR_RW</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//用于描述文件属性的数据结构</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">attribute</span> <span class="token operator">*</span>ben_sysfs_entries<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token operator">&amp;</span>dev_attr_data<span class="token punctuation">.</span>attr<span class="token punctuation">,</span>
+	<span class="token constant">NULL</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">//一组属性类型，这个数据结构定义在include/linux/sysfs.h</span>
+<span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">attribute_group</span> mydevice_attr_group <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"benshushu"</span><span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>attrs <span class="token operator">=</span> ben_sysfs_entries<span class="token punctuation">,</span> <span class="token comment">//attribute数据结构</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> __init <span class="token function">my_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> ret<span class="token punctuation">;</span>
+
+	my_root <span class="token operator">=</span> <span class="token function">proc_mkdir</span><span class="token punctuation">(</span><span class="token string">"benshushu"</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	my_sysfs <span class="token operator">=</span> <span class="token function">proc_create</span><span class="token punctuation">(</span>NODE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>my_proc_fops<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ERR</span><span class="token punctuation">(</span>my_sysfs<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">pr_err</span><span class="token punctuation">(</span><span class="token string">"I failed to make %s\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token function">PTR_ERR</span><span class="token punctuation">(</span>my_sysfs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"I created %s on procfs\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">//kobject_create_and_add()生成kobject数据结构，注册到sysfs文件系统，参数为：文件名、父目录的kobject</span>
+	my_device <span class="token operator">=</span> <span class="token function">platform_device_register_simple</span><span class="token punctuation">(</span><span class="token string">"benshushu"</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ERR</span><span class="token punctuation">(</span>my_device<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"platfrom device register fail\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		ret <span class="token operator">=</span> <span class="token function">PTR_ERR</span><span class="token punctuation">(</span>my_device<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> proc_fail<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+    <span class="token comment">//（属性集合，一组属性类型）</span>
+	ret <span class="token operator">=</span> <span class="token function">sysfs_create_group</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>my_device<span class="token operator">-&gt;</span>dev<span class="token punctuation">.</span>kobj<span class="token punctuation">,</span> <span class="token operator">&amp;</span>mydevice_attr_group<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>ret<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"create sysfs group fail\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> register_fail<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"create sysfs node done\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+register_fail<span class="token operator">:</span>
+	<span class="token function">platform_device_unregister</span><span class="token punctuation">(</span>my_device<span class="token punctuation">)</span><span class="token punctuation">;</span>
+proc_fail<span class="token operator">:</span>
+	<span class="token keyword">return</span> ret<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token keyword">void</span> __exit <span class="token function">my_exit</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>my_sysfs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">proc_remove</span><span class="token punctuation">(</span>my_sysfs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">proc_remove</span><span class="token punctuation">(</span>my_root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"Removed %s\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">sysfs_remove_group</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>my_device<span class="token operator">-&gt;</span>dev<span class="token punctuation">.</span>kobj<span class="token punctuation">,</span> <span class="token operator">&amp;</span>mydevice_attr_group<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token function">platform_device_unregister</span><span class="token punctuation">(</span>my_device<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">module_init</span><span class="token punctuation">(</span>my_init<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">module_exit</span><span class="token punctuation">(</span>my_exit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">MODULE_LICENSE</span><span class="token punctuation">(</span><span class="token string">"GPL"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-Makefile" data-language="Makefile"><code class="language-Makefile">BASEINCLUDE ?= /lib/modules/`uname -r`/build
+
+sysfs-test-objs := sysfs_test.o 
+
+obj-m	:=   sysfs-test.o
+all : 
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) modules;
+
+clean:
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) clean;
+	rm -f *.ko;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="1-3-debugfs文件系统"><a href="#1-3-debugfs文件系统" class="headerlink" title="1.3 debugfs文件系统"></a>1.3 debugfs文件系统</h3><p>调试内核的内存文件系统，在运行中修改某些内核数据，将关心的数据映射到用户空间。<code>mount -t debugfs none /sys/kernel/debug</code></p>
+<p>相关API定义在<code>include/linux/debuggfs.h</code>中</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/module.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/proc_fs.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/uaccess.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/init.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;linux/debugfs.h&gt;</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NODE</span> <span class="token string">"benshushu"</span></span>
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> param <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> <span class="token class-name">dentry</span> <span class="token operator">*</span>debugfs_dir<span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">KS</span> <span class="token expression"><span class="token number">32</span></span></span>
+<span class="token keyword">static</span> <span class="token keyword">char</span> kstring<span class="token punctuation">[</span>KS<span class="token punctuation">]</span><span class="token punctuation">;</span>	<span class="token comment">/* should be less sloppy about overflows :) */</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span>
+<span class="token function">my_read</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span> <span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> nbytes <span class="token operator">=</span> <span class="token function">sprintf</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> <span class="token string">"%d\n"</span><span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token function">simple_read_from_buffer</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> lbuf<span class="token punctuation">,</span> ppos<span class="token punctuation">,</span> kstring<span class="token punctuation">,</span> nbytes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token class-name">ssize_t</span> <span class="token function">my_write</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> __user <span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token class-name">size_t</span> lbuf<span class="token punctuation">,</span>
+			<span class="token class-name">loff_t</span> <span class="token operator">*</span>ppos<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token class-name">ssize_t</span> rc<span class="token punctuation">;</span>
+	rc <span class="token operator">=</span> <span class="token function">simple_write_to_buffer</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> lbuf<span class="token punctuation">,</span> ppos<span class="token punctuation">,</span> buf<span class="token punctuation">,</span> lbuf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">sscanf</span><span class="token punctuation">(</span>kstring<span class="token punctuation">,</span> <span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>param<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token comment">//pr_info("param has been set to %d\n", param);</span>
+	<span class="token keyword">return</span> rc<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">file_operations</span> mydebugfs_ops <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">.</span>owner <span class="token operator">=</span> THIS_MODULE<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>read <span class="token operator">=</span> my_read<span class="token punctuation">,</span>
+	<span class="token punctuation">.</span>write <span class="token operator">=</span> my_write<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">static</span> <span class="token keyword">int</span> __init <span class="token function">my_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">struct</span> <span class="token class-name">dentry</span> <span class="token operator">*</span>debug_file<span class="token punctuation">;</span>
+
+	debugfs_dir <span class="token operator">=</span> <span class="token function">debugfs_create_dir</span><span class="token punctuation">(</span>NODE<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ERR</span><span class="token punctuation">(</span>debugfs_dir<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"create debugfs dir fail\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span>EFAULT<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	debug_file <span class="token operator">=</span> <span class="token function">debugfs_create_file</span><span class="token punctuation">(</span><span class="token string">"my_debug"</span><span class="token punctuation">,</span> <span class="token number">0444</span><span class="token punctuation">,</span>
+			debugfs_dir<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>mydebugfs_ops<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ERR</span><span class="token punctuation">(</span>debug_file<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"create debugfs file fail\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">debugfs_remove_recursive</span><span class="token punctuation">(</span>debugfs_dir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span>EFAULT<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"I created %s on debugfs\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">static</span> <span class="token keyword">void</span> __exit <span class="token function">my_exit</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>debugfs_dir<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">debugfs_remove_recursive</span><span class="token punctuation">(</span>debugfs_dir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">pr_info</span><span class="token punctuation">(</span><span class="token string">"Removed %s\n"</span><span class="token punctuation">,</span> NODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">module_init</span><span class="token punctuation">(</span>my_init<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">module_exit</span><span class="token punctuation">(</span>my_exit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">MODULE_LICENSE</span><span class="token punctuation">(</span><span class="token string">"GPL"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-Makefile" data-language="Makefile"><code class="language-Makefile">BASEINCLUDE ?= /lib/modules/`uname -r`/build
+
+debugfs-test-objs := debugfs_test.o 
+
+obj-m	:=   debugfs-test.o
+all : 
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) modules;
+
+clean:
+	$(MAKE) -C $(BASEINCLUDE) M=$(PWD) clean;
+	rm -f *.ko;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="2-查看系统内存信息工具"><a href="#2-查看系统内存信息工具" class="headerlink" title="2.查看系统内存信息工具"></a>2.查看系统内存信息工具</h2><h3 id="2-1-top"><a href="#2-1-top" class="headerlink" title="2.1 top"></a>2.1 top</h3><p>前几行是<code>free -h</code>的信息，还有些可以交互的命令，比如<code>f</code>是显示隐藏的统计信息比如缺页等，<code>M</code>是按照使用内存排序<br>top显示的排序是:</p>
 <ul>
 <li>PR进程优先级</li>
 <li>NI nice值</li>
@@ -541,7 +847,7 @@
 <li>TIME+ 进程使用CPU的时间总计，单位10ms</li>
 <li>CMOMAND命令名或者命令行</li>
 </ul>
-<h3 id="vmstat"><a href="#vmstat" class="headerlink" title="vmstat"></a>vmstat</h3><p>第一个参数是时间间隔，第二个参数是采样次数。<br><code>-S M</code>指按照兆字节来显示。</p>
+<h3 id="2-2-vmstat"><a href="#2-2-vmstat" class="headerlink" title="2.2 vmstat"></a>2.2 vmstat</h3><p>第一个参数是时间间隔，第二个参数是采样次数。<br><code>-S M</code>指按照兆字节来显示。</p>
 <ul>
 <li>r正在执行和等待的进程数</li>
 <li>b阻塞的进程</li>
@@ -559,7 +865,7 @@
 </ul>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/68d632bf8f0743cbbe0b5c3978dfb54b.png"></p>
 <p><a target="_blank" rel="noopener" href="https://linux.die.net/man/8/vmstat">man手册</a></p>
-<h3 id="iostat"><a href="#iostat" class="headerlink" title="iostat"></a>iostat</h3><ul>
+<h3 id="2-3-iostat"><a href="#2-3-iostat" class="headerlink" title="2.3 iostat"></a>2.3 iostat</h3><ul>
 <li>iowait CPU 等待磁盘 IO 操作的时间</li>
 <li>rrqm/s：每秒合并的读请求数。这表示磁盘在读取数据时是否进行了请求的合并操作。较高的值可能表示磁盘正在优化读取性能。</li>
 <li>wrqm/s：每秒合并的写请求数。类似于rrqm/s，这表示磁盘在写入数据时是否进行了请求的合并操作。</li>
@@ -573,7 +879,47 @@
 <li>svctm：平均每个I/O请求的服务时间（以毫秒为单位）。这表示磁盘实际执行请求所需的时间。</li>
 <li>%util：磁盘利用率。表示磁盘的负载程度，较高的值表示磁盘正在饱和。<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/happy-king/p/9234122.html#:~:text=delta%20%28ruse+wuse%29/delta%20%28io%29%20=%20await%20=%2078.21%20=%3E,=78.21%20*%20delta%20%28io%29/s%20=%2078.21*28.57%20=%202232.8%EF%BC%8C%E8%A1%A8%E6%98%8E%E6%AF%8F%E7%A7%92%E5%86%85%E7%9A%84I/O%E8%AF%B7%E6%B1%82%E6%80%BB%E5%85%B1%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%852232.8ms%E3%80%82">iowait过高的查找和解决方案</a></li>
 </ul>
-<h2 id="printk输出函数和动态输出"><a href="#printk输出函数和动态输出" class="headerlink" title="printk输出函数和动态输出"></a>printk输出函数和动态输出</h2><h2 id="Over-View"><a href="#Over-View" class="headerlink" title="Over View"></a>Over View</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd67339d6b6a477e9587e4c5a3f43707.png"></p>
+<h2 id="3-printk输出函数和动态输出"><a href="#3-printk输出函数和动态输出" class="headerlink" title="3. printk输出函数和动态输出"></a>3. printk输出函数和动态输出</h2><h3 id="3-1-printk最简单有效的调试方法"><a href="#3-1-printk最简单有效的调试方法" class="headerlink" title="3.1 printk最简单有效的调试方法"></a>3.1 printk最简单有效的调试方法</h3><p>在Linux内核中，<code>printk</code>函数可以使用不同的优先级来记录日志消息。以下是一些常用的<code>printk</code>优先级：</p>
+<ol>
+<li><strong>KERN_EMERG</strong>：紧急情况。用于记录最紧急的系统消息，通常表示系统崩溃或无法继续运行的情况。这个优先级的消息通常会导致系统宕机。</li>
+<li><strong>KERN_ALERT</strong>：警报。用于记录需要立即采取行动的情况，通常表示严重的系统问题，但不一定导致宕机。</li>
+<li><strong>KERN_CRIT</strong>：关键。用于记录严重的系统问题，但没有导致系统崩溃。这可以是一个需要紧急关注的问题。</li>
+<li><strong>KERN_ERR</strong>：错误。用于记录错误消息，表示系统遇到了一个问题，但仍然可以继续运行。</li>
+<li><strong>KERN_WARNING</strong>：警告。用于记录警告消息，表示可能存在一些问题，但系统仍在正常运行。</li>
+<li><strong>KERN_NOTICE</strong>：通知。用于记录一般信息，通常表示系统中发生的一些重要事件。</li>
+<li><strong>KERN_INFO</strong>：信息。用于记录普通信息，通常用于调试和跟踪系统行为。</li>
+<li><strong>KERN_DEBUG</strong>：调试。用于记录调试信息，通常只在开发和调试阶段使用。</li>
+</ol>
+<p>这些优先级可以与<code>printk</code>函数一起使用，例如：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">printk</span><span class="token punctuation">(</span>KERN_ERR <span class="token string">"This is an error message.\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在这个例子中，<code>KERN_ERR</code>表示这是一个错误消息，该消息将被记录到系统日志中。</p>
+<p>对于新驱动程序，建议使用更方便的打印API,这些API在其名称中嵌入了日志级别。这些打印辅助函数包括<code>pr_emerg、pr_alert、pr_crit、pr_err、pr_warning、pr_warn、pr_notice、pr_info、pr_debug或pr_dbg</code>。<br>除了比等效的printk()调用更简洁外，它们还可以通过pr_fmt()宏 对格式字符串使用<br>通用定义，例如，在源文件的顶部(在任何#include 指令之前)定义它:</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pr_fmt</span><span class="token expression"><span class="token punctuation">(</span>fmt<span class="token punctuation">)</span> </span><span class="token string">"%s:%s: "</span> <span class="token expression">fmt<span class="token punctuation">,</span> KBUILD_MODNAME<span class="token punctuation">,</span> <span class="token constant">__func__</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这将在该文件中的每个<code>pr_*</code>消息前加上产生该消息的模块和函数名称。内核得是用DEBUG编译的，否则它们被替换为空语句。</p>
+<h3 id="3-2动态输出"><a href="#3-2动态输出" class="headerlink" title="3.2动态输出"></a>3.2动态输出</h3><p>由系统维护者动态地打开和关闭指定的printk输出。配置内核时打开<code>CONFIG_DYNAMIC_DEBUG</code>宏，挂载<code>debugfs</code>文件系统。</p>
+<p>动态输出语句由<code>pr_debug()/dev_dbg()</code>这些函数定义。</p>
+<p>具体来说动态输出会在debugfs文件系统的control文件节点被记录，输出包括文件路径名、输出语句所在行号、模块名（函数名）、将要输出的语句。<code>cat /sys/kernel/debug/dynamic_debug/control</code></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#打开svcsock.c文件中的所有动态输出语句</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'file svcsock.c +p'</span> <span class="token operator">&gt;</span> /sys/kernel/debug/dynamic_debug/control
+<span class="token comment">#打开usbcore模块中的所有动态输出语句</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'module usbcore +p'</span> <span class="token operator">&gt;</span> /sys/kernel/debug/dynamic_debug/control
+<span class="token comment">#打开svc_process()函数中的所有动态输出语句</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'func svc_process +p'</span> <span class="token operator">&gt;</span> /sys/kernel/debug/dynamic_debug/control
+<span class="token comment">#关闭svc_process()函数中的所有动态输出语句</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'func svc_process -p'</span> <span class="token operator">&gt;</span> /sys/kernel/debug/dynamic_debug/control
+<span class="token comment">#打开文件路径中包含usb的文件里的所有动态输出语句</span>
+<span class="token builtin class-name">echo</span> <span class="token parameter variable">-n</span> <span class="token string">'*usb* +p'</span> <span class="token operator">&gt;</span> /sys/kernel/debug/dynamic_debug/control
+<span class="token comment">#打开系统所有的动态输出语句</span>
+<span class="token builtin class-name">echo</span> <span class="token parameter variable">-n</span> <span class="token string">'+p'</span> <span class="token operator">&gt;</span> / sys/kernel/debug/dynamic_debug/control<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>p打开关闭动态输出语句</li>
+<li>l输出行号</li>
+<li>f输出函数名</li>
+<li>m输出模块名</li>
+<li>t输出线程ID</li>
+</ul>
+<p>对于那些开机就已经完成运行的代码，调试方式是在qemu启动时加入命令，比如SMP topology的动态输出语句打开方式在qemu启动命令加上<code>topology.dyndbg=+plft</code>这样输入<code>dmesg | grep 'cluster' </code>就能看见输出。</p>
+<h2 id="Over-View"><a href="#Over-View" class="headerlink" title="Over View"></a>Over View</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd67339d6b6a477e9587e4c5a3f43707.png"></p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/fbbab3ca9a084f5aa0986216daf20f38.png"></p>
 
                 
@@ -692,36 +1038,58 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/11/19/RCU%E7%94%A8%E4%BE%8B/">
+                <a href="/2023/11/19/Linux%E5%86%85%E6%A0%B8%E5%B8%B8%E7%94%A8%E5%86%85%E6%A0%B8%E8%B0%83%E8%AF%95%E4%B8%8E%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="RCU用例">
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="Linux内核常用内核调优">
                         
-                        <span class="card-title">RCU用例</span>
+                        <span class="card-title">Linux内核常用内核调优</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            持续补充各种内核中内存相关数据统计收集方式、调试技巧。
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-19
+                            </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            易百分
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Basics/" class="post-category">
+                                    Basics
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/proc/">
+                        <span class="chip bg-color">proc</span>
+                    </a>
+                    
+                    <a href="/tags/tools/">
+                        <span class="chip bg-color">tools</span>
+                    </a>
+                    
+                    <a href="/tags/memoey/">
+                        <span class="chip bg-color">memoey</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -935,7 +1303,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">130k</span>&nbsp;字
+                class="white-color">132k</span>&nbsp;字
             
             
             
