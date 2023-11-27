@@ -471,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    747
+                    946
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    3 分
                 </div>
                 
 
@@ -501,7 +501,10 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Linux cgroups是Linux系统中管理和分配资源的强大工具。它们允许管理员限制进程或进程组可以使用的资源量，确保基本系统服务始终能够访问正常运行所需的资源。cgroup机制是Linux内核提供的基于进程组的资源管理框架，为特定进程组限定可使用的资源。</p>
+                <p>在使用 systemd 系统的操作系统中，/sys/fs/cgroup 目录都是由 systemd 在系统启动的过程中挂载的，并且挂载为只读的类型。换句话说，系统是不建议我们在 /sys/fs/cgroup 目录下创建新的目录并挂载其它子系统的。这一点与之前的操作系统不太一样。</p>
+<p>默认情况下, systemd会自动创建slice, scope和service单位的层级,来为cgroup树提供统一结构。使用systemctl指令,您可以通过创建自定义slice进一步修改此结构, systemd也自动为/sys/fs/cgroup/目录中重要的kernel资源管控器挂载层级。</p>
+<p>在系统的开机阶段，systemd会把支持的controllers(subsystem子系统)挂载到默认的/sys/fs/cgroup/目录下面：</p>
+<p>Linux cgroups是Linux系统中管理和分配资源的强大工具。它们允许管理员限制进程或进程组可以使用的资源量，确保基本系统服务始终能够访问正常运行所需的资源。cgroup机制是Linux内核提供的基于进程组的资源管理框架，为特定进程组限定可使用的资源。</p>
 <blockquote>
 <p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p>
 </blockquote>
@@ -678,12 +681,12 @@ root          <span class="token number">12</span>       <span class="token numb
                         <span class="chip bg-color">A</span>
                     </a>
                     
-                    <a href="/tags/CXL/">
-                        <span class="chip bg-color">CXL</span>
-                    </a>
-                    
                     <a href="/tags/RDMA/">
                         <span class="chip bg-color">RDMA</span>
+                    </a>
+                    
+                    <a href="/tags/CXL/">
+                        <span class="chip bg-color">CXL</span>
                     </a>
                     
                     <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E8%A7%A3/">
@@ -896,7 +899,7 @@ root          <span class="token number">12</span>       <span class="token numb
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">132k</span>&nbsp;字
+                class="white-color">132.2k</span>&nbsp;字
             
             
             
