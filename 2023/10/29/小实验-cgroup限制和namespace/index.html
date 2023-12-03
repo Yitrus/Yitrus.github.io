@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="小实验:cgroup限制应用程序和namespace的内存, Yi&#39;s Blog">
+    <meta name="keywords" content="cgroup和namespace, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>小实验:cgroup限制应用程序和namespace的内存 | Yi&#39;s Blog</title>
+    <title>cgroup和namespace | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">小实验:cgroup限制应用程序和namespace的内存</h1> -->
+                    <!-- <h1 class="description center-align post-title">cgroup和namespace</h1> -->
                 </div>
             </div>
         </div>
@@ -471,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    946
+                    2.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    8 分
                 </div>
                 
 
@@ -501,25 +501,74 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>在使用 systemd 系统的操作系统中，/sys/fs/cgroup 目录都是由 systemd 在系统启动的过程中挂载的，并且挂载为只读的类型。换句话说，系统是不建议我们在 /sys/fs/cgroup 目录下创建新的目录并挂载其它子系统的。这一点与之前的操作系统不太一样。</p>
-<p>默认情况下, systemd会自动创建slice, scope和service单位的层级,来为cgroup树提供统一结构。使用systemctl指令,您可以通过创建自定义slice进一步修改此结构, systemd也自动为/sys/fs/cgroup/目录中重要的kernel资源管控器挂载层级。</p>
-<p>在系统的开机阶段，systemd会把支持的controllers(subsystem子系统)挂载到默认的/sys/fs/cgroup/目录下面：</p>
-<p>Linux cgroups是Linux系统中管理和分配资源的强大工具。它们允许管理员限制进程或进程组可以使用的资源量，确保基本系统服务始终能够访问正常运行所需的资源。cgroup机制是Linux内核提供的基于进程组的资源管理框架，为特定进程组限定可使用的资源。</p>
-<blockquote>
-<p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p>
-</blockquote>
-<h2 id="1-创建一个有内存限制的cgroup"><a href="#1-创建一个有内存限制的cgroup" class="headerlink" title="1.创建一个有内存限制的cgroup"></a>1.创建一个有内存限制的cgroup</h2><p>为了创建、管理和监控cgroup，我们需要另一个名为cgroup-tools的包<code>sudo apt install cgroup-tools</code></p>
+                <h2 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1. 介绍"></a>1.1. 介绍</h2><p>内核控制组<code>cgroups</code>是一项内核功能，允许为<strong>进程</strong>分配和限制硬件和系统资源。</p>
+<p><strong>创建</strong>：在使用<code>systemd</code>（systemd是System Management Daemon的简写（在UNIX系统中，后台进程都按照惯例以d结尾，因此当你看到一个进程的名字以d结尾，那它极有可能是一个后台进程），它是Linux系统中启动的第一个进程）的操作系统中，<code>/sys/fs/cgroup</code>目录都是<strong>由systemd在系统启动的过程中挂载</strong>的，并且挂载为只读的类型（创建cgroup除了使用cgroup的工具的命令以外，还可以直接在目录里创建相应memory或者cpu的目录，之后默认的cgroup文件会在里面自动生成，但是有的情况下这样的方式创建是不被允许不能成功的即使是sudo）。</p>
+<p><strong>结构</strong>：每个进程都分配有一个管理cgroup。cgroup以分层树结构排序。可以为单个进程或层次结构的整个分支设置资源限制。使用cgroups将所有进程组织成组，这称为切片slice，slice是一棵树或者一棵子树。scope和service是slice中的一个节点，scope是以资源管理为目的的比如我有一组不太相关但是都需要被限制CPU使用的进程；service是一组相关的进程一起工作，形成一个服务单元。默认情况下, systemd会自动创建slice, scope和service单位的层级,来为cgroup树提供统一结构。</p>
+<p><strong>记账</strong>：记账（Accounting）功能是指cgroups可以跟踪和记录组内任务（进程或线程）使用资源的情况。收集有关特定进程组（cgroup）使用的CPU时间、内存占用、磁盘I/O等方面的信息。这有助于识别资源密集型任务，管理系统负载，并进行资源分配和优化。记账具有相对较小但非零的开销，其影响取决于工作负载。请注意，打开一个单元的记账也会隐式地为直接包含在同一切片中的所有单元及其所有父切片和单元打开记账。直接包含在其中，因此会计成本不属于单个单位。</p>
+<p><strong>内核配置</strong>：每个控制组子系统都依赖于相关的配置选项。例如，cpuset子系统应通过CONFIG_CPUSETS内核配置选项启用，io子系统应通过CONFIG_BLK_CGROUP内核配置选项启用等。要启用cgroups中的memory子系统,需要在内核配置时将CONFIG_MEMCG选项设置为y. All of these kernel configuration options may be found in the General setup → Control Group support menu.</p>
+<h2 id="1-2-diff-V1-V2"><a href="#1-2-diff-V1-V2" class="headerlink" title="1.2. diff V1 V2"></a>1.2. diff V1 V2</h2><p>/usr/src/linux/Documentation/admin-guide/cgroup-v1<br>/usr/src/linux/Documentation/admin-guide/cgroup-v2.rst.</p>
+<p>cgroup v1 主要包括以下几个概念：</p>
+<ul>
+<li>subsystem（子系统）：内核模块，具体的资源控制器，可以被关联到cgroup树。不同资源的控制器不同，例如，内存子系统控制内存资源，CPU子系统控制CPU资源。</li>
+<li>cgroup（控制组）：资源隔离的最小单位，表示一组进程和cgroup子系统的关联，例如：通过内存子系统限制一组进程的可用内存资源总量。进程可以加入某个cgroup，也可以从一个cgroup迁移到另一个cgroup，同一进程不能同时存在同类型的两个cgroup中。</li>
+<li>hierarchy（层级）：由一系列cgroup按照树状结构排列，每个节点都是一个cgroup，子cgroup默认继承父cgroup的参数和配置。系统可以有多个层级（cgroup树），每个层级可以和不同的subsystem关联，每个subsystem只能和一个层级关联，同一进程可以属于多个层级，但在每个层级中只能属于一个cgroup节点。</li>
+</ul>
+<p>在cgroup v2中，去掉了层级（hierarchy）的概念，只有一个层级，所有cgroup在该层级中以树形的方式组织，每个cgroup可以管理多种资源。在cgroup v1中，每种资源一个层级。对于bg和adhoc两个cgroup，bg需要限制blkio和memory两种资源，adhoc需要限制memory和pids两种资源。cgroup v1场景的视图如下：<br><img src="https://pic3.zhimg.com/80/v2-8097cbafea04c6cd4a3325600a435d12_1440w.webp"></p>
+<p>对于cgroup v2，由于所有资源都在同一个cgroup下管理，通过cgroup.sub_controller控制子cgroup启用的controller，这样一来，视图以cgroup为单位，更加清晰和便于管理。<br><img src="https://pic1.zhimg.com/80/v2-6afa56ea78c4af88ffaea2057690f0c4_1440w.webp"></p>
+<p>在cgroup v2中，每个cgroup目录下有个名为cgroup.controllers的可读文件，记录了当前cgroup启用的controller。根目录cgroup.controllers文件的内容记录了当前系统支持的所有controller。</p>
+<p>在cgroup v2中，每个cgroup目录下有个名为cgroup.controllers的可读文件，记录了当前cgroup启用的controller。根目录下cgroup.controllers文件的内容记录了当前系统支持的所有controller。修改父cgroup的cgroup.subtree_control，增加cgroup controller：</p>
+<pre class="line-numbers language-none"><code class="language-none">echo "+memory" &gt; test/cgroup.subtree_control
+cat test/child/cgroup.controllers
+memory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>删除子cgroup中的controller，也通过修改父cgroup的cgroup.subtree_control实现：</p>
+<pre class="line-numbers language-none"><code class="language-none">echo "-memory" &gt; test/cgroup.subtree_control
+cat test/child/cgroup.controllers<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>当前cgroup中存在进程时，写入不会成功；写入当前cgroup没有启用的controller时，不会成功。</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/643942399">参考</a></p>
+<h2 id="1-3-Unified-Control-Group-Hierarchy"><a href="#1-3-Unified-Control-Group-Hierarchy" class="headerlink" title="1.3. Unified Control Group Hierarchy"></a>1.3. Unified Control Group Hierarchy</h2><p>节点存在以下面3种cgroups模式，选择不同模式,会影响到用户空间的 cgroup使用与兼容性：</p>
+<ul>
+<li>legacy：只支持cgroup V1</li>
+<li>hybrid：同时支持cgroup V1和cgroup V2</li>
+<li>unified：只支持cgroup V2又叫Unified Control Group Hierarchy </li>
+</ul>
+<p>判断目前是哪种模式<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/643942399">参考</a>：</p>
+<pre class="line-numbers language-none"><code class="language-none">[ $(stat -fc %T /sys/fs/cgroup/) = "cgroup2fs" ] &amp;&amp; echo "unified" || ( [ -e \
+/sys/fs/cgroup/unified/ ] &amp;&amp; echo "hybrid" || echo "legacy")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<p>使用unified模式（注意cgroup_no_v1=all）：</p>
+<pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \
+systemd.unified_cgroup_hierarchy=1 \
+systemd.legacy_systemd_cgroup_controller=0 cgroup_no_v1=all"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>使用 legacy 模式：</p>
+<pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \
+systemd.unified_cgroup_hierarchy=0 \
+systemd.legacy_systemd_cgroup_controller=1"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>使用 hybrid 模式：</p>
+<pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \
+systemd.unified_cgroup_hierarchy=1 \
+systemd.legacy_systemd_cgroup_controller=1"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>主要是开启GRUB_CMDLINE_LINUX= “systemd.unified_cgroup_hierarchy=yes”才能使用V2版本，有时候内核可能没有默认。</p>
+<p>以及貌似在内核编译时也有选项：</p>
+<pre class="line-numbers language-none"><code class="language-none"># Only unified hierarchy is supported
+CONFIG_CGROUP_UNIFIED_SYSTEMD=y<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="2-1-创建一个有内存限制的cgroup"><a href="#2-1-创建一个有内存限制的cgroup" class="headerlink" title="2.1.创建一个有内存限制的cgroup"></a>2.1.创建一个有内存限制的cgroup</h2><p>为了创建、管理和监控cgroup，我们需要另一个名为cgroup-tools的包<code>sudo apt install cgroup-tools</code></p>
 <p>创建内存类型的cgroup命名为memhog-limiter<code>sudo cgcreate -g memory:memhog-limiter</code>实际操作是创建了一个目录。<code>ls -la /sys/fs/cgroup/memhog-limiter/</code></p>
 <p><img src="https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p>
 <p>设置内存限制，这里有新版的cgroup的软限制是memory.high,硬限制是menory.max<code>sudo cgset -r memory.max=50M memhog-limiter</code>设置完成后可以输出查看<code>cat  /sys/fs/cgroup/memhog-limiter/memory.max</code></p>
 <p><img src="https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p>
-<h2 id="2-去限制内存"><a href="#2-去限制内存" class="headerlink" title="2. 去限制内存"></a>2. 去限制内存</h2><p>创建一个吃内存的脚本</p>
+<h2 id="2-2-去限制内存"><a href="#2-2-去限制内存" class="headerlink" title="2.2. 去限制内存"></a>2.2. 去限制内存</h2><blockquote>
+<p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p>
+</blockquote>
+<p>创建一个吃内存的脚本</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
 <span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> memhog 100M<span class="token punctuation">;</span> <span class="token assign-left variable">id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>pgrep memhog<span class="token variable">)</span></span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$id</span>"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">20</span><span class="token punctuation">;</span> <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>运行脚本<code>sudo cgexec -g memory:memhog-limiter ./memhog.sh</code>查看这个内存控制组里的pid<code>cat  /sys/fs/cgroup/memhog-limiter/cgroup.procs</code></p>
 <p><img src="https://img-blog.csdnimg.cn/98414239c59242a1b9a5d84302694121.png"></p>
 <p>显然没有控制住，emmmm到底什么原因还在找。</p>
-<h2 id="3-创建namespace"><a href="#3-创建namespace" class="headerlink" title="3. 创建namespace"></a>3. 创建namespace</h2><p><code>sudo cgexec -g memory:memhog-limiter unshare -fp --mount-proc</code></p>
+<h2 id="2-3-创建namespace"><a href="#2-3-创建namespace" class="headerlink" title="2.3. 创建namespace"></a>2.3. 创建namespace</h2><p><code>sudo cgexec -g memory:memhog-limiter unshare -fp --mount-proc</code></p>
 <p>To verify that you are in a new namespace<code>ps -ef</code></p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token environment constant">UID</span>          PID    <span class="token environment constant">PPID</span>  C STIME TTY          TIME CMD
 root           <span class="token number">1</span>       <span class="token number">0</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token parameter variable">-bash</span>
@@ -527,7 +576,7 @@ root          <span class="token number">12</span>       <span class="token numb
 <p>新命名空间中，只有bash作为PID 1运行。因此，现在启动的每个服务都将在这个cgroup上下文中启动。</p>
 <p><code>./memhog.sh</code>应该也是被之前那样限制住的情况。</p>
 <p><a target="_blank" rel="noopener" href="https://facebookmicrosites.github.io/cgroup2/docs/create-cgroups.html">这是facebook关于cgroup2的文档，他们的创建方式不太一样，也可以试试</a></p>
-<h2 id="4-namespace又是什么？"><a href="#4-namespace又是什么？" class="headerlink" title="4. namespace又是什么？"></a>4. namespace又是什么？</h2><p>Kernel space - 在某个特定namespace内,操作系统内核执行的内存区域。<br>User space - 在某个特定namespace内,用户模式程序执行的内存区域。</p>
+<h2 id="2-4-namespace又是什么？"><a href="#2-4-namespace又是什么？" class="headerlink" title="2.4. namespace又是什么？"></a>2.4. namespace又是什么？</h2><p>Kernel space - 在某个特定namespace内,操作系统内核执行的内存区域。<br>User space - 在某个特定namespace内,用户模式程序执行的内存区域。</p>
 <p>Namespace的类型有:<br>PID namespace - 进程ID的隔离Namespace<br>Network namespace - 网络设备和协议栈的隔离Namespace<br>Mount namespace - 文件系统挂载点的隔离Namespace<br>IPC namespace - 进程间通信的隔离Namespace<br>UTS namespace - 主机名和域名的隔离Namespace<br>User namespace - 用户和用户组的隔离Namespace</p>
 <p>通过namespace技术,内核可以为不同的用户空间提供隔离的系统资源,增强安全性和容器化。所以在讨论用户空间和内核空间时,需要明确是在哪个namespace环境下。比如docker容器内的用户空间和内核空间就与宿主机隔离开来。</p>
 <p>命名空间是Linux内核用来隔离内核资源的方式。让一些进程只能看到和自己相关的一部分资源。两组感觉不到对方存在。</p>
@@ -557,7 +606,7 @@ root          <span class="token number">12</span>       <span class="token numb
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/">http://ytirus.github.io/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8Cnamespace%E7%9A%84%E5%86%85%E5%AD%98/</a>
+                    <a href="http://ytirus.github.io/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%92%8Cnamespace/">http://ytirus.github.io/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%92%8Cnamespace/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -899,7 +948,7 @@ root          <span class="token number">12</span>       <span class="token numb
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">134k</span>&nbsp;字
+                class="white-color">135.5k</span>&nbsp;字
             
             
             

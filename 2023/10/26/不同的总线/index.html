@@ -483,14 +483,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.4k
+                    2.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    9 分
                 </div>
                 
 
@@ -553,15 +553,19 @@
 <div class="note warning no-icon">当前支持CXL的产品大多还停留在CXL1.0版本,CXL2.0的支持还比较有限</div> 
 
 
-<h2 id="DDR（双数据速率）"><a href="#DDR（双数据速率）" class="headerlink" title="DDR（双数据速率）"></a>DDR（双数据速率）</h2><p>DDR是一种用于系统内存（RAM）的接口和技术。它允许CPU（中央处理器）与系统内存之间进行高速数据传输。DDR标准有多个版本，例如DDR3、DDR4和DDR5，每个版本都有不同的数据传输速率和技术规格。DDR主要用于存储和读取计算机内存中的数据，以供CPU使用。CPU通过DDR接口来访问内存中的程序和数据。</p>
+<h2 id="DDR（双数据速率）"><a href="#DDR（双数据速率）" class="headerlink" title="DDR（双数据速率）"></a>DDR（双数据速率）</h2><p>DDR是一种用于系统内存（RAM）的接口和技术。它允许CPU（中央处理器）与系统内存之间进行高速数据传输。DDR标准有多个版本，例如DDR3、DDR4和DDR5，每个版本都有不同的数据传输速率和技术规格。DDR主要用于存储和读取计算机内存中的数据，以供CPU使用。CPU通过DDR接口来访问内存中的程序和数据。DDR内存通常以多通道方式工作，其中每个通道可以连接一个或多个DRAM（Dynamic Random Access Memory）内存条。在这样的配置中，数据可以在不同的内存条之间分散存放，这被称为多通道内存架构，总带宽就是各通道带宽的总和。</p>
 <h2 id="DDR-T"><a href="#DDR-T" class="headerlink" title="DDR-T"></a>DDR-T</h2><p>Intel Optane Persistent Memory使用DDR-T与CPU传输数据。特别设计用于大型数据中心和需要大量内存的高性能计算环境。DDR-T内存模块通常具有非常高的存储容量，通常以TB（Terabytes，千兆字节）为单位来衡量，因此得名为”Terabyte”。这使得DDR-T非常适合大规模数据分析、虚拟化、人工智能和其他内存密集型应用。</p>
 <h2 id="PCIe（Peripheral-Component-Interconnect-Express）"><a href="#PCIe（Peripheral-Component-Interconnect-Express）" class="headerlink" title="PCIe（Peripheral Component Interconnect Express）"></a>PCIe（Peripheral Component Interconnect Express）</h2><p>PCIe是一种用于连接各种外部设备和扩展卡的高速总线标准。它通常用于连接图形卡、网络适配器、存储控制器、声卡等外部硬件设备。PCIe提供了高带宽和低延迟的数据传输通道，使外部设备能够与CPU和系统内存进行快速通信。PCIe通常不用于内存访问，而是用于连接外部设备，以扩展计算机的功能。</p>
 <h2 id="UPI"><a href="#UPI" class="headerlink" title="UPI"></a>UPI</h2><p>跨NUMA节点间数据的传输。</p>
-<h2 id="ISA"><a href="#ISA" class="headerlink" title="ISA"></a>ISA</h2><p>X86体系结构下ISA总线的直接内存存取控制器叫DMA.</p>
-<p>ZONE_DMA：用于那些无法对全部物理内存进行寻址的硬件设备，进行 DMA 时的内存分配。例如前边介绍的 ISA 设备只能对物理内存的前 16M 进行寻址。该区域的长度依赖于具体的处理器类型。</p>
+<h2 id="ISA"><a href="#ISA" class="headerlink" title="ISA"></a>ISA</h2><p>X86体系结构下有ISA总线.</p>
+<p>ZONE_DMA：用于那些无法对全部物理内存进行寻址的硬件设备，进行DMA时的内存分配。例如前边介绍的ISA设备只能对物理内存的前16M进行寻址。该区域的长度依赖于具体的处理器类型。</p>
 <p>内核态虚拟内存空间的前896M区域是直接映射到物理内存中的前896M区域中的，直接映射区中的映射关系是一比一映射。映射关系是固定的不会改变。<strong>直接映射区的前16M专门让内核用来为DMA分配内存，这块16M大小的内存区域我们称之为ZONE_DMA。</strong> X86体系结构下ISA总线的直接内存存取控制器叫DMA。16M到896M（不包含896M）这段区域，我们称之为 <strong>ZONE_NORMAL</strong>。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/57d7f3138355481fabd774aa88d22ba9.png"></p>
-<h2 id="DAX"><a href="#DAX" class="headerlink" title="DAX"></a>DAX</h2>
+<h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p>这个和ZONE_DMA没有直接关系的！DMA（Direct Memory Access直接内存访问）技术</p>
+<p>允许外围设备在不涉及中央处理器（CPU）的情况下将数据传输到系统内存或从系统内存传输数据。DMA是一种通用的机制，可以在各种数据传输场景中使用，包括文件拷贝。</p>
+<p>如下图，一般文件读写在page cache使用buffer IO如果不命中有2次上下文切换和3次拷贝。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/57d7f3138355481fabd774aa88d22ba9.png"></p>
+<p>部分应用使用direct IO可以减少拷贝。这取决于你的程序是否存在局部性原理可以充分利用page cache.</p>
+<h2 id="DAX"><a href="#DAX" class="headerlink" title="DAX"></a>DAX</h2><p>允许应用程序直接将数据从内存传输到存储设备。绕过传统的文件系统栈，允许应用程序通过Direct Memory Access (DMA)直接与存储设备进行交互，特别是与非易失性内存（NVM）设备一起使用。</p>
+
                 
             </div>
             <hr/>
@@ -934,7 +938,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">134k</span>&nbsp;字
+                class="white-color">135.5k</span>&nbsp;字
             
             
             
