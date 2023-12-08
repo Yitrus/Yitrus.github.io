@@ -316,7 +316,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/21.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/f28cf860d41a40e3ad10ee5160fde179.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -435,12 +435,33 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/A/">
+                                <span class="chip bg-color">A</span>
+                            </a>
+                        
+                            <a href="/tags/Hybrid-Memory-Systems/">
+                                <span class="chip bg-color">Hybrid Memory Systems</span>
+                            </a>
+                        
+                            <a href="/tags/Virtual-Machines/">
+                                <span class="chip bg-color">Virtual Machines</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Paper/" class="post-category">
+                                Paper
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -458,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    1.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    4 分
                 </div>
                 
 
@@ -488,7 +509,32 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary">
+
+<ul>
+<li>(EuroSys), 2023</li>
+<li>vTMM: Tiered Memory Management for Virtual Machines</li>
+</ul>
+</div> 
+
+<h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul>
+<li>Sai Sha, Chuandong Li, Yingwei Luo, Xiaolin Wang, 终于读到北京大学的了</li>
+<li>Zhenlin Wang, Michigan Technological University</li>
+</ul>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>内存虚拟化的技术一直在发展，那么以下罗列了几种比较典型的内存虚拟化方式。</p>
+<h3 id="2-1-多次地址转换"><a href="#2-1-多次地址转换" class="headerlink" title="2.1 多次地址转换"></a>2.1 多次地址转换</h3><p>内存软件虚拟化：<br>虚拟机的虚拟地址（Guest Virtual Address, GVA）<br>虚拟机的物理地址（Guest Physical Address, GPA）<br>Host 虚拟地址（Host Virtual Address）<br>Host 的物理地址（Host Physical Address, HPA）</p>
+<p>虚拟到物理都是传统的页表完成地址转换。虚拟机和物理机的转换VMM需要 intercept （截获）虚拟机的内存访问指令，VMM定义的映射表是kvm_memory_slot的数据结构，需要经过多次地址转换。</p>
+<h3 id="2-2-影子页表"><a href="#2-2-影子页表" class="headerlink" title="2.2 影子页表"></a>2.2 影子页表</h3><p>通过影子页表，则可以实现客户机虚拟地址到宿主机物理地址的直接转换。必须为 Guest 的系统页表设计一套对应的影子页表，然后将影子页表装入 Host 的 MMU 中，这样当 Guest 访问 Host 内存时，就可以根据 MMU 中的影子页表映射关系，完成 GVA 到 HPA 的直接映射。而维护这套影子页表的工作则由 VMM 来完成。由于 Guest 中的每个进程都有自己的虚拟地址空间，这就意味着 VMM 要为 Guest 中的每个进程页表都维护一套 对应的影子页表，当 Guest 进程访问内存时，才将该进程的影子页表装入 Host 的 MMU 中，完成地址转换。这种方式虽然减少了地址转换的次数，但本质上还是纯软件实现的，效率还是不高，而且 VMM 承担 了太多影子页表的维护工作。</p>
+<h3 id="2-3-EPT"><a href="#2-3-EPT" class="headerlink" title="2.3 EPT"></a>2.3 EPT</h3><p>EPT(Extended Page Table) 在原有 CR3 页表地址映射的基础上，引入了 EPT 页表来实现另一层映射，这样，GVA-&gt;GPA-&gt;HPA 的两次地址转换都由硬件来完成。CPU 首先会访问 Guest 中的 CR3 页表来完成 GVA 到 GPA 的转换，如果 GPA 不为空，则 CPU 接着通过 EPT 页表来实现 GPA 到HPA 的转换（实际上，CPU 会首先查看硬件 EPT TLB 或者缓存，如果没有对应的转换，才会进一步查看 EPT 页表），如果 HPA 为空呢，则 CPU 会抛出 EPT Violation 异常由 VMM 来处理。</p>
+<p>当VM中的GuestOS在执行内存访问操作时，会通过EPT-page-structure将linear-address先转换成guest-physical-address,然后再将guest-physical-address转换成实际的物理地址physical-address；得到了最终的实际物理地址。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/1c30ff693cf54e42adb9a0c59db030e8.png"></p>
+<p>PML是个记录脏页GPA的log，会有一块buff专门存，这个的设计和硬件的设计有关。</p>
+<h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>分层内存在虚拟机应用中的性能提升。</p>
+<h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/0d64837bec664b199ea625e0c343a989.png" alt="motivation"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/1a5b60a538304935bd2f31f799cfa995.png"></p>
+<h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>首先是采样方面，并不去采样整个页表，甚至GPT比EPT要小也不去采样，直接在PML脏页面的范围里采样。有一个时间窗口，上次PML记录的地址下次就被访问。因为访问后需要刷新AD位，这个也比较耗时间，于是乎有一个多级列表，在列表越靠前获得AD位刷新免死金牌越多。当然详细算法设置还是看论文。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/c4735ac9101d461e9da762cb5b580a86.png"><br>在区分页面冷热方面，由于读写造成的延迟不同，于是上一步采样到的读写次数在这里加权之后去表示页面的冷热。桶排序由于时间复杂度低，用于筛选出要进行迁移的页面。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/b2269c8c7ab04dc18953bb7b0c072505.png"><br>迁移涉及到脏页那么如何去保护一致性，在这里作者还对比了以往的迁移方法，说明在虚拟机里不太合适以往的方式。这里是复制的方法，不过由于这些页面会在PML里也有存，所以利用起来保持一致性。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/f28cf860d41a40e3ad10ee5160fde179.png"><br>除此之外，当一台物理机运行多台虚拟机时，每台机器相比较其实最热的页面热度也有差别。同时，快速内存层资源紧张，于是建立内存池，对快速的内存资源进行有效调度。这里有个难点，虚拟机的内存资源按理说都得隔离开，怎么去动态调度的呢？</p>
+<h2 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6. 缺陷和改进思路"></a>6. 缺陷和改进思路</h2><p>主要问题还是这样的物理机会有运行多少虚拟机，以及他的应用场景是什么？</p>
+
                 
             </div>
             <hr/>
@@ -514,7 +560,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/12/07/Tiered-Memory-Management-for-Virtual-Machines/">http://ytirus.github.io/2023/12/07/Tiered-Memory-Management-for-Virtual-Machines/</a>
+                    <a href="http://ytirus.github.io/2023/12/07/vTMM/">http://ytirus.github.io/2023/12/07/vTMM/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -551,7 +597,19 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/A/">
+                                    <span class="chip bg-color">A</span>
+                                </a>
+                            
+                                <a href="/tags/Hybrid-Memory-Systems/">
+                                    <span class="chip bg-color">Hybrid Memory Systems</span>
+                                </a>
+                            
+                                <a href="/tags/Virtual-Machines/">
+                                    <span class="chip bg-color">Virtual Machines</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -598,11 +656,10 @@
                 <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/2023/12/07/Tiered-Memory-Management-for-Virtual-Machines/">
+                <a href="/2023/12/07/vTMM/">
                     <div class="card-image">
                         
-                        
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="Tiered Memory Management for Virtual Machines">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/f28cf860d41a40e3ad10ee5160fde179.png" class="responsive-img" alt="Tiered Memory Management for Virtual Machines">
                         
                         <span class="card-title">Tiered Memory Management for Virtual Machines</span>
                     </div>
@@ -610,7 +667,7 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            。
                         
                     </div>
                     <div class="publish-info">
@@ -619,13 +676,33 @@
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            易百分
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Paper/" class="post-category">
+                                    Paper
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
 
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
+                    </a>
+                    
+                    <a href="/tags/Hybrid-Memory-Systems/">
+                        <span class="chip bg-color">Hybrid Memory Systems</span>
+                    </a>
+                    
+                    <a href="/tags/Virtual-Machines/">
+                        <span class="chip bg-color">Virtual Machines</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -807,6 +884,13 @@
 </main>
 
 
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
 
 
     <footer class="page-footer bg-color">
@@ -824,7 +908,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">136.5k</span>&nbsp;字
+                class="white-color">137.7k</span>&nbsp;字
             
             
             

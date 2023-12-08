@@ -5,12 +5,28 @@
     
     <entry>
       <title>Tiered Memory Management for Virtual Machines</title>
-      <link href="/2023/12/07/Tiered-Memory-Management-for-Virtual-Machines/"/>
-      <url>/2023/12/07/Tiered-Memory-Management-for-Virtual-Machines/</url>
+      <link href="/2023/12/07/vTMM/"/>
+      <url>/2023/12/07/vTMM/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>(EuroSys), 2023</li><li>vTMM: Tiered Memory Management for Virtual Machines</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>Sai Sha, Chuandong Li, Yingwei Luo, Xiaolin Wang, 终于读到北京大学的了</li><li>Zhenlin Wang, Michigan Technological University</li></ul><h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2. Background"></a>2. Background</h2><p>内存虚拟化的技术一直在发展，那么以下罗列了几种比较典型的内存虚拟化方式。</p><h3 id="2-1-多次地址转换"><a href="#2-1-多次地址转换" class="headerlink" title="2.1 多次地址转换"></a>2.1 多次地址转换</h3><p>内存软件虚拟化：<br>虚拟机的虚拟地址（Guest Virtual Address, GVA）<br>虚拟机的物理地址（Guest Physical Address, GPA）<br>Host 虚拟地址（Host Virtual Address）<br>Host 的物理地址（Host Physical Address, HPA）</p><p>虚拟到物理都是传统的页表完成地址转换。虚拟机和物理机的转换VMM需要 intercept （截获）虚拟机的内存访问指令，VMM定义的映射表是kvm_memory_slot的数据结构，需要经过多次地址转换。</p><h3 id="2-2-影子页表"><a href="#2-2-影子页表" class="headerlink" title="2.2 影子页表"></a>2.2 影子页表</h3><p>通过影子页表，则可以实现客户机虚拟地址到宿主机物理地址的直接转换。必须为 Guest 的系统页表设计一套对应的影子页表，然后将影子页表装入 Host 的 MMU 中，这样当 Guest 访问 Host 内存时，就可以根据 MMU 中的影子页表映射关系，完成 GVA 到 HPA 的直接映射。而维护这套影子页表的工作则由 VMM 来完成。由于 Guest 中的每个进程都有自己的虚拟地址空间，这就意味着 VMM 要为 Guest 中的每个进程页表都维护一套 对应的影子页表，当 Guest 进程访问内存时，才将该进程的影子页表装入 Host 的 MMU 中，完成地址转换。这种方式虽然减少了地址转换的次数，但本质上还是纯软件实现的，效率还是不高，而且 VMM 承担 了太多影子页表的维护工作。</p><h3 id="2-3-EPT"><a href="#2-3-EPT" class="headerlink" title="2.3 EPT"></a>2.3 EPT</h3><p>EPT(Extended Page Table) 在原有 CR3 页表地址映射的基础上，引入了 EPT 页表来实现另一层映射，这样，GVA-&gt;GPA-&gt;HPA 的两次地址转换都由硬件来完成。CPU 首先会访问 Guest 中的 CR3 页表来完成 GVA 到 GPA 的转换，如果 GPA 不为空，则 CPU 接着通过 EPT 页表来实现 GPA 到HPA 的转换（实际上，CPU 会首先查看硬件 EPT TLB 或者缓存，如果没有对应的转换，才会进一步查看 EPT 页表），如果 HPA 为空呢，则 CPU 会抛出 EPT Violation 异常由 VMM 来处理。</p><p>当VM中的GuestOS在执行内存访问操作时，会通过EPT-page-structure将linear-address先转换成guest-physical-address,然后再将guest-physical-address转换成实际的物理地址physical-address；得到了最终的实际物理地址。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/1c30ff693cf54e42adb9a0c59db030e8.png"></p><p>PML是个记录脏页GPA的log，会有一块buff专门存，这个的设计和硬件的设计有关。</p><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>分层内存在虚拟机应用中的性能提升。</p><h2 id="4-其他学者解决这个问题的思路和缺陷"><a href="#4-其他学者解决这个问题的思路和缺陷" class="headerlink" title="4. 其他学者解决这个问题的思路和缺陷"></a>4. 其他学者解决这个问题的思路和缺陷</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/0d64837bec664b199ea625e0c343a989.png" alt="motivation"></p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/1a5b60a538304935bd2f31f799cfa995.png"></p><h2 id="5-围绕该问题作者如何构建解决思路"><a href="#5-围绕该问题作者如何构建解决思路" class="headerlink" title="5. 围绕该问题作者如何构建解决思路"></a>5. 围绕该问题作者如何构建解决思路</h2><p>首先是采样方面，并不去采样整个页表，甚至GPT比EPT要小也不去采样，直接在PML脏页面的范围里采样。有一个时间窗口，上次PML记录的地址下次就被访问。因为访问后需要刷新AD位，这个也比较耗时间，于是乎有一个多级列表，在列表越靠前获得AD位刷新免死金牌越多。当然详细算法设置还是看论文。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/c4735ac9101d461e9da762cb5b580a86.png"><br>在区分页面冷热方面，由于读写造成的延迟不同，于是上一步采样到的读写次数在这里加权之后去表示页面的冷热。桶排序由于时间复杂度低，用于筛选出要进行迁移的页面。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/b2269c8c7ab04dc18953bb7b0c072505.png"><br>迁移涉及到脏页那么如何去保护一致性，在这里作者还对比了以往的迁移方法，说明在虚拟机里不太合适以往的方式。这里是复制的方法，不过由于这些页面会在PML里也有存，所以利用起来保持一致性。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/f28cf860d41a40e3ad10ee5160fde179.png"><br>除此之外，当一台物理机运行多台虚拟机时，每台机器相比较其实最热的页面热度也有差别。同时，快速内存层资源紧张，于是建立内存池，对快速的内存资源进行有效调度。这里有个难点，虚拟机的内存资源按理说都得隔离开，怎么去动态调度的呢？</p><h2 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6. 缺陷和改进思路"></a>6. 缺陷和改进思路</h2><p>主要问题还是这样的物理机会有运行多少虚拟机，以及他的应用场景是什么？</p>]]></content>
       
       
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
+            
+            <tag> Virtual Machines </tag>
+            
+        </tags>
       
     </entry>
     
@@ -120,9 +136,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
             <tag> Memory Pool </tag>
             
@@ -136,10 +152,10 @@
     
     <entry>
       <title>Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</title>
-      <link href="/2023/11/10/Memtis-Efficient-Memory-Tiering-with-Dynamic-Page-Classification-and-Page-Size-Determination/"/>
-      <url>/2023/11/10/Memtis-Efficient-Memory-Tiering-with-Dynamic-Page-Classification-and-Page-Size-Determination/</url>
+      <link href="/2023/11/10/Memtis/"/>
+      <url>/2023/11/10/Memtis/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>文章来自ACM Symposium on Operating Systems Principles, (SOSP), 2023</li><li>Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>ATaehyung Lee, Young Ik Eom,（韩国）成均馆大学(SKKU)</li><li>Sumit Kumar Monga,弗吉尼亚理工大学（六所提供预备役军官训练团项目的美国高等军事院校之一）</li><li>Changwoo Min,Igalia公司（Open Source Consultancy and Development）</li></ul><h2 id="2-其他学者解决这个问题的思路和缺陷"><a href="#2-其他学者解决这个问题的思路和缺陷" class="headerlink" title="2. 其他学者解决这个问题的思路和缺陷"></a>2. 其他学者解决这个问题的思路和缺陷</h2><p>以前做分层内存主要考虑2点：1.怎么样去监控目前有哪些页面是热页面，因为热页面会随着时间而产生改变，同时局部性也不一定有效。2.什么时候什么办法将热/冷页面迁移到它该在的地方。</p><p>以前大家的方法基本分成以下3种来监控热页面：</p><ul><li>缺页异常时将页面进行迁移或者收集数据，但是缺页异常在程序执行的关键路径上，此时再去执行其他的操作很容易产生更高的延迟。</li><li>基于页表的页面扫描，在虚拟地址和物理地址转换的过程中会使用页表，页表上有一个A位的访问位，每次页面被访问后都会置位。通过定期扫描页表，扫描后再清空置位来搜集页面访问信息。但是如下图所示，你对页表的扫描间隔、扫描的采样粒度会影响CPU开销以及准确度。</li><li>基于硬件的采样，不同设备都会有硬件计数器PMU以及PEBS，这些采样时可以记录物理地址和pid等信息，也会随着采样粒度更小而开销更大。除此之外，如果硬件设备更换,它的性能监控计数器（PMC）的寄存器地址可能会有变化。这时需要重新查看新硬件的编程手册,确定PMC寄存器的新地址,然后修改软件程序中的寄存器访问代码,将其映射到新的地址上。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cad3789c063a409294252b6a18309f12.png"></li></ul><p>页面放置也可以大致分为3种类型：</p><ul><li>最近访问的页面，这依赖于时间局部性，但是它往往被记录的时间不够就不能了解这个页面很长一段时间的访问历史。</li><li>想要捕获页面的访问历史，目前的方法还比较局限，大家会设计位图或者一定的数据结构去记录，或者干脆是改进LRU.</li><li>还有的方法通过设置一个阈值来表示页面到底是冷的或者是热的，这就会容易出现如下图的情况，不同工作负载运行在上面，但是他们在不同时刻你定义的热要么多于DRAM（我们高性能但有限的快速内存，要么远远少于DRAM），这使得很多不同程度冷的页面也混合到了快速内存层，这就产生了无效的页面分类。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d46af68f858d4fdc95a3c8d81589c840.png"></li></ul><p>另外一点是地址转换的开销，当内存变得很大之后，TLB很小缓存的地址转换的条目相对覆盖率就低了。转换开销主要是由于TLB未命中时缓慢的page table walk造成的。TLB的命中速度很快，但page table walk可能需要四次内存访问才能查询分层页表。较新的处理器由于采用了更深的页表结构，需要多达五次内存访问。大页面通过两种方式减少转换开销。1.由于大页面的单个条目映射了更大的地址范围，因此可以通过增加TLB覆盖率来降低TLB未命中的频率。2.通过减少需要访问的页表级数，加快单个walk速度。<br>但是大家在使用大页面的时候往往一个大页面只有很小一部分小页面被访问，迁移大页面又必须承受昂贵的开销。比如下图横坐标是0到511，每个点代表一个大页面，（a）右上角的点表示一个大页中机会所有的小页面都被访问到了，同时这个大页总的被访问次数也很大。最坏的情况是（b）的右上角，那些大页面只有很少的小页面被访问，同时整体访问频率又很高，不如放它们做小页面单飞更好。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/4d169f4812364c309dbd3b1a82623bb9.png"></p><p><span class="label danger">事实上笔者自己在测这个地址转换开销的时候，并没有发现会大到哪里去，也可能是我打开方式不对</span></p><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>The biggest limitation of prior systems （tiered memory systems） is their inability to effectively classify page hotness across diverse memory configurations and workloads. </p><h2 id="4-围绕该问题作者如何构建解决思路"><a href="#4-围绕该问题作者如何构建解决思路" class="headerlink" title="4. 围绕该问题作者如何构建解决思路"></a>4. 围绕该问题作者如何构建解决思路</h2><p>先放一个总体设计图，还是那几步，采样页面信息、分析、然后迁移。多了对于大页面的分析，分析大页面被拆分的好处。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png"></p><p>PEBS采样的好处就是可以直接区分目前的地址是被当作小页还是大页了。同时这里硬件采样只采样了两个指令（事件），就还好一般不会找不到映射。这个后台线程根据单核CPU性能的3%控制采样的间隔。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a6823d64ee6142a493598c4e8eabc25c.png"></p><p>为了平衡小页和大页记录热度的不公平（毕竟大页大一点被访问的概率也大一些），作者设计了热度因子。主要笔者觉得非常棒的点在于这种zipf分布的直方图，符合访问到热度分布，然后又将页面热度做了很多分层，适合不同的快速层内存容量。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/54629799caed455cb4bd9a7155ca571d.png"></p><p>设计冷热阈值是根据系统目前DRAM的含量来做的，从值最大的bin开始加，一直到装满DRAM则前一个bin就是热阈值，后面就是温阈值，由于温阈值只是作为热页面候选页，所以冷阈值就直接-1得到，只给温页面一个bin。<span class="label danger">不太理解为啥只给一个bin，这显得这个阈值一点也不动态，其实可能根本不需要这个T阈值，应该可以做出更灵活的方法</span>同时如果热的bins加上最后一个bin马上就满了，那么选择不要最后那个bin了，给页面动态迁移留出空间。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9ddb01fa0d014f06be208f1e23e204e5.png"></p><p>笔者以前也想过这个问题，我收集了一批又一批数据，可是现有的热度会变啊，我以前的数据怎么办呢？这里作者将他们以到后一个bin做变冷的处理，很简单机智。同时页面迁移交给采样线程和迁移线程来做，做的时机就是采样和冷处理后。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7cdea7dfced74152bad98f62799c9b32.png"></p><p>最后是设计了大页面的拆分，绿色部分是收益，我们可以从箭头看到，白色直方图统计大页和小页，灰色直方图只统计小页，那么之间的差值就是如果他不是大页，那么热的bin还会增加多少。差值越大说明越不该用大页。于是设计了一个拆分大页面的阈值。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c79d262302d14c8892e6a1dcc44089b8.png"></p><h2 id="5-从结果看，作者如何有力证明他解决了问题"><a href="#5-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="5. 从结果看，作者如何有力证明他解决了问题"></a>5. 从结果看，作者如何有力证明他解决了问题</h2><p>作者实验环境：</p><ul><li>DRAM + NVM （Optane DCPMM, load: 300ns）</li><li>DRAM + emulated CXL memory （cross NUMA DRAM with increased latency, load: 177ns）</li><li>A single socket for our evaluations to avoid NUMA effects</li><li>The ratio of fast to capacity tier memory size as 1:2, 1:8, and 1:16（In the 1:2 configuration, the fast tier size is set to 33% （1/3） of the resident set size （RSS）     while in the 1:16 configuration, it is reduced to 5.9%（1/17）.）</li></ul><p>性能评估图显示好于7个分层内存，他们都发表于A类。</p><h2 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6. 缺陷和改进思路"></a>6. 缺陷和改进思路</h2><p>在分层中使用混合页面的工作比较少，主要在于大页面带来的内存膨胀、内存碎片等问题，解决这些问题可能比使用大页面节省的开销更多。这篇工作只讨论拆分大页面，没有启用大页面的设计。同时在使用大页面的评估方面，还有好多前人的工作没讨论到。</p><p>采样时CPU的消耗、直方图的数目、计算阈值时的α、直方图的降温周期、页面拆分的参数β，对于参数敏感性的评估不充分。</p><p>作者好像没说清楚他每个数据是怎么存的？就是怎么做到知道哪个页面当前在哪个bin的，因为你迁移的时候需要用到，你拆分大页面的时候也需要用到。</p><h2 id="7-创新点"><a href="#7-创新点" class="headerlink" title="7. 创新点"></a>7. 创新点</h2><p>对现有的分层内存系统进行了比较全面的分析和总结。</p><p>Memtis的设计解决了作者发现的一个问题，即目前热页面采样不准确开销大、迁移并没有完全发挥DRAM效率。在不考虑大页面的情况下，Memtis相比于其他工作是有明显的优势的。</p><h2 id="8-积累"><a href="#8-积累" class="headerlink" title="8. 积累"></a>8. 积累</h2><ul><li>性能评估那张图可以多看看，和自己的工作看有没有出入。</li><li>性能评估分类比较完整的，workload可以借鉴借鉴。</li><li><a href="https://github.com/cosmoss-jigu/memtis/tree/main/memtis-userspace#tips-for-setting-other-systems">开源</a></li></ul>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary"><ul><li>文章来自ACM Symposium on Operating Systems Principles, (SOSP), 2023</li><li>Memtis: Efficient Memory Tiering with Dynamic Page Classification and Page Size Determination</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li>ATaehyung Lee, Young Ik Eom,（韩国）成均馆大学(SKKU)</li><li>Sumit Kumar Monga,弗吉尼亚理工大学（六所提供预备役军官训练团项目的美国高等军事院校之一）</li><li>Changwoo Min,Igalia公司（Open Source Consultancy and Development）</li></ul><h2 id="2-其他学者解决这个问题的思路和缺陷"><a href="#2-其他学者解决这个问题的思路和缺陷" class="headerlink" title="2. 其他学者解决这个问题的思路和缺陷"></a>2. 其他学者解决这个问题的思路和缺陷</h2><p>以前做分层内存主要考虑2点：1.怎么样去监控目前有哪些页面是热页面，因为热页面会随着时间而产生改变，同时局部性也不一定有效。2.什么时候什么办法将热/冷页面迁移到它该在的地方。</p><p>以前大家的方法基本分成以下3种来监控热页面：</p><ul><li>缺页异常时将页面进行迁移或者收集数据，但是缺页异常在程序执行的关键路径上，此时再去执行其他的操作很容易产生更高的延迟。</li><li>基于页表的页面扫描，在虚拟地址和物理地址转换的过程中会使用页表，页表上有一个A位的访问位，每次页面被访问后都会置位。通过定期扫描页表，扫描后再清空置位来搜集页面访问信息。但是如下图所示，你对页表的扫描间隔、扫描的采样粒度会影响CPU开销以及准确度。</li><li>基于硬件的采样，不同设备都会有硬件计数器PMU以及PEBS，这些采样时可以记录物理地址和pid等信息，也会随着采样粒度更小而开销更大。除此之外，如果硬件设备更换,它的性能监控计数器（PMC）的寄存器地址可能会有变化。这时需要重新查看新硬件的编程手册,确定PMC寄存器的新地址,然后修改软件程序中的寄存器访问代码,将其映射到新的地址上。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cad3789c063a409294252b6a18309f12.png"></li></ul><p>页面放置也可以大致分为3种类型：</p><ul><li>最近访问的页面，这依赖于时间局部性，但是它往往被记录的时间不够就不能了解这个页面很长一段时间的访问历史。</li><li>想要捕获页面的访问历史，目前的方法还比较局限，大家会设计位图或者一定的数据结构去记录，或者干脆是改进LRU.</li><li>还有的方法通过设置一个阈值来表示页面到底是冷的或者是热的，这就会容易出现如下图的情况，不同工作负载运行在上面，但是他们在不同时刻你定义的热要么多于DRAM（我们高性能但有限的快速内存，要么远远少于DRAM），这使得很多不同程度冷的页面也混合到了快速内存层，这就产生了无效的页面分类。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d46af68f858d4fdc95a3c8d81589c840.png"></li></ul><p>另外一点是地址转换的开销，当内存变得很大之后，TLB很小缓存的地址转换的条目相对覆盖率就低了。转换开销主要是由于TLB未命中时缓慢的page table walk造成的。TLB的命中速度很快，但page table walk可能需要四次内存访问才能查询分层页表。较新的处理器由于采用了更深的页表结构，需要多达五次内存访问。大页面通过两种方式减少转换开销。1.由于大页面的单个条目映射了更大的地址范围，因此可以通过增加TLB覆盖率来降低TLB未命中的频率。2.通过减少需要访问的页表级数，加快单个walk速度。<br>但是大家在使用大页面的时候往往一个大页面只有很小一部分小页面被访问，迁移大页面又必须承受昂贵的开销。比如下图横坐标是0到511，每个点代表一个大页面，（a）右上角的点表示一个大页中机会所有的小页面都被访问到了，同时这个大页总的被访问次数也很大。最坏的情况是（b）的右上角，那些大页面只有很少的小页面被访问，同时整体访问频率又很高，不如放它们做小页面单飞更好。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/4d169f4812364c309dbd3b1a82623bb9.png"></p><p><span class="label danger">事实上笔者自己在测这个地址转换开销的时候，并没有发现会大到哪里去，也可能是我打开方式不对</span></p><h2 id="3-解决了什么问题"><a href="#3-解决了什么问题" class="headerlink" title="3. 解决了什么问题"></a>3. 解决了什么问题</h2><p>The biggest limitation of prior systems （tiered memory systems） is their inability to effectively classify page hotness across diverse memory configurations and workloads. </p><h2 id="4-围绕该问题作者如何构建解决思路"><a href="#4-围绕该问题作者如何构建解决思路" class="headerlink" title="4. 围绕该问题作者如何构建解决思路"></a>4. 围绕该问题作者如何构建解决思路</h2><p>先放一个总体设计图，还是那几步，采样页面信息、分析、然后迁移。多了对于大页面的分析，分析大页面被拆分的好处。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/73f7df30c4e14cd18ace9258ab6aed35.png"></p><p>PEBS采样的好处就是可以直接区分目前的地址是被当作小页还是大页了。同时这里硬件采样只采样了两个指令（事件），就还好一般不会找不到映射。这个后台线程根据单核CPU性能的3%控制采样的间隔。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/a6823d64ee6142a493598c4e8eabc25c.png"></p><p>为了平衡小页和大页记录热度的不公平（毕竟大页大一点被访问的概率也大一些），作者设计了热度因子。主要笔者觉得非常棒的点在于这种zipf分布的直方图，符合访问到热度分布，然后又将页面热度做了很多分层，适合不同的快速层内存容量。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/54629799caed455cb4bd9a7155ca571d.png"></p><p>设计冷热阈值是根据系统目前DRAM的含量来做的，从值最大的bin开始加，一直到装满DRAM则前一个bin就是热阈值，后面就是温阈值，由于温阈值只是作为热页面候选页，所以冷阈值就直接-1得到，只给温页面一个bin。<span class="label danger">不太理解为啥只给一个bin，这显得这个阈值一点也不动态，其实可能根本不需要这个T阈值，应该可以做出更灵活的方法</span>同时如果热的bins加上最后一个bin马上就满了，那么选择不要最后那个bin了，给页面动态迁移留出空间。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/9ddb01fa0d014f06be208f1e23e204e5.png"></p><p>笔者以前也想过这个问题，我收集了一批又一批数据，可是现有的热度会变啊，我以前的数据怎么办呢？这里作者将他们以到后一个bin做变冷的处理，很简单机智。同时页面迁移交给采样线程和迁移线程来做，做的时机就是采样和冷处理后。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/7cdea7dfced74152bad98f62799c9b32.png"></p><p>最后是设计了大页面的拆分，绿色部分是收益，我们可以从箭头看到，白色直方图统计大页和小页，灰色直方图只统计小页，那么之间的差值就是如果他不是大页，那么热的bin还会增加多少。差值越大说明越不该用大页。于是设计了一个拆分大页面的阈值。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/c79d262302d14c8892e6a1dcc44089b8.png"></p><h2 id="5-从结果看，作者如何有力证明他解决了问题"><a href="#5-从结果看，作者如何有力证明他解决了问题" class="headerlink" title="5. 从结果看，作者如何有力证明他解决了问题"></a>5. 从结果看，作者如何有力证明他解决了问题</h2><p>作者实验环境：</p><ul><li>DRAM + NVM （Optane DCPMM, load: 300ns）</li><li>DRAM + emulated CXL memory （cross NUMA DRAM with increased latency, load: 177ns）</li><li>A single socket for our evaluations to avoid NUMA effects</li><li>The ratio of fast to capacity tier memory size as 1:2, 1:8, and 1:16（In the 1:2 configuration, the fast tier size is set to 33% （1/3） of the resident set size （RSS）     while in the 1:16 configuration, it is reduced to 5.9%（1/17）.）</li></ul><p>性能评估图显示好于7个分层内存，他们大多都发表于A类。</p><h2 id="6-缺陷和改进思路"><a href="#6-缺陷和改进思路" class="headerlink" title="6. 缺陷和改进思路"></a>6. 缺陷和改进思路</h2><p>在分层中使用混合页面的工作比较少，主要在于大页面带来的内存膨胀、内存碎片等问题，解决这些问题可能比使用大页面节省的开销更多。这篇工作只讨论拆分大页面，没有启用大页面的设计。同时在使用大页面的评估方面，还有好多前人的工作没讨论到。</p><p>采样时CPU的消耗、直方图的数目、计算阈值时的α、直方图的降温周期、页面拆分的参数β，对于参数敏感性的评估不充分。</p><p>作者好像没说清楚他每个数据是怎么存的？就是怎么做到知道哪个页面当前在哪个bin的，因为你迁移的时候需要用到，你拆分大页面的时候也需要用到。</p><h2 id="7-创新点"><a href="#7-创新点" class="headerlink" title="7. 创新点"></a>7. 创新点</h2><p>对现有的分层内存系统进行了比较全面的分析和总结。</p><p>Memtis的设计解决了作者发现的一个问题，即目前热页面采样不准确开销大、迁移并没有完全发挥DRAM效率。在不考虑大页面的情况下，Memtis相比于其他工作是有明显的优势的。</p><h2 id="8-积累"><a href="#8-积累" class="headerlink" title="8. 积累"></a>8. 积累</h2><ul><li>性能评估那张图可以多看看，和自己的工作看有没有出入。</li><li>性能评估分类比较完整的，workload可以借鉴借鉴。</li><li><a href="https://github.com/cosmoss-jigu/memtis/tree/main/memtis-userspace#tips-for-setting-other-systems">开源</a></li></ul>]]></content>
       
       
       <categories>
@@ -151,9 +167,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -205,9 +221,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -508,9 +524,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -562,9 +578,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
             <tag> NUMA </tag>
             
@@ -832,9 +848,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
             <tag> Warehouse-Scale Computing </tag>
             
@@ -861,9 +877,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -888,9 +904,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -996,9 +1012,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -1023,9 +1039,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
@@ -1050,9 +1066,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
             <tag> 细粒度 </tag>
             
@@ -1160,9 +1176,9 @@
       
         <tags>
             
-            <tag> Hybrid Memory Systems </tag>
-            
             <tag> A </tag>
+            
+            <tag> Hybrid Memory Systems </tag>
             
         </tags>
       
