@@ -504,7 +504,8 @@
                 <h2 id="异构内存设备"><a href="#异构内存设备" class="headerlink" title="异构内存设备"></a>异构内存设备</h2><p>下面收集了目前用于做异构内存的设备以及他们的特点：<br>缩写 名称 访问方式<br>RDMA 通过内存总线和处理器直接相连 DDR4<br>PCM 变相存储器 通过内存总线和处理器直接相连<br>ReRAM 电阻式存储器 通过内存总线和处理器直接相连<br>Optane PM(3D-XPoint)  通过内存总线和处理器直接相连 DDR-T</p>
 <p>DCPMM的一些特性只与它的内部结构和存储技术有关。因此，近期DCPMM研究得出的指南并不广泛适用于其他类型的PMEM。遵循这些指导方针可能会得到一个高度专门化的系统，该系统可以很好地与DCPMM一起工作，但与其他PMEM不兼容。为了防止这种过度专业化，认为系统设计者应该正确地理解这些特性的根本原因，以及它们如何适用于未来不同类别的PMEM。</p>
 <h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>在过去的几十年里，DRAM(动态随机存取存储器)的性能和容量一直遵循摩尔定律，从而跟上了CPU技术的进步。然而，一个基于DRAM的系统，会因为容量、成本和电力消耗的特性受限于现代的工作量。新型非易失性存储器（Non-volatile Memory，NVM）具有传统外存系统持久性和传统内存系统字节可寻址的特点，有望实现高密度、接近零的静态能源消耗和更低的每字节成本。这篇文章对当前混合内存系统的设计进行了总结。The survey covers different aspects of the Hybrid Main Memory Design，包括系统架构、内存管理粒度、监控方法、和迁移算法。此外在抽象混合内存硬件设备的基础上，本文还总结了应用程序感知的混合内存系统，并且指出现有工作中存在的不足。</p>
-<h2 id="Keywords：Main-Memory，Hybrid-Memory，Heterogeneous-Memory，Tiered-Memory"><a href="#Keywords：Main-Memory，Hybrid-Memory，Heterogeneous-Memory，Tiered-Memory" class="headerlink" title="Keywords：Main Memory，Hybrid Memory，Heterogeneous Memory，Tiered Memory"></a>Keywords：Main Memory，Hybrid Memory，Heterogeneous Memory，Tiered Memory</h2><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>The unrelenting growth of the memory needs of emerging datacenter applications.但是随着DRAM容量增速放缓，单个DRAM容量有限，扩大容量规模需要依赖主板插槽数量的增加。而这又带来了延迟和带宽的损失。与此同时DRAM的成本也逐年上升[X 图1]，这使得内存设备的TCO占到了37.1。目前新兴的非易失性主存储器技术和non-DDR memory bus technologies的出现，有效减缓了DRAM与慢速持久存储(即磁盘和SSD)间延迟与容量的差异，有希望从根本上改变存储系统的格局。</p>
+<h2 id="Keywords"><a href="#Keywords" class="headerlink" title="Keywords"></a>Keywords</h2><p>Main Memory，Hybrid Memory，Heterogeneous Memory，Tiered Memory</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>The unrelenting growth of the memory needs of emerging datacenter applications.但是随着DRAM容量增速放缓，单个DRAM容量有限，扩大容量规模需要依赖主板插槽数量的增加。而这又带来了延迟和带宽的损失。与此同时DRAM的成本也逐年上升[X 图1]，这使得内存设备的TCO占到了37.1。目前新兴的非易失性主存储器技术和non-DDR memory bus technologies的出现，有效减缓了DRAM与慢速持久存储(即磁盘和SSD)间延迟与容量的差异，有希望从根本上改变存储系统的格局。</p>
 <p>尽管新型计算有很多优势，但由于其相对较高的写入延迟、写入能耗和有限的写入持久性，它目前还不能直接替代DRAM。为了充分发挥两者在混合内存系统中的优势，在性能提升、节能降耗、磨损均衡、数据持久性等方面存在许多开放的研究问题。为了解决这些问题，近年来已经有许多关于内存层次结构的设计[xxx]和内存管理[xxx]方案的研究。这些研究成果带来了混合内存架构、操作系统和编程模型的创新，提供了丰富的思路和工具。</p>
 <p>由于硬件技术的迅速发展，以往的综述已经不能完整的反应整个领域的现状。随着intel 傲腾持久内存从上市到停产和CXL1.0到CXL3.0功能的扩充，对混合内存研究的测重也有所不同。本文对现有工作的回顾可以帮助更清晰的了解领域的发展以及现状。读者可以将一些现有发方法和工具应用到实际生产环境中。对目前工作优点和局限性的讨论也将帮助研究人员更深入地思考。</p>
 <p>我将从以下5个角度对现有工作进行介绍：</p>
@@ -894,7 +895,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">135.5k</span>&nbsp;字
+                class="white-color">136.5k</span>&nbsp;字
             
             
             

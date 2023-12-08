@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.7k
+                    4.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    15 分
+                    19 分
                 </div>
                 
 
@@ -509,7 +509,11 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0-相关理论"><a href="#0-相关理论" class="headerlink" title="0.相关理论"></a>0.相关理论</h2><p>80%结果由20%原因引起<br>先找木桶短板再优化<br>采样-&gt;分析瓶颈和热点-&gt;定位问题-&gt;优化-&gt;测试</p>
+                <h2 id="0-相关理论"><a href="#0-相关理论" class="headerlink" title="0.相关理论"></a>0.相关理论</h2><ul>
+<li>80%结果由20%原因引起</li>
+<li>先找木桶短板再优化</li>
+<li>采样-&gt;分析瓶颈和热点-&gt;定位问题-&gt;优化-&gt;测试</li>
+</ul>
 <h2 id="1-内核自带统计信息"><a href="#1-内核自带统计信息" class="headerlink" title="1.内核自带统计信息"></a>1.内核自带统计信息</h2><h3 id="1-1-proc文件系统"><a href="#1-1-proc文件系统" class="headerlink" title="1.1 proc文件系统"></a>1.1 proc文件系统</h3><p>让用户和内核内部数据结构交互，并不是真正意义上的文件系统，在内存且不占用磁盘，文件本身显示0字节，但查看就会返回大量信息。ps、top等shell命令就是从proc文件系统中读取信息的。</p>
 <ul>
 <li><code>/proc/pagetypeinfo</code> 这是URL链表上有多少活跃和不活跃页面的统计</li>
@@ -517,7 +521,7 @@
 <li><code>/proc/slabinfo</code> slab分配的小的内存的信息</li>
 <li><code>/proc/cpuinfo</code> processer如果是7则是指有8个核心</li>
 <li><code>/proc/[pid]/maps</code> 或者 <code>pmap pid</code> 命令来查看进程用户态虚拟内存空间的实际分布</li>
-<li><code>/proc/iomem</code> 命令来查看进程内核态虚拟内存空间的的实际分布</li>
+<li><code>/proc/iomem</code> 命令来查看进程内核态虚拟内存空间的的实际分布，还能查看内存的物理地址，不用sudo竟然地址全是0</li>
 <li><code>/proc/buddyinfo</code>命令来查看NUMA节点中不同内存区域zone的伙伴系统当前状态，迁移类型，链表成员数量</li>
 <li><code>/proc/meminfo</code>显示的是当前时刻物理页的信息，包括LRU的、slab的、hugepage的等等，<code>meminfo_proc_show</code>函数实现</li>
 <li><code>proc/[pid]/status | grep -E 'Name|Pid|Vm*|Rss*|Vm*|Hu*'</code>是进程和内存相关的信息。数据结构<code>mm_struct</code>成员<code>rss_stat</code>会记录进程内存的使用情况。（VmRSS进程使用的最大物理内存、RssAnon进程使用的匿名页、RssFile、RssShmem共享页、VmPTE页表大小、VmSwap交换区大小等）</li>
@@ -919,7 +923,97 @@ clean:
 <li>t输出线程ID</li>
 </ul>
 <p>对于那些开机就已经完成运行的代码，调试方式是在qemu启动时加入命令，比如SMP topology的动态输出语句打开方式在qemu启动命令加上<code>topology.dyndbg=+plft</code>这样输入<code>dmesg | grep 'cluster' </code>就能看见输出。</p>
-<h2 id="cppcheck"><a href="#cppcheck" class="headerlink" title="cppcheck"></a>cppcheck</h2><h2 id="Over-View"><a href="#Over-View" class="headerlink" title="Over View"></a>Over View</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd67339d6b6a477e9587e4c5a3f43707.png"></p>
+<h2 id="cppcheck"><a href="#cppcheck" class="headerlink" title="cppcheck"></a>cppcheck</h2><p>这是一个用于静态检查代码错误的工具，可以避免越界访问等一些问题，减少后期在内核调试的成本。在改改内核的时候<a target="_blank" rel="noopener" href="https://cppcheck.sourceforge.io/">用起来</a>！<a target="_blank" rel="noopener" href="https://cppcheck.sourceforge.io/manual.pdf">操作手册</a></p>
+<h2 id="ftrace"><a href="#ftrace" class="headerlink" title="ftrace"></a>ftrace</h2><p>使用set_ftrace_pid</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># cd /sys/kernel/debug/tracing/</span>
+<span class="token comment"># cat set_ftrace_pid</span>
+no pid
+<span class="token comment"># echo 3111 &gt; set_ftrace_pid //跟踪PID为3111的进程</span>
+<span class="token comment"># cat set_ftrace_pid</span>
+<span class="token number">3111</span>
+<span class="token comment"># echo function &gt; current_tracer</span>
+<span class="token comment"># echo 1 &gt; tracing_on</span>
+<span class="token comment"># usleep 1</span>
+<span class="token comment"># echo 0 &gt; tracing_on</span>
+<span class="token comment"># cat trace</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>frace还支持种更为直观的跟踪器，名为function_gaph,使用方法和function跟踪器类似。</p>
+<p><strong>动态ftrace</strong>：<br>只要在配置内核时打开CONFIG_DYNAMIC_FTRACE选项，就可以支持动态ftrace功能。set_ftrace_filter和set_ftrace_notrace这两个文件可以配对使用，其中，前者设置要跟踪的函数，后者指定不要跟踪的函数。如果函数太多,需要设置跟踪函数的过滤器,过滤器还支持通配符。available_filter_functions文件可以列出当前系统支持的所有函数，假如现在我们只想关注sys_nanosleep()和hrtimer_interrupt()这两个函数。</p>
+<pre class="line-numbers language-none"><code class="language-none"># cd /sys/kernel/debug/tracing/
+# echo sys_nanosleep hrtimer_interrupt &gt; set_ftrace_filter
+# echo function &gt; current_tracer
+# echo 1 &gt; tracing_on
+# usleep 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以将要跟踪的事件添加到相应文件，差不多的方式。例子在samples/trace_events目录里面。</p>
+<p><strong>kernelshark图形化工具</strong><br><code>sudo apt-get install trace-cmd kernelshark</code><br>分析ftrace数据用</p>
+<h2 id="kdump"><a href="#kdump" class="headerlink" title="kdump"></a>kdump</h2><p>内核转储工具。kdump核心实现基于kexec, kexec 的全称是kernel execution,非常类似于Linux内核中的exec系统调用。kexec可以快速启动新的内核，并且跳过BIOS或bootloader等引导程序的初始化阶段。这个特性可以让系统上崩溃时快速切换到备份的内核，这样第一个内核的内存就得到了保留。在第二个内核中，可以对第一个内核产生的崩溃数据进行继续分析。</p>
+<p>kdump会在内存中保留一块区域，这块区域用来存放捕获内核。当生产内核在运行过程中遇到崩溃等情况时，kdump会通过kexec机制自动启动到捕获内核，这时会绕过BIOS,以免破坏第一个内核的内存，然后把生产内核的完整信息(包括CPU寄存器、栈数据等)转储到指定文件中。接着，使用crash工具分析这个转储文件，就可以快速定位宕机问题了。</p>
+<p>kdump+crash工具的适用范围：主要用来分析系统宕机黑屏、无响应(unresponsive)等问题，比如SSH、串口、鼠标键盘无响应等。有一类宕机情况kdump无能为力，比如因硬件错误导致CPU崩溃。也就是说，系统不能正常地热重启，只能通过重新关闭和开启电源才能启动，这种情况下kdump就不适用了。因为kdump需要在系统崩溃的时候快速启动到捕获内核，但前提条件就是系统能热启动，并且内存中的内容不会丢失。</p>
+<h2 id="常见的Linux性能测试工具"><a href="#常见的Linux性能测试工具" class="headerlink" title="常见的Linux性能测试工具"></a>常见的Linux性能测试工具</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>kernel-selftests</td>
+<td>内核源代码目录自带的测试程序</td>
+</tr>
+<tr>
+<td>perf-bench</td>
+<td>perf工具自带的测试程序，包含对内存、调度等的测试</td>
+</tr>
+<tr>
+<td>phoronix-test-suit</td>
+<td>综合性能测试程序</td>
+</tr>
+<tr>
+<td>sysbench</td>
+<td>综合性能测试套件，包含对CPU、内存、多线程等的测试</td>
+</tr>
+<tr>
+<td>unixbench</td>
+<td>综合性能测试套件，UNIX系统的一套传统的测试程序</td>
+</tr>
+<tr>
+<td>pmbench</td>
+<td>用来测试内存性能的工具</td>
+</tr>
+<tr>
+<td>iozone</td>
+<td>用来测试文件系统性能的工具</td>
+</tr>
+<tr>
+<td>AIM7</td>
+<td>一套来自UNIX系统的测试系统底层性能的工具</td>
+</tr>
+<tr>
+<td>iperf</td>
+<td>用来测试网络性能的工具</td>
+</tr>
+<tr>
+<td>linpack</td>
+<td>用来测试CPU的浮点运算的性能</td>
+</tr>
+<tr>
+<td>vm-scalability</td>
+<td>用来测试Linux内核内存管理模块的扩展性</td>
+</tr>
+<tr>
+<td>glbenchmark</td>
+<td>用来测试GPU性能</td>
+</tr>
+<tr>
+<td>GFXbenchmark</td>
+<td>用来测试GPU性能</td>
+</tr>
+<tr>
+<td>DBENCH</td>
+<td>用来测试I/O性能</td>
+</tr>
+</tbody></table>
+<p>内容来自《奔跑吧Linux内核基础篇》这些工具记录在这里，有一部分也没用过。</p>
+<h2 id="Over-View"><a href="#Over-View" class="headerlink" title="Over View"></a>Over View</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd67339d6b6a477e9587e4c5a3f43707.png"></p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/fbbab3ca9a084f5aa0986216daf20f38.png"></p>
 
                 
@@ -1297,7 +1391,7 @@ clean:
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">135.5k</span>&nbsp;字
+                class="white-color">136.5k</span>&nbsp;字
             
             
             
