@@ -558,7 +558,7 @@ CONFIG_CGROUP_UNIFIED_SYSTEMD=y<span aria-hidden="true" class="line-numbers-rows
 <p>创建内存类型的cgroup命名为memhog-limiter<code>sudo cgcreate -g memory:memhog-limiter</code>实际操作是创建了一个目录。<code>ls -la /sys/fs/cgroup/memhog-limiter/</code></p>
 <p><img src="https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p>
 <p>设置内存限制，这里有新版的cgroup的软限制是memory.high,硬限制是menory.max<code>sudo cgset -r memory.max=50M memhog-limiter</code>设置完成后可以输出查看<code>cat  /sys/fs/cgroup/memhog-limiter/memory.max</code></p>
-<p><img src="https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p>
 <h2 id="2-2-去限制内存"><a href="#2-2-去限制内存" class="headerlink" title="2.2. 去限制内存"></a>2.2. 去限制内存</h2><blockquote>
 <p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p>
 </blockquote>
@@ -566,8 +566,8 @@ CONFIG_CGROUP_UNIFIED_SYSTEMD=y<span aria-hidden="true" class="line-numbers-rows
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
 <span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> memhog 100M<span class="token punctuation">;</span> <span class="token assign-left variable">id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>pgrep memhog<span class="token variable">)</span></span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$id</span>"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">20</span><span class="token punctuation">;</span> <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>运行脚本<code>sudo cgexec -g memory:memhog-limiter ./memhog.sh</code>查看这个内存控制组里的pid<code>cat  /sys/fs/cgroup/memhog-limiter/cgroup.procs</code></p>
-<p><img src="https://img-blog.csdnimg.cn/98414239c59242a1b9a5d84302694121.png"></p>
-<p>显然没有控制住，emmmm到底什么原因还在找。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/98414239c59242a1b9a5d84302694121.png"></p>
+<p>显然没有控制住，emmmm到底什么原因？后来发现还是得在grub设置<code>systemd.unified_cgroup_hierarchy=1</code>才行。</p>
 <h2 id="2-3-创建namespace"><a href="#2-3-创建namespace" class="headerlink" title="2.3. 创建namespace"></a>2.3. 创建namespace</h2><p><code>sudo cgexec -g memory:memhog-limiter unshare -fp --mount-proc</code></p>
 <p>To verify that you are in a new namespace<code>ps -ef</code></p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token environment constant">UID</span>          PID    <span class="token environment constant">PPID</span>  C STIME TTY          TIME CMD
@@ -948,7 +948,7 @@ root          <span class="token number">12</span>       <span class="token numb
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">138.8k</span>&nbsp;字
+                class="white-color">140.6k</span>&nbsp;字
             
             
             

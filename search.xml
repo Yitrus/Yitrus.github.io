@@ -4,6 +4,50 @@
   
     
     <entry>
+      <title>hugepage and THP in memory</title>
+      <link href="/2023/12/21/hugepage-and-THP-in-memory/"/>
+      <url>/2023/12/21/hugepage-and-THP-in-memory/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Demystifying CXL Memory with Genuine CXL-Ready Systems and Devices</title>
+      <link href="/2023/12/21/Demystifying-CXL-Memory-with-Genuine-CXL-Ready-Systems-and-Devices/"/>
+      <url>/2023/12/21/Demystifying-CXL-Memory-with-Genuine-CXL-Ready-Systems-and-Devices/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-论文信息"><a href="#1-论文信息" class="headerlink" title="1. 论文信息"></a>1. 论文信息</h2><div class="note primary no-icon"><ul><li>文章来自2023 MICRO,CCFA</li><li>Demystifying CXL Memory with Genuine CXL-Ready Systems and Devices</li></ul></div> <h3 id="所有作者及单位"><a href="#所有作者及单位" class="headerlink" title="所有作者及单位"></a>所有作者及单位</h3><ul><li> Yan Sun, Zeduo Yu, Reese Kuper, Chihun Song, Jinghan Huang, Houxiang Ji, Siddharth Agarwal, Jiaqi Lou, Ipoom Jeong, Tianyin Xu, Nam Sung Kim. University of Illinois伊利诺伊大学.</li><li> Yifan Yuan, Ren Wang. Intel Labs.</li><li> Jung Ho Ahn. Seoul National University首尔大学. </li></ul><h2 id="2-评估"><a href="#2-评估" class="headerlink" title="2. 评估"></a>2. 评估</h2><p>这部分主要介绍真实CXL内存和模拟的之间的区别，以及和CPU之间的相互作用。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/07986173d7c846d2b14d4537f998d01e.png" alt="实验配置"><br>这里使用了不同制造商的3种CXL设备，对应的内存设备也不同。</p><h3 id="2-1-设备延迟"><a href="#2-1-设备延迟" class="headerlink" title="2.1 设备延迟"></a>2.1 设备延迟</h3><ul><li>MLC: Pointer-chasing (Latency of Serialized Memory Accesses) 顺序访问的延迟指不停的获得指针跳转到对应地址，最后才拿到数据。</li><li>Temporal Load (ld). 指CPU有规律的从内存读数据。</li><li>Non-Temporal Load (nt-ld). 指随机从内存读数据。</li><li>Temporal Store (st). <code>store</code>指令表示将寄存器或缓存中的数据写入内存，可能会在高速缓存中保留一份拷贝，以提高未来的读取性能。</li><li>Non-Temporal Store (nt-st). 写入没有规律。</li></ul><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/58fca036ffc442288fbe844bc234cc37.png"></p><ul><li>对比两种测试程序：MLC的串行内存访问没法使用UPI和CXL全双工的功能，使得MLC测得的延迟要大于MEMO测的。</li><li>对比四种设备：CXL-A 的 ld 延迟仅比 DDR5- R 多 35%，而 CXL-B 和 CXL-C 的 ld 延迟则分别长近 2 倍和 3 倍。即使采用相同的 DDR4 DRAM 技术，基于 DDR4-3200 的 CXL-C 比基于 DDR4-2400 的 CXLB 的延迟时间长 67%. 说明真实CXL设备的延迟和CXL控制器的设置是高度相关的。</li><li>模拟 CXL 内存延迟开销：在发出内存请求时，①本地 CPU 必须首先与远程 CPU 通信检查高速缓存一致性 。②内存请求还必须通过远程 CPU 内部较长的片内互连（芯片间 UPI 接口连接）才能到达其内存控制器。CPU 内核越多，即缓存越多，互连路径越长，这些开销就越大。这些造成延迟的问题在CXL上是如何解决的？CPU 实现了一种片上硬件结构，以促进对真正 CXL 内存访问的快速缓存一致性检查。此外，真正的 CXL 内存在 CXL 控制器内有一个较短的片内互连，以连接其内存控制器。</li></ul><h3 id="2-2-设备带宽"><a href="#2-2-设备带宽" class="headerlink" title="2.2 设备带宽"></a>2.2 设备带宽</h3><ul><li>从读写来看：将结果标准化为理想带宽。DDR5-4800、DDR4-3200 和 DDR4-2400 DRAM 技术可提供的最大顺序带宽值分别为每通道 38.4 GB/s、25.6 GB/s 和 19.2 GB/s. 全读操作时占DDR技术理想带宽百分比差异很大，CXL-A的内存控制器设计可以更高效处理交错的内存访问。在只读或只写内存访问方面的效率可能不如 CXL-B. CXL-C 非常差劲的带宽是 due to the FPGA-based implementation of the CXL controller. 从这些结果可以看到，CXL设备的带宽表现也和CXL控制器的设计紧密相关。</li></ul><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/ac23f88f04774eb5b5233bffa888969e.png"></p><ul><li>模拟 CXL 内存带宽利用率在写操作中低于真实CXL设备。对于st操作，仿真 CXL 内存的带宽效率下降幅度明显大于真实 CXL 内存，部分原因是仿真 CXL 内存承受了更多的高速缓存一致性检查开销。在store操作中真实CXL设备的带宽是有很大机会好于模拟的。</li></ul><h3 id="2-3-与CPU缓存间的相互作用"><a href="#2-3-与CPU缓存间的相互作用" class="headerlink" title="2.3 与CPU缓存间的相互作用"></a>2.3 与CPU缓存间的相互作用</h3><p>目前因特尔架构是所谓的非包容性架构Non-inclusive cache architecture (starting Intel Skylake CPU). LLC错误时，加载去L2而不是共享的LLC，这个时候就会从L2再驱逐一些到LLC。</p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/a7daca9d048047d7ba0de62f723af34d.png"></p><p>Each chiplet (or two chiplets) as a NUMA node in the SNC mode. 如上图所示，按理说这是一个socket，也应该是一个NUMA node，但是现在被切成4个了。当在SNC模式下LLC资源强制隔离之后，被驱逐只能驱逐到同一个SNC的LLC。但是CXL会打破这个隔离，core获得的LLC容量变多了，明显弥补了 CXL 内存较慢的访问延迟。</p><h3 id="2-4-应用程序的延迟"><a href="#2-4-应用程序的延迟" class="headerlink" title="2.4 应用程序的延迟"></a>2.4 应用程序的延迟</h3><p>P99延迟就是指99%的操作都会在那个延迟范围内完成，QPS代表“Queries Per Second”，即每秒查询数。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/8a612d1409ab411c892fd33afcd80b68.png"></p><ul><li>Redis：随QPS增加，差距增加，几乎两倍。</li><li>DSB：由3种组件组成，将CPU敏感的部分都放在DDR中运行，如表格所示。将内存敏感部分放入CXL和DDR做对比。<br>图d的黄色突起部分是由于那个阶段CXL解决了带宽瓶颈改善了延迟（作者这么解释的，感觉怪怪的）。之后两条线又重合了是CPU带来的瓶颈。Redis更敏感是微秒级的，但是DSB是毫秒级别的，所以两者对待这两类的延迟会有不同的表现。</li><li>TPP策略：全部分配去CXL，等TPP大概完成了只剩25%在CXL的迁移，再去测P99延迟。另一个是静态分配25%的页面去给TPP，竟然都比TPP要好。①将任何比例的页面分配到 CXL 内存都会相应增加要求 𝜇 级延迟的内存密集型应用的 p99 延迟（对内存访问延迟高度敏感）。②谨慎地将某些页面分配到 CXL 内存，并不会增加 𝑚 级延迟的应用的 p99 延迟。③即使是智能页面迁移策略，也会因为迁移页面的开销而进一步增加这类对延迟敏感的应用的 p99 延迟。作者认为主要是延迟敏感程序，页面迁移会阻碍关键路径上的内存读取请求。</li></ul><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/719c528bbbf74dad969d526a1517af1a.png"></p><h3 id="2-5-应用程序的吞吐量"><a href="#2-5-应用程序的吞吐量" class="headerlink" title="2.5 应用程序的吞吐量"></a>2.5 应用程序的吞吐量</h3><p>全部放在DDR5中，在20线程后吞吐量开始饱和。在这种情况下，将一定比例的页面分配到 CXL 内存可以进一步提高吞吐量，因为它可以补充 DDR 内存的带宽，增加 DLRM 可用的总带宽。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/23966f8f4f8744118792b3ca2ae733bd.png"><br>虽然 Redis 是一个对延迟敏感的应用，但其吞吐量也是一个重要的性能指标。对于内存带宽密集型应用（同时也延迟敏感）而言，可能会导致吞吐量低于将100%的页面分配到DDR内存，即使同时使用DDR内存和CXL内存不会带来更高的总带宽。由于 Redis 没有充分利用内存带宽，其吞吐量受到内存访问延迟的限制。 因此，将更多页面分配到 CXL 内存会降低 Redis 的吞吐量。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/6ac832524bcc47328c7bc9b2fb093550.png"></p><h2 id="3-CXL-MEMORY-AWARE的内存分配"><a href="#3-CXL-MEMORY-AWARE的内存分配" class="headerlink" title="3. CXL-MEMORY-AWARE的内存分配"></a>3. CXL-MEMORY-AWARE的内存分配</h2><p>一种动态页面分配策略，可以在运行时根据不同 CXL 内存设备的带宽能力和运行应用程序消耗的带宽，自动配置分配给 CXL 内存的页面比例。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/e98064a4bfdc42d4aa26bd6bed73277e.png"><br>运行了 DLRM，其吞吐量受内存带宽限制。然后，随着分配给 CXL 内存的页面百分比的变化，我们观察 DLRM 吞吐量（DDR的100%）与这些计数器值之间的相关性。<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/edbc336c66274e17b4a61748b2b79ace.png"><br>直接在用户层实现就好了，所以<a href="https://zenodo.org/record/8332543">作者的代码</a>大多python。</p><p>然后放一张性能提升的测试图：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/f9cad385e4c3483ea217982fa0686148.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> A </tag>
+            
+            <tag> CXL </tag>
+            
+            <tag> Memory </tag>
+            
+            <tag> ML </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>memtis source code</title>
       <link href="/2023/12/15/memtis-source-code/"/>
       <url>/2023/12/15/memtis-source-code/</url>
@@ -33,9 +77,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> Virtual Machines </tag>
             
@@ -149,9 +193,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> Memory Pool </tag>
             
@@ -180,9 +224,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -234,9 +278,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -336,7 +380,7 @@
       <link href="/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%92%8Cnamespace/"/>
       <url>/2023/10/29/%E5%B0%8F%E5%AE%9E%E9%AA%8C-cgroup%E9%99%90%E5%88%B6%E5%92%8Cnamespace/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1. 介绍"></a>1.1. 介绍</h2><p>内核控制组<code>cgroups</code>是一项内核功能，允许为<strong>进程</strong>分配和限制硬件和系统资源。</p><p><strong>创建</strong>：在使用<code>systemd</code>（systemd是System Management Daemon的简写（在UNIX系统中，后台进程都按照惯例以d结尾，因此当你看到一个进程的名字以d结尾，那它极有可能是一个后台进程），它是Linux系统中启动的第一个进程）的操作系统中，<code>/sys/fs/cgroup</code>目录都是<strong>由systemd在系统启动的过程中挂载</strong>的，并且挂载为只读的类型（创建cgroup除了使用cgroup的工具的命令以外，还可以直接在目录里创建相应memory或者cpu的目录，之后默认的cgroup文件会在里面自动生成，但是有的情况下这样的方式创建是不被允许不能成功的即使是sudo）。</p><p><strong>结构</strong>：每个进程都分配有一个管理cgroup。cgroup以分层树结构排序。可以为单个进程或层次结构的整个分支设置资源限制。使用cgroups将所有进程组织成组，这称为切片slice，slice是一棵树或者一棵子树。scope和service是slice中的一个节点，scope是以资源管理为目的的比如我有一组不太相关但是都需要被限制CPU使用的进程；service是一组相关的进程一起工作，形成一个服务单元。默认情况下, systemd会自动创建slice, scope和service单位的层级,来为cgroup树提供统一结构。</p><p><strong>记账</strong>：记账（Accounting）功能是指cgroups可以跟踪和记录组内任务（进程或线程）使用资源的情况。收集有关特定进程组（cgroup）使用的CPU时间、内存占用、磁盘I/O等方面的信息。这有助于识别资源密集型任务，管理系统负载，并进行资源分配和优化。记账具有相对较小但非零的开销，其影响取决于工作负载。请注意，打开一个单元的记账也会隐式地为直接包含在同一切片中的所有单元及其所有父切片和单元打开记账。直接包含在其中，因此会计成本不属于单个单位。</p><p><strong>内核配置</strong>：每个控制组子系统都依赖于相关的配置选项。例如，cpuset子系统应通过CONFIG_CPUSETS内核配置选项启用，io子系统应通过CONFIG_BLK_CGROUP内核配置选项启用等。要启用cgroups中的memory子系统,需要在内核配置时将CONFIG_MEMCG选项设置为y. All of these kernel configuration options may be found in the General setup → Control Group support menu.</p><h2 id="1-2-diff-V1-V2"><a href="#1-2-diff-V1-V2" class="headerlink" title="1.2. diff V1 V2"></a>1.2. diff V1 V2</h2><p>/usr/src/linux/Documentation/admin-guide/cgroup-v1<br>/usr/src/linux/Documentation/admin-guide/cgroup-v2.rst.</p><p>cgroup v1 主要包括以下几个概念：</p><ul><li>subsystem（子系统）：内核模块，具体的资源控制器，可以被关联到cgroup树。不同资源的控制器不同，例如，内存子系统控制内存资源，CPU子系统控制CPU资源。</li><li>cgroup（控制组）：资源隔离的最小单位，表示一组进程和cgroup子系统的关联，例如：通过内存子系统限制一组进程的可用内存资源总量。进程可以加入某个cgroup，也可以从一个cgroup迁移到另一个cgroup，同一进程不能同时存在同类型的两个cgroup中。</li><li>hierarchy（层级）：由一系列cgroup按照树状结构排列，每个节点都是一个cgroup，子cgroup默认继承父cgroup的参数和配置。系统可以有多个层级（cgroup树），每个层级可以和不同的subsystem关联，每个subsystem只能和一个层级关联，同一进程可以属于多个层级，但在每个层级中只能属于一个cgroup节点。</li></ul><p>在cgroup v2中，去掉了层级（hierarchy）的概念，只有一个层级，所有cgroup在该层级中以树形的方式组织，每个cgroup可以管理多种资源。在cgroup v1中，每种资源一个层级。对于bg和adhoc两个cgroup，bg需要限制blkio和memory两种资源，adhoc需要限制memory和pids两种资源。cgroup v1场景的视图如下：<br><img src="https://pic3.zhimg.com/80/v2-8097cbafea04c6cd4a3325600a435d12_1440w.webp"></p><p>对于cgroup v2，由于所有资源都在同一个cgroup下管理，通过cgroup.sub_controller控制子cgroup启用的controller，这样一来，视图以cgroup为单位，更加清晰和便于管理。<br><img src="https://pic1.zhimg.com/80/v2-6afa56ea78c4af88ffaea2057690f0c4_1440w.webp"></p><p>在cgroup v2中，每个cgroup目录下有个名为cgroup.controllers的可读文件，记录了当前cgroup启用的controller。根目录cgroup.controllers文件的内容记录了当前系统支持的所有controller。</p><p>在cgroup v2中，每个cgroup目录下有个名为cgroup.controllers的可读文件，记录了当前cgroup启用的controller。根目录下cgroup.controllers文件的内容记录了当前系统支持的所有controller。修改父cgroup的cgroup.subtree_control，增加cgroup controller：</p><pre class="line-numbers language-none"><code class="language-none">echo "+memory" &gt; test/cgroup.subtree_controlcat test/child/cgroup.controllersmemory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>删除子cgroup中的controller，也通过修改父cgroup的cgroup.subtree_control实现：</p><pre class="line-numbers language-none"><code class="language-none">echo "-memory" &gt; test/cgroup.subtree_controlcat test/child/cgroup.controllers<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>当前cgroup中存在进程时，写入不会成功；写入当前cgroup没有启用的controller时，不会成功。</p><p><a href="https://zhuanlan.zhihu.com/p/643942399">参考</a></p><h2 id="1-3-Unified-Control-Group-Hierarchy"><a href="#1-3-Unified-Control-Group-Hierarchy" class="headerlink" title="1.3. Unified Control Group Hierarchy"></a>1.3. Unified Control Group Hierarchy</h2><p>节点存在以下面3种cgroups模式，选择不同模式,会影响到用户空间的 cgroup使用与兼容性：</p><ul><li>legacy：只支持cgroup V1</li><li>hybrid：同时支持cgroup V1和cgroup V2</li><li>unified：只支持cgroup V2又叫Unified Control Group Hierarchy </li></ul><p>判断目前是哪种模式<a href="https://zhuanlan.zhihu.com/p/643942399">参考</a>：</p><pre class="line-numbers language-none"><code class="language-none">[ $(stat -fc %T /sys/fs/cgroup/) = "cgroup2fs" ] &amp;&amp; echo "unified" || ( [ -e \/sys/fs/cgroup/unified/ ] &amp;&amp; echo "hybrid" || echo "legacy")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>使用unified模式（注意cgroup_no_v1=all）：</p><pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \systemd.unified_cgroup_hierarchy=1 \systemd.legacy_systemd_cgroup_controller=0 cgroup_no_v1=all"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>使用 legacy 模式：</p><pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \systemd.unified_cgroup_hierarchy=0 \systemd.legacy_systemd_cgroup_controller=1"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>使用 hybrid 模式：</p><pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \systemd.unified_cgroup_hierarchy=1 \systemd.legacy_systemd_cgroup_controller=1"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>主要是开启GRUB_CMDLINE_LINUX= “systemd.unified_cgroup_hierarchy=yes”才能使用V2版本，有时候内核可能没有默认。</p><p>以及貌似在内核编译时也有选项：</p><pre class="line-numbers language-none"><code class="language-none"># Only unified hierarchy is supportedCONFIG_CGROUP_UNIFIED_SYSTEMD=y<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><h2 id="2-1-创建一个有内存限制的cgroup"><a href="#2-1-创建一个有内存限制的cgroup" class="headerlink" title="2.1.创建一个有内存限制的cgroup"></a>2.1.创建一个有内存限制的cgroup</h2><p>为了创建、管理和监控cgroup，我们需要另一个名为cgroup-tools的包<code>sudo apt install cgroup-tools</code></p><p>创建内存类型的cgroup命名为memhog-limiter<code>sudo cgcreate -g memory:memhog-limiter</code>实际操作是创建了一个目录。<code>ls -la /sys/fs/cgroup/memhog-limiter/</code></p><p><img src="https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p><p>设置内存限制，这里有新版的cgroup的软限制是memory.high,硬限制是menory.max<code>sudo cgset -r memory.max=50M memhog-limiter</code>设置完成后可以输出查看<code>cat  /sys/fs/cgroup/memhog-limiter/memory.max</code></p><p><img src="https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p><h2 id="2-2-去限制内存"><a href="#2-2-去限制内存" class="headerlink" title="2.2. 去限制内存"></a>2.2. 去限制内存</h2><blockquote><p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p></blockquote><p>创建一个吃内存的脚本</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span><span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> memhog 100M<span class="token punctuation">;</span> <span class="token assign-left variable">id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>pgrep memhog<span class="token variable">)</span></span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$id</span>"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">20</span><span class="token punctuation">;</span> <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>运行脚本<code>sudo cgexec -g memory:memhog-limiter ./memhog.sh</code>查看这个内存控制组里的pid<code>cat  /sys/fs/cgroup/memhog-limiter/cgroup.procs</code></p><p><img src="https://img-blog.csdnimg.cn/98414239c59242a1b9a5d84302694121.png"></p><p>显然没有控制住，emmmm到底什么原因还在找。</p><h2 id="2-3-创建namespace"><a href="#2-3-创建namespace" class="headerlink" title="2.3. 创建namespace"></a>2.3. 创建namespace</h2><p><code>sudo cgexec -g memory:memhog-limiter unshare -fp --mount-proc</code></p><p>To verify that you are in a new namespace<code>ps -ef</code></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token environment constant">UID</span>          PID    <span class="token environment constant">PPID</span>  C STIME TTY          TIME CMDroot           <span class="token number">1</span>       <span class="token number">0</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token parameter variable">-bash</span>root          <span class="token number">12</span>       <span class="token number">1</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token function">ps</span> <span class="token parameter variable">-ef</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>新命名空间中，只有bash作为PID 1运行。因此，现在启动的每个服务都将在这个cgroup上下文中启动。</p><p><code>./memhog.sh</code>应该也是被之前那样限制住的情况。</p><p><a href="https://facebookmicrosites.github.io/cgroup2/docs/create-cgroups.html">这是facebook关于cgroup2的文档，他们的创建方式不太一样，也可以试试</a></p><h2 id="2-4-namespace又是什么？"><a href="#2-4-namespace又是什么？" class="headerlink" title="2.4. namespace又是什么？"></a>2.4. namespace又是什么？</h2><p>Kernel space - 在某个特定namespace内,操作系统内核执行的内存区域。<br>User space - 在某个特定namespace内,用户模式程序执行的内存区域。</p><p>Namespace的类型有:<br>PID namespace - 进程ID的隔离Namespace<br>Network namespace - 网络设备和协议栈的隔离Namespace<br>Mount namespace - 文件系统挂载点的隔离Namespace<br>IPC namespace - 进程间通信的隔离Namespace<br>UTS namespace - 主机名和域名的隔离Namespace<br>User namespace - 用户和用户组的隔离Namespace</p><p>通过namespace技术,内核可以为不同的用户空间提供隔离的系统资源,增强安全性和容器化。所以在讨论用户空间和内核空间时,需要明确是在哪个namespace环境下。比如docker容器内的用户空间和内核空间就与宿主机隔离开来。</p><p>命名空间是Linux内核用来隔离内核资源的方式。让一些进程只能看到和自己相关的一部分资源。两组感觉不到对方存在。<br><a href="https://zhuanlan.zhihu.com/p/593351621">更多实验参考</a></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1. 介绍"></a>1.1. 介绍</h2><p>内核控制组<code>cgroups</code>是一项内核功能，允许为<strong>进程</strong>分配和限制硬件和系统资源。</p><p><strong>创建</strong>：在使用<code>systemd</code>（systemd是System Management Daemon的简写（在UNIX系统中，后台进程都按照惯例以d结尾，因此当你看到一个进程的名字以d结尾，那它极有可能是一个后台进程），它是Linux系统中启动的第一个进程）的操作系统中，<code>/sys/fs/cgroup</code>目录都是<strong>由systemd在系统启动的过程中挂载</strong>的，并且挂载为只读的类型（创建cgroup除了使用cgroup的工具的命令以外，还可以直接在目录里创建相应memory或者cpu的目录，之后默认的cgroup文件会在里面自动生成，但是有的情况下这样的方式创建是不被允许不能成功的即使是sudo）。</p><p><strong>结构</strong>：每个进程都分配有一个管理cgroup。cgroup以分层树结构排序。可以为单个进程或层次结构的整个分支设置资源限制。使用cgroups将所有进程组织成组，这称为切片slice，slice是一棵树或者一棵子树。scope和service是slice中的一个节点，scope是以资源管理为目的的比如我有一组不太相关但是都需要被限制CPU使用的进程；service是一组相关的进程一起工作，形成一个服务单元。默认情况下, systemd会自动创建slice, scope和service单位的层级,来为cgroup树提供统一结构。</p><p><strong>记账</strong>：记账（Accounting）功能是指cgroups可以跟踪和记录组内任务（进程或线程）使用资源的情况。收集有关特定进程组（cgroup）使用的CPU时间、内存占用、磁盘I/O等方面的信息。这有助于识别资源密集型任务，管理系统负载，并进行资源分配和优化。记账具有相对较小但非零的开销，其影响取决于工作负载。请注意，打开一个单元的记账也会隐式地为直接包含在同一切片中的所有单元及其所有父切片和单元打开记账。直接包含在其中，因此会计成本不属于单个单位。</p><p><strong>内核配置</strong>：每个控制组子系统都依赖于相关的配置选项。例如，cpuset子系统应通过CONFIG_CPUSETS内核配置选项启用，io子系统应通过CONFIG_BLK_CGROUP内核配置选项启用等。要启用cgroups中的memory子系统,需要在内核配置时将CONFIG_MEMCG选项设置为y. All of these kernel configuration options may be found in the General setup → Control Group support menu.</p><h2 id="1-2-diff-V1-V2"><a href="#1-2-diff-V1-V2" class="headerlink" title="1.2. diff V1 V2"></a>1.2. diff V1 V2</h2><p>/usr/src/linux/Documentation/admin-guide/cgroup-v1<br>/usr/src/linux/Documentation/admin-guide/cgroup-v2.rst.</p><p>cgroup v1 主要包括以下几个概念：</p><ul><li>subsystem（子系统）：内核模块，具体的资源控制器，可以被关联到cgroup树。不同资源的控制器不同，例如，内存子系统控制内存资源，CPU子系统控制CPU资源。</li><li>cgroup（控制组）：资源隔离的最小单位，表示一组进程和cgroup子系统的关联，例如：通过内存子系统限制一组进程的可用内存资源总量。进程可以加入某个cgroup，也可以从一个cgroup迁移到另一个cgroup，同一进程不能同时存在同类型的两个cgroup中。</li><li>hierarchy（层级）：由一系列cgroup按照树状结构排列，每个节点都是一个cgroup，子cgroup默认继承父cgroup的参数和配置。系统可以有多个层级（cgroup树），每个层级可以和不同的subsystem关联，每个subsystem只能和一个层级关联，同一进程可以属于多个层级，但在每个层级中只能属于一个cgroup节点。</li></ul><p>在cgroup v2中，去掉了层级（hierarchy）的概念，只有一个层级，所有cgroup在该层级中以树形的方式组织，每个cgroup可以管理多种资源。在cgroup v1中，每种资源一个层级。对于bg和adhoc两个cgroup，bg需要限制blkio和memory两种资源，adhoc需要限制memory和pids两种资源。cgroup v1场景的视图如下：<br><img src="https://pic3.zhimg.com/80/v2-8097cbafea04c6cd4a3325600a435d12_1440w.webp"></p><p>对于cgroup v2，由于所有资源都在同一个cgroup下管理，通过cgroup.sub_controller控制子cgroup启用的controller，这样一来，视图以cgroup为单位，更加清晰和便于管理。<br><img src="https://pic1.zhimg.com/80/v2-6afa56ea78c4af88ffaea2057690f0c4_1440w.webp"></p><p>在cgroup v2中，每个cgroup目录下有个名为cgroup.controllers的可读文件，记录了当前cgroup启用的controller。根目录cgroup.controllers文件的内容记录了当前系统支持的所有controller。</p><p>在cgroup v2中，每个cgroup目录下有个名为cgroup.controllers的可读文件，记录了当前cgroup启用的controller。根目录下cgroup.controllers文件的内容记录了当前系统支持的所有controller。修改父cgroup的cgroup.subtree_control，增加cgroup controller：</p><pre class="line-numbers language-none"><code class="language-none">echo "+memory" &gt; test/cgroup.subtree_controlcat test/child/cgroup.controllersmemory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>删除子cgroup中的controller，也通过修改父cgroup的cgroup.subtree_control实现：</p><pre class="line-numbers language-none"><code class="language-none">echo "-memory" &gt; test/cgroup.subtree_controlcat test/child/cgroup.controllers<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>当前cgroup中存在进程时，写入不会成功；写入当前cgroup没有启用的controller时，不会成功。</p><p><a href="https://zhuanlan.zhihu.com/p/643942399">参考</a></p><h2 id="1-3-Unified-Control-Group-Hierarchy"><a href="#1-3-Unified-Control-Group-Hierarchy" class="headerlink" title="1.3. Unified Control Group Hierarchy"></a>1.3. Unified Control Group Hierarchy</h2><p>节点存在以下面3种cgroups模式，选择不同模式,会影响到用户空间的 cgroup使用与兼容性：</p><ul><li>legacy：只支持cgroup V1</li><li>hybrid：同时支持cgroup V1和cgroup V2</li><li>unified：只支持cgroup V2又叫Unified Control Group Hierarchy </li></ul><p>判断目前是哪种模式<a href="https://zhuanlan.zhihu.com/p/643942399">参考</a>：</p><pre class="line-numbers language-none"><code class="language-none">[ $(stat -fc %T /sys/fs/cgroup/) = "cgroup2fs" ] &amp;&amp; echo "unified" || ( [ -e \/sys/fs/cgroup/unified/ ] &amp;&amp; echo "hybrid" || echo "legacy")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>使用unified模式（注意cgroup_no_v1=all）：</p><pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \systemd.unified_cgroup_hierarchy=1 \systemd.legacy_systemd_cgroup_controller=0 cgroup_no_v1=all"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>使用 legacy 模式：</p><pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \systemd.unified_cgroup_hierarchy=0 \systemd.legacy_systemd_cgroup_controller=1"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>使用 hybrid 模式：</p><pre class="line-numbers language-none"><code class="language-none">GRUB_CMDLINE_LINUX="cgroup_enable=memory \systemd.unified_cgroup_hierarchy=1 \systemd.legacy_systemd_cgroup_controller=1"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>主要是开启GRUB_CMDLINE_LINUX= “systemd.unified_cgroup_hierarchy=yes”才能使用V2版本，有时候内核可能没有默认。</p><p>以及貌似在内核编译时也有选项：</p><pre class="line-numbers language-none"><code class="language-none"># Only unified hierarchy is supportedCONFIG_CGROUP_UNIFIED_SYSTEMD=y<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><h2 id="2-1-创建一个有内存限制的cgroup"><a href="#2-1-创建一个有内存限制的cgroup" class="headerlink" title="2.1.创建一个有内存限制的cgroup"></a>2.1.创建一个有内存限制的cgroup</h2><p>为了创建、管理和监控cgroup，我们需要另一个名为cgroup-tools的包<code>sudo apt install cgroup-tools</code></p><p>创建内存类型的cgroup命名为memhog-limiter<code>sudo cgcreate -g memory:memhog-limiter</code>实际操作是创建了一个目录。<code>ls -la /sys/fs/cgroup/memhog-limiter/</code></p><p><img src="https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p><p>设置内存限制，这里有新版的cgroup的软限制是memory.high,硬限制是menory.max<code>sudo cgset -r memory.max=50M memhog-limiter</code>设置完成后可以输出查看<code>cat  /sys/fs/cgroup/memhog-limiter/memory.max</code></p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p><h2 id="2-2-去限制内存"><a href="#2-2-去限制内存" class="headerlink" title="2.2. 去限制内存"></a>2.2. 去限制内存</h2><blockquote><p>memhog：用于测试系统内存管理的工具，它通常用于在Linux系统上进行内存压力测试。它的主要作用是 通过分配大量的内存来模拟内存压力。</p></blockquote><p>创建一个吃内存的脚本</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span><span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> memhog 100M<span class="token punctuation">;</span> <span class="token assign-left variable">id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>pgrep memhog<span class="token variable">)</span></span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$id</span>"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">20</span><span class="token punctuation">;</span> <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>运行脚本<code>sudo cgexec -g memory:memhog-limiter ./memhog.sh</code>查看这个内存控制组里的pid<code>cat  /sys/fs/cgroup/memhog-limiter/cgroup.procs</code></p><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/98414239c59242a1b9a5d84302694121.png"></p><p>显然没有控制住，emmmm到底什么原因？后来发现还是得在grub设置<code>systemd.unified_cgroup_hierarchy=1</code>才行。</p><h2 id="2-3-创建namespace"><a href="#2-3-创建namespace" class="headerlink" title="2.3. 创建namespace"></a>2.3. 创建namespace</h2><p><code>sudo cgexec -g memory:memhog-limiter unshare -fp --mount-proc</code></p><p>To verify that you are in a new namespace<code>ps -ef</code></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token environment constant">UID</span>          PID    <span class="token environment constant">PPID</span>  C STIME TTY          TIME CMDroot           <span class="token number">1</span>       <span class="token number">0</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token parameter variable">-bash</span>root          <span class="token number">12</span>       <span class="token number">1</span>  <span class="token number">0</span> 08:00 pts/0    00:00:00 <span class="token function">ps</span> <span class="token parameter variable">-ef</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>新命名空间中，只有bash作为PID 1运行。因此，现在启动的每个服务都将在这个cgroup上下文中启动。</p><p><code>./memhog.sh</code>应该也是被之前那样限制住的情况。</p><p><a href="https://facebookmicrosites.github.io/cgroup2/docs/create-cgroups.html">这是facebook关于cgroup2的文档，他们的创建方式不太一样，也可以试试</a></p><h2 id="2-4-namespace又是什么？"><a href="#2-4-namespace又是什么？" class="headerlink" title="2.4. namespace又是什么？"></a>2.4. namespace又是什么？</h2><p>Kernel space - 在某个特定namespace内,操作系统内核执行的内存区域。<br>User space - 在某个特定namespace内,用户模式程序执行的内存区域。</p><p>Namespace的类型有:<br>PID namespace - 进程ID的隔离Namespace<br>Network namespace - 网络设备和协议栈的隔离Namespace<br>Mount namespace - 文件系统挂载点的隔离Namespace<br>IPC namespace - 进程间通信的隔离Namespace<br>UTS namespace - 主机名和域名的隔离Namespace<br>User namespace - 用户和用户组的隔离Namespace</p><p>通过namespace技术,内核可以为不同的用户空间提供隔离的系统资源,增强安全性和容器化。所以在讨论用户空间和内核空间时,需要明确是在哪个namespace环境下。比如docker容器内的用户空间和内核空间就与宿主机隔离开来。</p><p>命名空间是Linux内核用来隔离内核资源的方式。让一些进程只能看到和自己相关的一部分资源。两组感觉不到对方存在。<br><a href="https://zhuanlan.zhihu.com/p/593351621">更多实验参考</a></p>]]></content>
       
       
       <categories>
@@ -537,9 +581,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -591,9 +635,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> NUMA </tag>
             
@@ -859,9 +903,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> Warehouse-Scale Computing </tag>
             
@@ -888,9 +932,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -915,9 +959,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -1023,9 +1067,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -1050,9 +1094,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
@@ -1077,9 +1121,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
             <tag> 细粒度 </tag>
             
@@ -1158,11 +1202,11 @@
       
         <tags>
             
+            <tag> Review </tag>
+            
             <tag> B </tag>
             
             <tag> Hybrid Memory Systems </tag>
-            
-            <tag> Review </tag>
             
         </tags>
       
@@ -1187,9 +1231,9 @@
       
         <tags>
             
-            <tag> A </tag>
-            
             <tag> Hybrid Memory Systems </tag>
+            
+            <tag> A </tag>
             
         </tags>
       
