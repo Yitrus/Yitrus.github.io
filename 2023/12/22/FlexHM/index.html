@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    12.3k
+                    13.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    43 分
+                    49 分
                 </div>
                 
 
@@ -541,8 +541,11 @@
 </ul>
 <p>本文接下来的内容安排如下： 第 2 节介绍了 FlexHM 的背景和动机。第 3 节介绍 FlexHM 系统的总体设计，第 4 节介绍用于 HMM 的双层 NUMA，第 5 节介绍灵活高效的 HMM 管理和性能优化。第 6 节介绍 Linux 原型的实现细节。第 7 节展示评估结果。第 8 节讨论了 FlexHM 的开销以及使用 DRAM 作为缓存的 HMM 系统之间的利弊。本文在第 9 节中结束。</p>
 <h1 id="2-BACKGROUND-AND-MOTIVATION"><a href="#2-BACKGROUND-AND-MOTIVATION" class="headerlink" title="2 BACKGROUND AND MOTIVATION"></a>2 BACKGROUND AND MOTIVATION</h1><h2 id="2-1-Heterogeneous-Main-Memory"><a href="#2-1-Heterogeneous-Main-Memory" class="headerlink" title="2.1 Heterogeneous Main Memory"></a>2.1 Heterogeneous Main Memory</h2><p>Intel Optane DC持久内存（也称为Optane NVDIMM，本文简称为Optane内存）[19]是一种高性能商用NVM设备，Optane内存采用3D XPoint技术，内存颗粒密度更大，可以提供比 DRAM 更大容量、更经济实惠的主存资源。先前的研究[20, 56]表明，与 DRAM 相比，Optane 显示出相似的空闲延迟，但随机顺序加载延迟约为 DRAM 的 5 倍。我们还利用英特尔内存延迟检查器[51]进行了实验，并在图 1 中展示了测得的顺序和随机读写性能结果。从结果中我们可以发现，Optane 内存的随机读写性能比 DRAM 的顺序读写性能有更大的差距，而 Optane 甚至是最先进的慢速主存储器设备。因此，我们可以很明显地推断出，在操作系统中使用非易失性内存来取代易失性内存并重建当前的计算架构仍然是不现实和不可接受的。</p>
-<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/c4d80314373749438ca300437c6ce50b.png" alt="MLC Load latency and throughput results of DRAM and Optane in one NUMA node (six DRAM and six Optane blades)"></p>
-<p>Optane内存可以大幅提升一台云服务器的本地内存容量，提高服务、容器、虚拟机的密度，我们可以设想Optane以及未来的一些SMM设备可以与DRAM共存，作为云系统的异构主内存。目前Optane主要有两种使用模式，分别是APP Direct（AD）模式和内存（MM）模式，在AD模式下，操作系统最初将Optane内存设备视为字节可寻址但持久化的设备（不像主存，而是类似于闪存和磁盘）。在MM模式下，Optane内存使用来自相同内存通道的DRAM来构建包容性硬件缓存模型[21]，操作系统可以像易失性一样直接使用Optane. 因此，MM模式是现代系统的初步异构主存硬件解决方案，它可以通过固定的缓存替换算法（例如直接映射或LRU）从SMM加载和刷新DRAM缓存线。硬件解决方案存在三个主要缺点：（1）随着SMM容量的不断增长，硬件缓存实现将更加复杂和不切实际[32, 42]。（2）使用DRAM作为包容性硬件缓存会牺牲整个系统的总内存容量例如，当一台双路服务器配备 12 64 G DRAM blades和 12 512 GB Optane blades时，将浪费超过 10% 的总内存容量。 (3) 硬件缓存只能采用刚性缓存替换策略（例如直接映射，伪LRU），在解决不同的云工作负载场景时不灵活。<br>(这里其实就说了现有已经算是商业化的解决方案，硬件缓存实现复杂、内存浪费多、缓存策略不灵活)</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/c4d80314373749438ca300437c6ce50b.png" alt="MLC Load latency and throughput results of DRAM and Optane in one NUMA node （six DRAM and six Optane blades）"></p>
+<p>Optane内存可以大幅提升一台云服务器的本地内存容量，提高服务、容器、虚拟机的密度，我们可以设想Optane以及未来的一些SMM设备可以与DRAM共存，作为云系统的异构主内存。目前Optane主要有两种使用模式，分别是APP Direct（AD）模式和内存（MM）模式，在AD模式下，操作系统最初将Optane内存设备视为字节可寻址但持久化的设备（不像主存，而是类似于闪存和磁盘）。在MM模式下，Optane内存使用来自相同内存通道的DRAM来构建包容性硬件缓存模型[21]，操作系统可以像易失性一样直接使用Optane. 因此，MM模式是现代系统的初步异构主存硬件解决方案，它可以通过固定的缓存替换算法（例如直接映射或LRU）从SMM加载和刷新DRAM缓存线。硬件解决方案存在三个主要缺点：（1）随着SMM容量的不断增长，硬件缓存实现将更加复杂和不切实际[32, 42]。（2）使用DRAM作为包容性硬件缓存会牺牲整个系统的总内存容量例如，当一台双路服务器配备 12 64 G DRAM blades和 12 512 GB Optane blades时，将浪费超过 10% 的总内存容量。 （3）硬件缓存只能采用刚性缓存替换策略（例如直接映射，伪LRU），在解决不同的云工作负载场景时不灵活。</p>
+<blockquote>
+<p>这里其实就说硬件缓存实现复杂、内存浪费多、缓存策略不灵活</p>
+</blockquote>
 <h2 id="2-2-Heterogeneous-Memory-Management"><a href="#2-2-Heterogeneous-Memory-Management" class="headerlink" title="2.2 Heterogeneous Memory Management"></a>2.2 Heterogeneous Memory Management</h2><p>异构主存资源的内存管理长期以来一直是研究热点[1,13,14,23,24,30,31,38,43,44,50,53,54,55]，我们表 1 总结了一些重要的研究工作。具体来说，Thermostat [1] 是一个典型的系统，它构建了一个应用程序透明的大页面感知机制，将具有在线页面热度分类的页面放置在 QEMU 的虚拟 NUMA 上。 SMM具有页面热度，但解决方案受到虚拟机的限制，无法满足原生云进程和容器的要求，而且这些相关工作的局限性在于它们通常使用DRAM来模拟慢速的NVM或使用内存模拟器来构建模拟异构内存环境，因此这些工作没有充分考虑真实 NVM 硬件的行为和性能来提供有效的优化。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/8acce03dbc7745f8b5efe852d10805cb.png"></p>
 <p>具体来说，我们对这些先前的工作在实际 HMM 硬件上的表现进行了初步评估，我们选择来自 Github [37] 的 Thermostat 开源实现，构建系统，并使用 QEMU 的虚拟 NUMA 来运行 32- VCPU虚拟机，可以管理真实的DRAM和Optane内存作为其HMM资源。我们在这个VM中运行32线程Sysbench随机读写微基准测试，并比较Thermostat、MM模式（其中服务器的DRAM容量为其总Optane容量的1/4），并且是全DRAM基线。我们在图2中展示了内存访问吞吐量性能结果。从实验数据中我们可以发现，当我们让客户机使用 25% 的 DRAM 和 75% 的 Optane 内存作为其内存资源时（使用与 MM 模式环境相同的容量资源），与全部使用 DRAM 相比，客户机只能分别提供 18% 的随机读取性能和仅 3.1% 的随机写入性能。与使用 MM 模式为该虚拟机提供异构内存相比，Thermostat 的性能结果也要差得多。</p>
@@ -551,7 +554,10 @@
 <ul>
 <li>1）支持透明 HMM 使用和完全 HMM 虚拟化： 我们的目标是为所有原生云工作负载、容器和客户机提供灵活的透明 HMM 容量资源，而无需对其源代码进行任何修改。</li>
 <li>2）使用固定HMM比率优化工作负载的性能：我们的目标是为具有固定HMM比率的工作负载提供运行时内存管理，以动态地将热数据从其SMM区域移动到DRAM区域并交换冷数据进入SMM区以达到更优化的内存访问性能和资源利用率。</li>
-<li>3）优化 HMM 利用率，以达到更实惠的价格和可接受的性能下降：我们的目标是通过轻微且可接受的性能牺牲来节省 HMM 工作负载的内存购买成本，但满足其 QoS。我们可能会稍微减少 DRAM 百分比，增加SMM（Optane NVM）百分比，动态挑选冷数据并将其交换到SMM中。<br>（这感觉也没说啥，都是这样想的啊不光云服w）</li>
+<li>3）优化 HMM 利用率，以达到更实惠的价格和可接受的性能下降：我们的目标是通过轻微且可接受的性能牺牲来节省 HMM 工作负载的内存购买成本，但满足其 QoS。我们可能会稍微减少 DRAM 百分比，增加SMM（Optane NVM）百分比，动态挑选冷数据并将其交换到SMM中。<blockquote>
+<p>这感觉也没说啥，都是这样想的啊不光云服务</p>
+</blockquote>
+</li>
 </ul>
 <h1 id="3-FLEXHM-OVERVIEW"><a href="#3-FLEXHM-OVERVIEW" class="headerlink" title="3 FLEXHM OVERVIEW"></a>3 FLEXHM OVERVIEW</h1><p>我们设计了FlexHM，一个实用的系统来管理异构主内存，具有高效灵活的运行时内存管理机制，以提供透明和快速的DRAM和其他SMM（例如Optane内存）并优化利用率。FlexHM架构的概述如图所示3，我们介绍了从硬件配置到系统内核以及用户和内核级协作的HMM管理的重要设计。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/3f7a437b0f0e4d81b480441ba52d12e1.png"></p>
@@ -595,21 +601,41 @@
 <p>最后，在操作阶段，管理器可以通过调用 DRAM 或 SMM 对等节点之间的 move_pages() 系统调用，将相同的热 SMM 页面提升到 DRAM 节点，并相应地将具有相同大小的相同冷 DRAM 页面降级到 SMM 节点。 DRAM 和 SMM NUMA 对等节点之间的通信会占用 DRAM 和 Optane 内存硬件的部分内存带宽，因此管理器会休眠并等待一段时间，直到下一个周期管理纪元，以避免较高的管理开销。</p>
 <h2 id="5-3-Flexible-Management-Policies"><a href="#5-3-Flexible-Management-Policies" class="headerlink" title="5.3 Flexible Management Policies"></a>5.3 Flexible Management Policies</h2><p>在 FlexHM 运行时页面管理中，用户级管理器在 r∗i 时间的页面引用分布投影作为 epoch e 中热度分布的代表，并最终投影出目标工作负载的数据引用分布。<span class="label primary">如果工作负载在其生命周期内具有相对稳定和有规律的内存访问模式，那么每个时间点的投影将非常准确</span>。而如果工作负载由多个进程产生，且其内存模式在短期内不稳定，那么如果工作负载显示出非常不规则的内存访问模式，管理器可能会在不同的时间段显示不同的热/冷页面。因此，使用每个纪元的数据分布预测并不准确，而且会导致一些不必要的热/冷页面移动，从而无法有效优化性能，并带来高昂的管理开销。</p>
 <p>FlexHM 为用户级管理器中的i、r、e参数的灵活调整机制，以便设计和定制不同的页面管理策略。就时间间隔而言，使用较小的时间间隔 i 可以增加页面热度收集的频率，并有助于提高热度测量信息的准确性。不过，这可能会给页表或 EPT 参考带来额外开销，并降低系统内存性能。同样，使用较小的 epoch 可以增加页面移动频率，从而更好地利用 HMM 内存资源，提高性能。不过，这可能会给系统内存带来额外开支，因为 DRAM 和 SMM 对等节点之间的页面移动会占用大量内存带宽。此外，较大的 r 参数有助于提高分析和描述页面引用分布特征的准确性，但使用较大但不合适的 r 会降低页面移动的灵敏度，损害管理效率。</p>
-<p>一种是激进策略，尝试将所有已识别的热页从 SMM 提升到 DRAM 节点，并在每个 epoch 中专门降级已识别的冷页；另​​一种是保守策略，仅提升一定比例的已识别热页并降级已识别的冷页。每个epoch中冷页的比例相同。对于一些内存访问模式稳定的内存工作负载，激进策略可以立即达到异构内存的最佳资源利用率，并减少长期运行时页面管理开销。对于一些内存热度较高的密集工作负载是不规则的，选择保守的迁移策略优于激进的策略，主要原因如下：（1）大量页面的频繁页面迁移可以优化目标工作负载的页面引用延迟，但会产生严重的迁移延迟开销。（2）每个epoch收集到的页面热度可能会有很大差异，我们需要用它来预测未来的内存引用分布，保守的策略有助于提高预测精度，优化管理效率。（3）页面迁移过程会占用内存带宽，保守的页面迁移可以减少迁移过程与目标工作负载之间的带宽干扰。因此，FlexHM 的内存优化管理器还提供了一个参数 “max_migration_size”，用于决定每个 epoch 之后需要在 DRAM 和 SMM 之间迁移的已识别热/冷页面的百分比，以配合 i、r、e<br>参数配合使用。我们将在第 6 节中介绍参数选择，并在第 7.5 节中通过实验来评估在相同冷/热页面的百分比方面，我们应该选择激进还是保守的策略。</p>
+<p>一种是激进策略，尝试将所有已识别的热页从 SMM 提升到 DRAM 节点，并在每个 epoch 中专门降级已识别的冷页；另​​一种是保守策略，仅提升一定比例的已识别热页并降级已识别的冷页。每个epoch中冷页的比例相同。对于一些内存访问模式稳定的内存工作负载，激进策略可以立即达到异构内存的最佳资源利用率，并减少长期运行时页面管理开销。对于一些内存热度较高的密集工作负载是不规则的，选择保守的迁移策略优于激进的策略，主要原因如下：（1）大量页面的频繁页面迁移可以优化目标工作负载的页面引用延迟，但会产生严重的迁移延迟开销。（2）每个epoch收集到的页面热度可能会有很大差异，我们需要用它来预测未来的内存引用分布，保守的策略有助于提高预测精度，优化管理效率。（3）页面迁移过程会占用内存带宽，保守的页面迁移可以减少迁移过程与目标工作负载之间的带宽干扰。因此，FlexHM 的内存优化管理器还提供了一个参数 “max_migration_size”，用于决定每个 epoch 之后需要在 DRAM 和 SMM 之间迁移的已识别热/冷页面的百分比，以配合 i、r、e参数配合使用。我们将在第 6 节中介绍参数选择，并在第 7.5 节中通过实验来评估在相同冷/热页面的百分比方面，我们应该选择激进还是保守的策略。</p>
 <h2 id="5-4-Memory-optimizer-task-refs-and-sys-refs-Tools"><a href="#5-4-Memory-optimizer-task-refs-and-sys-refs-Tools" class="headerlink" title="5.4 Memory-optimizer task-refs and sys-refs Tools"></a>5.4 Memory-optimizer task-refs and sys-refs Tools</h2><p>当优化目标工作负载是主机操作系统或客户计算机上的单个应用程序时，我们开发了用户级内存优化管理器的任务引用工具，用于内存性能和使用优化。针对进程（包括qemu-kvm进程），我们开发了sys-refs工具来提供多进程的优化，sys-refs还可以从全局角度管理FlexHM系统的所有进程。</p>
 <p>task-refs工具利用目标进程的pid为单个原生工作负载或虚拟机工作负载提供定制化的性能和资源利用率优化，在启动task-refs工具之前，云管理员可以与云服务租户达成一致优化目标；例如，task-refs 可以通过在 HMM 页面上提供运行时性能监控并触发 DRAM 和 SMM 对等节点之间的页面迁移，使用固定比例的 HMM 来优化云工作负载的性能，或者可以从 DRAM 中移动冷数据将节点转换为SMM节点，以优化HMM资源利用率，并为每个云工作负载提供更实惠的价格。task-refs可以灵活接受间隔参数i，最大参考参数r，epoch参数e和“max_migration_size”来定制不同的管理策略。</p>
 <p>如果系统面临多个应用程序或虚拟机产生的复杂内存工作负载，从而导致系统内存干扰和短缺，那么我们设计一个功能更强大的sys-refs工具来同时优化不同进程的内存，以在分配时达到全局优化结果多个工作负载的异构内存资源。算法1描述了sys-refs如何工作的基本过程。sys-refs可以接受多个目标工作负载的描述，例如“qemu-system-x86_64”，为所有虚拟机提供管理运行在FlexHM系统上，如果系统管理员没有指定任何目标，那么sys-refs可以根据pids为所有系统进程提供优化。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/00a60f25abe5493ab30338f3e09e962d.png"></p>
 <p>与task-refs工具类似，sys-refs可以接受参数，针对不同的优化目标定制不同的HMM管理策略，并且sys-refs工具可以动态更新页表或EPT不同时刻的热度收集间隔参数i根据实际测得的每轮行走时间和页面热度变化进行行走，如果测得的行走时间远小于采集间隔，且每次页面扫描差异较小，那么sys-refs可以放大扫描间隔，因为整个系统是可能面临内存工作负载较低，或者如果一轮测量的行走时间很长，并且每次页面扫描在虚拟地址上显示出非常不同的热页分布，那么 sys-refs 可以缩小扫描间隔参数以获得更准确的参考热度。当内存密集型工作负载空闲且内存引用分布没有变化时，sys-refs工具可以动态放大 epoch 参数 e，以减少运行时 HMM 管理开销。</p>
-<h1 id="6-FLEXHM-IMPLEMENTATION"><a href="#6-FLEXHM-IMPLEMENTATION" class="headerlink" title="6 FLEXHM IMPLEMENTATION"></a>6 FLEXHM IMPLEMENTATION</h1><p>FlexHM的实现在Linux系统上实用，并于2018年开源。具体来说，FlexHM内核是在Linux内核上修改的，开源于<a target="_blank" rel="noopener" href="https://git.kernel.org/pub/scm/linux/kernel/git/wfg/linux.git%EF%BC%8C%E6%AD%A4%E5%A4%96%EF%BC%8CFlexHM%E7%94%A8%E6%88%B7%E7%BA%A7%E7%AE%A1%E7%90%86%E5%99%A8%E7%9A%84[%E5%8E%9F%E5%9E%8B%E4%BB%A3%E7%A0%81](https://github.com/intel/memory-optimizer)%E3%80%82">https://git.kernel.org/pub/scm/linux/kernel/git/wfg/linux.git，此外，FlexHM用户级管理器的[原型代码](https://github.com/intel/memory-optimizer)。</a></p>
+<h1 id="6-FLEXHM-IMPLEMENTATION"><a href="#6-FLEXHM-IMPLEMENTATION" class="headerlink" title="6 FLEXHM IMPLEMENTATION"></a>6 FLEXHM IMPLEMENTATION</h1><p>FlexHM的实现在Linux系统上实用，并于2018年开源。具体来说，FlexHM内核是在Linux内核上修改的，<a target="_blank" rel="noopener" href="https://git.kernel.org/pub/scm/linux/kernel/git/wfg/linux.git">开源于</a>，此外，FlexHM用户级管理器的<a target="_blank" rel="noopener" href="https://github.com/intel/memory-optimizer">原型代码</a>。</p>
 <p>内核实现对于Optane内存来说是实用的，并且基于Linux开源了1000多行代码，没有对硬件BIOS和用户空间应用程序或虚拟机进行任何修改，从而成功支持全虚拟化。具体来说，我们现在添加了Optane将内存作为慢速主内存类型放入 <code>e820表</code>中，并修改<code>acpi/numa</code>模块，以便我们可以将 SMM 设备存储到 NUMA 对等节点中并扩展<code>SRAT表</code>[48]。类似的实现后来已合并到 2020 年的 Linux 5.4 中。这两级 NUMA 设计基于这种透明的内存实现。此外，我们扩展了内核<code>mm/pgtable</code>内存管理，以强制<code>__get_free_pgtable_pages</code>在为新页表结构分配新内存时从 DRAM 对等节点获取页面。</p>
 <blockquote>
 <p>这样应该就不用热插拔了。</p>
 </blockquote>
 <p>我们在新的<code>kvm-ept-idle</code>内核模块中实现了内存访问信息的收集，对于原生应用程序，我们实现了一个名为<code>mm_idle_walk_range</code>的接口，该接口可以扫描页表并根据访问位检查所有页面的 Access 位。单个应用程序的虚拟地址区域，如果操作系统没有使用透明大页（THP）并且应用程序也没有使用大页，那么所有数据读/写操作都工作在4K页上，PTE的Access位可以表示参考信息。否则，1G 或2M PT条目的 Access 位可以代表数据读写操作的参考。由于 Linux 内核实现了 <code>walk_page_range</code> 函数，可以在其虚拟内存中递归地遍历进程的五级 PT地址范围 ，我们将 <code>walk_page_range</code> 的符号导出到用户空间并重用 <code>mm_idle_walk_range</code> 中的函数，以便接口可以扫描 PT 并检查 4K 页的 PFN 访问位，直到它触及页表项（PTE）（或 1G 页，直到页面上层目录（PUD），2M页面直到页面中层目录（PMD））。</p>
-<p>对于guest机器，我们首先将匿名页面的HVA转换为GFN，然后使用EPT中的翻译信息将GFN转换为GPA，然后，我们实现一个<code>ept_idle_walk_hva_range</code>接口来接收匿名页面HVA作为输入，并检查匿名页面的引用信息kvm-ept-idle 中的 guest 页面。我们实现了一个<code>ept_page_range</code>，它在其虚拟地址范围内递归地<strong>遍历 guest 的五级 EPT</strong>，直到检查访问位修改。此外，当模块完成每一轮时，我们使 TLB 无效。 EPT遍历确保硬件正确地清除和设置超级热页的访问位.为了减少PT/EPT遍历的时间开销，如果发现高级PMD空闲，我们会跳过整个512个PTE。</p>
-<p>为了灵活高效的HMM管理和性能优化，我们用3000多个c++代码实现了一个名为Memory-optimizer的全功能用户级管理器，该项目是开源的，它提供了运行时页面管理功能，用于优化单个工作负载（例如例如，应用程序或访客机器）或优化FlexHM系统上的所有进程。我们为不同的页面管理策略提供了多种参数选择。当遵循激进策略时，我们选择10作为参考参数r，0.1秒作为间隔i，并且10秒为一个epoch e，对于系统只使用4K页，没有大页（也没有THP配置）；对于使用2M/1G大页的系统，我们使用6作为参考参数r，以避免大多数情况下的写放大问题此外，由于管理器将提升所有相同的热 SMM 页面并降级在每个时期分析的所有相同的冷 DRAM 页面以进行积极的页面管理，因此需要移动页面的百分比 100% 等于相同的页面设计保守策略时，对于仅使用 4K 页的系统，我们选择 20 个引用作为 r，0.1 秒作为间隔 i，20 秒作为一个 epoch e；对于使用 2M/1G 大页的系统，我们选择使用 10 秒作为一个 epoch e。另外，当遵循保守的管理策略时，管理器在每个 epoch 中最多只选择 1/2 相同的热/冷页面进行页面移动。</p>
-<h1 id="7-EVALUATION"><a href="#7-EVALUATION" class="headerlink" title="7 EVALUATION"></a>7 EVALUATION</h1>
+<p>对于guest机器，我们首先将匿名页面的HVA转换为GFN，然后使用EPT中的翻译信息将GFN转换为GPA，然后，我们实现一个<code>ept_idle_walk_hva_range</code>接口来接收匿名页面HVA作为输入，并检查匿名页面的引用信息kvm-ept-idle 中的 guest 页面。我们实现了一个<code>ept_page_range</code>，它在其虚拟地址范围内<span class="label success">递归地遍历 guest 的五级 EPT</span>，直到检查访问位修改。此外，当模块完成每一轮时，我们使 TLB 无效。 EPT遍历确保硬件正确地清除和设置超级热页的访问位.为了减少PT/EPT遍历的时间开销，如果发现高级PMD空闲，我们会跳过整个512个PTE。</p>
+<p>为了灵活高效的HMM管理和性能优化，我们用3000多个c++代码实现了一个名为Memory-optimizer的全功能用户级管理器，该项目是开源的，它提供了运行时页面管理功能，用于优化单个工作负载（例如，应用程序或访客机器）或优化FlexHM系统上的所有进程。我们为不同的页面管理策略提供了多种参数选择。当遵循激进策略时，我们选择10作为参考参数r，0.1秒作为间隔i，并且10秒为一个epoch e，对于系统只使用4K页，没有大页（也没有THP配置）；对于使用2M/1G大页的系统，我们使用6作为参考参数r，以避免大多数情况下的写放大问题此外，由于管理器将提升所有相同的热 SMM 页面并降级在每个时期分析的所有相同的冷 DRAM 页面以进行积极的页面管理，因此需要移动页面的百分比 100% 等于相同的页面设计保守策略时，对于仅使用 4K 页的系统，我们选择 20 个引用作为 r，0.1 秒作为间隔 i，20 秒作为一个 epoch e；对于使用 2M/1G 大页的系统，我们选择使用 10 秒作为一个 epoch e。另外，当遵循保守的管理策略时，管理器在每个 epoch 中最多只选择 1/2 相同的热/冷页面进行页面移动。</p>
+<h1 id="7-EVALUATION"><a href="#7-EVALUATION" class="headerlink" title="7 EVALUATION"></a>7 EVALUATION</h1><p>在评估部分，我们进行了全面的实验来评估FlexHM如何灵活高效地管理云工作负载的HMM资源。<br>评估内容有助于回答以下问题：</p>
+<ul>
+<li>与使用 DRAM 或 Optane 内存相比，在 FlexHM 上使用 HMM 资源时云工作负载的内存性能如何？ （第 7.2 节）</li>
+<li>FlexHM的HMM利用率管理和性能优化效率如何？ （第 7.4 节）</li>
+<li>与之前的HMM系统以及Optane的MM模式相比，FlexHM如何提供性能优化？ （第 7.3 节）</li>
+<li>为什么要支持FlexHM中的灵活管理和优化策略适配（激进与保守策略的讨论）？ （第 7.5 节）</li>
+</ul>
+<h2 id="7-1-Experiment-Environment"><a href="#7-1-Experiment-Environment" class="headerlink" title="7.1 Experiment Environment"></a>7.1 Experiment Environment</h2><p>在实验中，我们设置了表 2 所示配置的硬件环境。所有实验中的 SMM 设备都是真正的英特尔 Optane 内存。我们在使用 Linux 4.20 内核的 Ubuntu 18.04 主机上编译了 kvm-ept-idle 内核模块。为了测试原生云进程的性能，我们直接在主机服务器上运行内存密集型基准测试。为了测试云虚拟机的性能，我们在使用通用内核的 Ubuntu 18.04 系统的 qemu-kvm 客户机中运行基准测试，因为 FlexHM 支持完全虚拟化，客户机无需修改内核。</p>
+<blockquote>
+<p>what?! 4.20也让过？</p>
+</blockquote>
+<p>我们将介绍评估实验中的微型基准和应用基准。首先，我们选择 Sysbench [27] 作为微基准，它可以产生<strong>非常密集的高并行随机读写操作</strong>，占用异构内存硬件的峰值带宽。Sysbench 可以对内存中的数据产生大量随机读/写操作，而且 Sysbench 内存测试的参数对我们评估 FlexHM 对差异化云工作负载的 HMM 管理效率非常友好。值得一提的是，Sysbench 有一个 <code>memory-block-size</code>参数，表示 Sysbench 在一个数据数组上创建随机内存访问，该数组的大小为 <code>memory-block-size</code>；它还有一个 <code>memory-total-size</code>参数，可以确定 Sysbench 在整个基准测试过程中随机读取或写入操作的内存总大小/内存块大小次数。我们的 Sysbench 基准的随机内存引用遵循近似生成的<strong>高斯分布</strong>，确保 80% 的随机引用位于数据分布期望值的 20% 对称区间内。我们在 32 核 68 G 客户机上运行了几组 1 线程和 32 线程 Sysbench 基准，以模拟对客户机工作负载的管理，并在服务器上执行了几组 1 线程和 32 线程本机 Sysbench 进程，以演示对原生服务或容器的管理。Sysbench 是使用 64G<code>memory-block-size</code>和 2T <code>memory-total-size</code>的<code>global</code>随机内存参考进行的随机读/写实验。</p>
+<p>我们选择Memcached [8]（内存数据库）（使用YCSB框架[3]在Memcached上生成Zipfian分布工作负载）和Ligra [45]（图计算）作为应用程序基准测试的代表。</p>
+<p>Memcached 是一个高性能的分布式内存缓存系统，旨在加速动态网络应用程序，提高数据库性能。我们将 Memcached 服务器设置在 64 G guest 中，作为云服务器基准，guest 内存由服务器 Socket 1 上的 NUMA 对等节点分配。我们在 Socket 0 上绑定了 YCSB 多线程生成器，并通过 40 Gb 双端口网卡向 Memcached 服务器发送操作。具体来说，YCSB 客户端生成的每个操作都在 100K K-V 条目上运行，我们在 Memcached 中存储了 500K 条目，因此所有数据都占用了 64G guest 中的 52G 内存（包含元数据）。对数据进行 K-V 操作的随机密钥选择遵循从 0 到 500K 的 Zipfian 分布，我们手动设置为 80% 的引用位于前 20% 的数据中，数据热度与 Sysbench 设置类似。</p>
+<p>另一个应用程序基准是图计算框架 Ligra [45]。图计算是云计算中典型的内存密集型工作负载，图计算框架将非常大的图加载到内存中，然后运行计算算法。当在不同的迭代中计算时，大图中的数据可能会以不平衡的数据分布获取。我们分别在Ligra（一种用于共享内存的轻量级图处理框架）中运行BFS（广度优先搜索）、MIS（最大独立集）[22]和PR（PageRank）[39]。我们在 Ligra 中对具有 160M 顶点的随机生成图运行算法，该图在 64 G 虚拟机中消耗 62 G 内存用于内存计算。</p>
+<h2 id="7-2-Overall-Performance-with-Different-Ratios-of-HMM"><a href="#7-2-Overall-Performance-with-Different-Ratios-of-HMM" class="headerlink" title="7.2 Overall Performance with Different Ratios of HMM"></a>7.2 Overall Performance with Different Ratios of HMM</h2><h3 id="7-2-1-Micro-Benchmark-–-Sysbench"><a href="#7-2-1-Micro-Benchmark-–-Sysbench" class="headerlink" title="7.2.1 Micro Benchmark – Sysbench"></a>7.2.1 Micro Benchmark – Sysbench</h3><p>我们在不同组中精确固定了 Sysbench 实验的 DRAM/SMM 使用比例，包括全 DRAM、DRAM: SMM = 1:1、1:2、1:4 和全 SMM（全 Optane）配置。值得一提的是，由于我们要将 FlexHM 的性能与基线进行比较，我们使用了 numactl 和 taskset 命令来绑定客户机或服务器 Socket 1 内本机 Sysbench 进程的 CPU 和内存。（虽然 FlexHM 上的内存优化器可以轻松设置 DRAM 和 Optane 的 HMM 资源比例，但原生 Ubuntu 系统基线需要设置一些假的 NUMA 节点[26]，然后使用 numactl 生成 1:1、1:2、1:4 的 HMM 比例）</p>
+<blockquote>
+<p>为啥要设置假的。这篇写的也太烂了吧，是给评委塞钱了吗……不翻译了。</p>
+</blockquote>
+<p>此外，FlexHM 上的本机 Sysbench 实验的性能结果如图 6(c) 和 6(d) 所示。原生 Sysbench 性能还表明，FlexHM 系统上的原生应用程序可以在不同的 HMM 比率下实现令人鼓舞的性能，例如，在 1:1 比率配置的 32 线程 Sysbench 中实现全 DRAM 基准的 93% 以上的读取性能。这些实验表明，如果想要节省昂贵的 DRAM 成本，FlexHM 上的内存工作负载可以通过选择不同比率的 HMM 来获得有希望的性能，而不会严重降低性能。总之，Sysbench 基准测试表明 FlexHM 系统可以为来宾或本机工作负载提供高效的 HMM 管理。</p>
+
                 
             </div>
             <hr/>
@@ -968,7 +994,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">152.9k</span>&nbsp;字
+                class="white-color">154.4k</span>&nbsp;字
             
             
             
