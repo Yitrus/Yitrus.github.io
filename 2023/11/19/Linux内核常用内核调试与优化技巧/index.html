@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    4.7k
+                    7.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    19 分
+                    32 分
                 </div>
                 
 
@@ -923,8 +923,8 @@ clean:
 <li>t输出线程ID</li>
 </ul>
 <p>对于那些开机就已经完成运行的代码，调试方式是在qemu启动时加入命令，比如SMP topology的动态输出语句打开方式在qemu启动命令加上<code>topology.dyndbg=+plft</code>这样输入<code>dmesg | grep 'cluster' </code>就能看见输出。</p>
-<h2 id="cppcheck"><a href="#cppcheck" class="headerlink" title="cppcheck"></a>cppcheck</h2><p>这是一个用于静态检查代码错误的工具，可以避免越界访问等一些问题，减少后期在内核调试的成本。在改改内核的时候<a target="_blank" rel="noopener" href="https://cppcheck.sourceforge.io/">用起来</a>！<a target="_blank" rel="noopener" href="https://cppcheck.sourceforge.io/manual.pdf">操作手册</a></p>
-<h2 id="ftrace"><a href="#ftrace" class="headerlink" title="ftrace"></a>ftrace</h2><p>使用set_ftrace_pid</p>
+<h2 id="4-cppcheck"><a href="#4-cppcheck" class="headerlink" title="4. cppcheck"></a>4. cppcheck</h2><p>这是一个用于静态检查代码错误的工具，可以避免越界访问等一些问题，减少后期在内核调试的成本。在改改内核的时候<a target="_blank" rel="noopener" href="https://cppcheck.sourceforge.io/">用起来</a>！<a target="_blank" rel="noopener" href="https://cppcheck.sourceforge.io/manual.pdf">操作手册</a></p>
+<h2 id="5-ftrace"><a href="#5-ftrace" class="headerlink" title="5. ftrace"></a>5. ftrace</h2><p>使用set_ftrace_pid</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># cd /sys/kernel/debug/tracing/</span>
 <span class="token comment"># cat set_ftrace_pid</span>
 no pid
@@ -945,10 +945,10 @@ no pid
 # usleep 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也可以将要跟踪的事件添加到相应文件，差不多的方式。例子在samples/trace_events目录里面。</p>
 <p><strong>kernelshark图形化工具</strong><br><code>sudo apt-get install trace-cmd kernelshark</code><br>分析ftrace数据用</p>
-<h2 id="kdump"><a href="#kdump" class="headerlink" title="kdump"></a>kdump</h2><p>内核转储工具。kdump核心实现基于kexec, kexec 的全称是kernel execution,非常类似于Linux内核中的exec系统调用。kexec可以快速启动新的内核，并且跳过BIOS或bootloader等引导程序的初始化阶段。这个特性可以让系统上崩溃时快速切换到备份的内核，这样第一个内核的内存就得到了保留。在第二个内核中，可以对第一个内核产生的崩溃数据进行继续分析。</p>
+<h2 id="6-kdump"><a href="#6-kdump" class="headerlink" title="6. kdump"></a>6. kdump</h2><p>内核转储工具。kdump核心实现基于kexec, kexec 的全称是kernel execution,非常类似于Linux内核中的exec系统调用。kexec可以快速启动新的内核，并且跳过BIOS或bootloader等引导程序的初始化阶段。这个特性可以让系统上崩溃时快速切换到备份的内核，这样第一个内核的内存就得到了保留。在第二个内核中，可以对第一个内核产生的崩溃数据进行继续分析。</p>
 <p>kdump会在内存中保留一块区域，这块区域用来存放捕获内核。当生产内核在运行过程中遇到崩溃等情况时，kdump会通过kexec机制自动启动到捕获内核，这时会绕过BIOS,以免破坏第一个内核的内存，然后把生产内核的完整信息(包括CPU寄存器、栈数据等)转储到指定文件中。接着，使用crash工具分析这个转储文件，就可以快速定位宕机问题了。</p>
 <p>kdump+crash工具的适用范围：主要用来分析系统宕机黑屏、无响应(unresponsive)等问题，比如SSH、串口、鼠标键盘无响应等。有一类宕机情况kdump无能为力，比如因硬件错误导致CPU崩溃。也就是说，系统不能正常地热重启，只能通过重新关闭和开启电源才能启动，这种情况下kdump就不适用了。因为kdump需要在系统崩溃的时候快速启动到捕获内核，但前提条件就是系统能热启动，并且内存中的内容不会丢失。</p>
-<h2 id="常见的Linux性能测试工具"><a href="#常见的Linux性能测试工具" class="headerlink" title="常见的Linux性能测试工具"></a>常见的Linux性能测试工具</h2><table>
+<h2 id="7-常见的Linux性能测试工具"><a href="#7-常见的Linux性能测试工具" class="headerlink" title="7. 常见的Linux性能测试工具"></a>7. 常见的Linux性能测试工具</h2><table>
 <thead>
 <tr>
 <th>工具</th>
@@ -1013,7 +1013,208 @@ no pid
 </tr>
 </tbody></table>
 <p>内容来自《奔跑吧Linux内核基础篇》这些工具记录在这里，有一部分也没用过。</p>
-<h2 id="perf"><a href="#perf" class="headerlink" title="perf"></a>perf</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xuxh120/p/15990446.html">火焰图使用</a></p>
+<h2 id="8-perf和火焰图"><a href="#8-perf和火焰图" class="headerlink" title="8. perf和火焰图"></a>8. perf和火焰图</h2><blockquote>
+<p><strong>性能计数器是 CPU 硬件寄存器</strong>，用于计算硬件事件，例如执行的指令、遭受的缓存未命中或错误预测的分支。利用这些数据可以跟踪动态控制流和识别热点。Perf 提供每个任务、每个 CPU 和每个工作负载计数器、基于这些计数器的采样和源代码事件注释。</p>
+</blockquote>
+<blockquote>
+<p><strong>跟踪点</strong>是放置在代码中的逻辑位置的检测点，例如用于系统调用、TCP/IP 事件、文件系统操作等。这些在不使用时开销可以忽略不计，并且可以通过 perf 命令启用以收集包括时间戳和堆栈跟踪在内的信息。Perf 还可以使用 kprobes 和 uprobes 框架动态创建跟踪点，用于内核和用户空间动态跟踪。</p>
+</blockquote>
+<p>perf 功能强大：它可以检测 CPU 性能计数器、跟踪点、kprobes 和 uprobes（动态跟踪）。它能够进行轻量级分析。它包含在 Linux 内核中的 tools/perf 下，并且经常更新和增强。对于perf子系统更深入的剖析在笔者另一篇读源码的文章中。这里主要讲怎么使用封装好的用户空间的perf工具。以page fault为例子：<br>``bash</p>
+<h1 id="I-1000-每1000ms输出一次，"><a href="#I-1000-每1000ms输出一次，" class="headerlink" title="-I 1000 每1000ms输出一次，"></a>-I 1000 每1000ms输出一次，</h1><h1 id="a-采集全部CPU上的事件"><a href="#a-采集全部CPU上的事件" class="headerlink" title="-a 采集全部CPU上的事件"></a>-a 采集全部CPU上的事件</h1><h1 id="p-可以指定进程"><a href="#p-可以指定进程" class="headerlink" title="-p  可以指定进程"></a>-p <pid> 可以指定进程</pid></h1><blockquote>
+<p>perf stat -e page-faults -I 1000 -a<br>perf stat -e page-faults -I 1000 -a -p 10102</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">使用FlameGraph更加直观的看到各部分代码触发pagefault的比例
+```bash
+# 采集进程10102的30秒pagefault触发数据
+&gt; perf record -e page-faults -a -p 10102 -g -- sleep 30
+# 导出原始数据，此步必须在采集机器上进行，因为需要解析符号。
+&gt; perf script &gt; out.stacks
+# 下面的步骤就可以移动到其他机器上了
+&gt; ./FlameGraph/stackcollapse-perf.pl &lt; out.stacks | ./FlameGraph/flamegraph.pl --color=mem \
+    --title="Page Fault Flame Graph" --countname="pages" &gt; out.svg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>stat 收集性能计数器的统计数据</li>
+<li>record Run a command and record its profile into perf.data</li>
+<li> -e 事件选择器。使用 “perf list “来列出可用的事件。</li>
+<li> -p 对现有进程ID的统计事件</li>
+<li> -a 从所有CPU收集全系统的信息</li>
+<li> -i -I 子任务不继承计数器</li>
+<li> -o 输出文件名和文件路径</li>
+</ul>
+<blockquote>
+<p>dTLB是数据TLB，iTLB是指令TLB，因为CPU在处理指令和数据时访问方式不同，所以指令页和数据页是分开访问的。<br>TLB是用于快速查找虚拟地址到物理地址的映射关系的，他们分别映射的是指令页和数据页的物理地址。<br>指令和数据都存放在主存，它们都以二进制代码形式出现，对于CPU而言，区分的方法为：（1）取指令或数据时所处的机器周期不同：取指周期取出的是指令；分析、取数或执行周期取出的是数据。（2）取指令或数据时地址的来源不同：指令地址来源于程序计数器；数据地址来源于地址形成部件。<br>当CPU执行一条指令时，会将下一条指令的地址预取到缓存中，这个预取的过程称为指令预取。iTLB用于缓存指令页的映射信息，可以加速指令预取和指令执行的过程。<br>常用事件的解释<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/445260558">参考博客</a>：</p>
+</blockquote>
+<ul>
+<li>branches ：这段时间内发生分支预测的次数。现代的CPU都有分支预测方面的优化</li>
+<li>branch-instructions：分支预测成功次数</li>
+<li>branch-misses ：这段时间内分支预测失败的次数，这个值越小越好</li>
+<li>cache-references：cache命中次数</li>
+<li>cache-misses：cache失效次数</li>
+<li>context-switches：下文切换次数，前半部分是切换次数，后面是平均每秒发生次数（M是10的6次方）</li>
+<li>cpu-cycles：统计cpu周期数，cpu周期：指一条指令的操作时间。</li>
+<li>cycles：程序消耗的处理器周期数</li>
+<li>instructions：执行的指令条数，insns per cycle: 即IPC，每个cpu周期执行的指令条数，IPC比上面的CPU使用率更能说明CPU的使用情况，（很多指令需要多个处理周期才能执行完毕），IPC越大越好，说明程序充分利用了处理器的特征。</li>
+<li>L1-dcache-loads ：一级数据缓存读取次数</li>
+<li>L1-dcache-load-missed ：一级数据缓存读取失败次数</li>
+<li>LLC-loads：last level cache 读取次数</li>
+<li>LLC-load-misses：last level cache 读取失败次数</li>
+<li>major-faults：页错误，内存页已经被swap到硬盘上，需要I/O换回</li>
+<li>minor-faults ：页错误，内存页在物理内存中，只是没有和逻辑页进行映射</li>
+<li>page-faults：缺页异常的次数。当应用程序请求的页面尚未建立、请求的页面不在内存中，或者请求的页面虽然在内存中，但物理地址和虚拟地址的映射关系尚未建立时，都会触发一次缺页异常。另外TLB不命中，页面访问权限不匹配等情况也会触发缺页异常。</li>
+<li>stalled-cycles-frontend和stalled-cycles-backend表示CPU停滞统计</li>
+<li>task-clock (msec): cpu处理task所消耗的时间，表示目标任务真正占用处理器的时间，单位ms，CPUs utilized表示cpu使用率， 该值越高代表程序是CPU bound（计算密集型）而非IO bound（I/O密集型）</li>
+</ul>
+<p>具体命令写法<a target="_blank" rel="noopener" href="https://perf.wiki.kernel.org/index.php/Tutorial">参考文档</a>里面写了各种可以测量的事件。比如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">perf <span class="token function">stat</span> <span class="token parameter variable">-e</span> dTLB-loads,dTLB-load-misses,iTLB-load-misses,cpu-cycles,cache-misses,cache-references,page-faults,major-faults,minor-faults,LLC-loads,LLC-loads-misses <span class="token parameter variable">-a</span> ./test.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>确定 CPU 繁忙的原因是一项性能分析的例行任务，这通常涉及分析堆栈跟踪。火焰图是采样堆栈跟踪的可视化，可以快速识别热代码路径。<a target="_blank" rel="noopener" href="https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">火焰图可以与任何操作系统上的任何 CPU 分析器一起使用</a>。我在这里的例子使用Linux perf （perf_events），DTrace，SystemTap和ktap。有关其他探查器示例，<a target="_blank" rel="noopener" href="https://www.brendangregg.com/flamegraphs.html#Updates">请参阅更新列表</a>，有关火焰图软件，<a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">请参阅 github</a>。<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xuxh120/p/15990446.html">火焰图使用</a></p>
+<p><strong>y轴</strong>表示<strong>调用栈</strong>， 每一层都是一个函数。 调用栈越深， 火焰就越高， 顶部就是正在执行的函数， 下方都是它的父函数。<br><strong>x轴</strong>表示<strong>抽样数</strong>， 如果一个函数在x轴占据的宽度越宽， 就表示它被抽到的次数多， <strong>即执行的时间长</strong>。 注意x轴不代表时间， 而是所有的调用栈合并后， 按字母顺序排列的。<br>火焰图就是看<strong>顶层的哪个函数占据的宽度最大</strong>。 只要有 “平顶”(plateaus)， 就表示该函数可能存在性能问题。<br>颜色没有特殊含义， 因为火焰图表示的是CPU的繁忙程度， 所以一般选择暖色调。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 采样，1s10次</span>
+<span class="token function">sudo</span> perf recoed <span class="token parameter variable">-F</span> <span class="token number">10</span> <span class="token parameter variable">-o</span> <span class="token variable">${LOG_DIR}</span>/perf.data <span class="token parameter variable">-a</span> <span class="token parameter variable">-g</span> <span class="token variable">${BENCH_RUN}</span>
+
+<span class="token comment"># 画图，因为写入是默认名字所以这里处理的输入也就默认名</span>
+<span class="token function">sudo</span> perf script <span class="token operator">|</span> ./tools/FlameGraph/stackcollapse-perf.pl <span class="token operator">|</span> ./tools/FlameGraph/flamegraph.pl <span class="token operator">&gt;</span> perf.svg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+<h2 id="9-Intel-MLC-（Memory-Latency-Checker）"><a href="#9-Intel-MLC-（Memory-Latency-Checker）" class="headerlink" title="9. Intel MLC （Memory Latency Checker）"></a>9. Intel MLC （Memory Latency Checker）</h2><p>决定应用程序性能的一个重要因素是应用程序<strong>从处理器的缓存层次结构和内存子系统获取数据所需的时间</strong>。在启用非统一内存访问 (NUMA) 的多插槽系统中，<strong>本地内存延迟和跨插槽内存延迟</strong>会有很大差异。除了延迟之外，带宽 (b/w) 在决定性能方面也发挥着重要作用。因此，测量这些<strong>延迟和带宽</strong>对于为被测系统和性能分析建立基线非常重要。</p>
+<p>英特尔® 内存延迟检查器（英特尔® MLC）是一种用于测量内存延迟和带宽以及它们<strong>如何随着系统负载增加而变化</strong>的工具。它还为更细粒度的调查提供了多种选项，还可以测量从一组特定核心到缓存或内存的带宽和延迟。</p>
+<p>root权限来运行<code>./mlc &gt;&gt; /home/xmu3/Documents/res/mlc.out </code>不加后缀的话是都可以测量的。</p>
+<p>这些命令在运行工作负载和空机运行时应该会有所不同，<strong>用ycsb的数据对比一下</strong>。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mlc <span class="token parameter variable">--latency_matrix</span>
+<span class="token comment"># 打印本地和跨插槽理想情况下内存延迟的矩阵，请求来自每个socket并且发送到每个空闲socket</span>
+mlc <span class="token parameter variable">--bandwidth_matrix</span>
+<span class="token comment"># 打印本地和跨插槽内存带宽的矩阵</span>
+mlc <span class="token parameter variable">--peak_injection_bandwidth</span>
+<span class="token comment"># 针对所有本地访问的各种读写比率打印峰值内存带宽（核心以尽可能快的速率生成请求）</span>
+mlc <span class="token parameter variable">--max_bandwidth</span>
+<span class="token comment"># 针对所有本地访问的各种读写比率打印最大内存带宽（通过自动改变负载注入速率）</span>
+mlc <span class="token parameter variable">--idle_latency</span>
+<span class="token comment"># 打印平台的空闲内存延迟</span>
+mlc <span class="token parameter variable">--loaded_latency</span>
+<span class="token comment"># 打印平台加载的内存延迟</span>
+mlc <span class="token parameter variable">--c2c_latency</span>
+<span class="token comment"># 打印平台的缓存到缓存传输延迟（cache-to-cache transfer latencies ）</span>
+mlc <span class="token parameter variable">-e</span>
+<span class="token comment"># 不要修改预取器设置</span>
+mlc <span class="token parameter variable">--memory_bandwidth_scan</span> 
+<span class="token comment"># 打印整个内存中每个 1 GB 地址范围的内存带宽</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>默认命令的解释：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Intel<span class="token punctuation">(</span>R<span class="token punctuation">)</span> Memory Latency Checker - v3.8
+*** Unable to modify prefetchers <span class="token punctuation">(</span>try executing <span class="token string">'modprobe msr'</span><span class="token punctuation">)</span>
+*** So, enabling random access <span class="token keyword">for</span> latency measurements
+Measuring idle latencies <span class="token punctuation">(</span>in ns<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+<span class="token comment"># 理想情况下内存延迟的矩阵，请求来自每个socket并且发送到每个可用socket。mlc --latency_matrix</span>
+		Numa <span class="token function">node</span>
+Numa <span class="token function">node</span>	     <span class="token number">0</span>	     <span class="token number">1</span>	     <span class="token number">2</span>	     <span class="token number">3</span>	
+       <span class="token number">0</span>	  <span class="token number">40.0</span>	  <span class="token number">61.5</span>	 <span class="token number">108.5</span>	 <span class="token number">139.5</span>	
+       <span class="token number">1</span>	  <span class="token number">61.8</span>	  <span class="token number">39.8</span>	 <span class="token number">141.8</span>	 <span class="token number">108.5</span>	
+
+Measuring Peak Injection Memory Bandwidths <span class="token keyword">for</span> the system
+Bandwidths are <span class="token keyword">in</span> MB/sec <span class="token punctuation">(</span><span class="token number">1</span> MB/sec <span class="token operator">=</span> <span class="token number">1,000</span>,000 Bytes/sec<span class="token punctuation">)</span>
+Using all the threads from each core <span class="token keyword">if</span> Hyper-threading is enabled
+Using traffic with the following read-write ratios
+<span class="token comment"># 针对具有不同读取和写入量的请求（每个核心尽可能快地生成请求）测量峰值注入内存带宽（对本地内存的所有访问）。mlc --peak_injection_bandwidth</span>
+ALL Reads        <span class="token builtin class-name">:</span>	<span class="token number">161501.6</span>	
+<span class="token number">3</span>:1 Reads-Writes <span class="token builtin class-name">:</span>	<span class="token number">194996.6</span>	
+<span class="token number">2</span>:1 Reads-Writes <span class="token builtin class-name">:</span>	<span class="token number">211301.9</span>	
+<span class="token number">1</span>:1 Reads-Writes <span class="token builtin class-name">:</span>	<span class="token number">256226.9</span>	
+Stream-triad like:	<span class="token number">147516.0</span>	
+
+<span class="token comment"># 源自每个socket并寻址到每个可用socket的请求的内存带宽矩阵。mlc --bandwidth_matrix</span>
+Measuring Memory Bandwidths between nodes within system 
+Bandwidths are <span class="token keyword">in</span> MB/sec <span class="token punctuation">(</span><span class="token number">1</span> MB/sec <span class="token operator">=</span> <span class="token number">1,000</span>,000 Bytes/sec<span class="token punctuation">)</span>
+Using all the threads from each core <span class="token keyword">if</span> Hyper-threading is enabled
+Using Read-only traffic <span class="token builtin class-name">type</span>
+		Numa <span class="token function">node</span>
+Numa <span class="token function">node</span>	     <span class="token number">0</span>	     <span class="token number">1</span>	     <span class="token number">2</span>	     <span class="token number">3</span>	
+       <span class="token number">0</span>	<span class="token number">80686.1</span>	<span class="token number">54665.8</span>	<span class="token number">25508.8</span>	 <span class="token number">2529.8</span>	
+       <span class="token number">1</span>	<span class="token number">54657.7</span>	<span class="token number">80956.5</span>	 <span class="token number">2571.2</span>	<span class="token number">25510.1</span>	
+
+Measuring Loaded Latencies <span class="token keyword">for</span> the system
+Using all the threads from each core <span class="token keyword">if</span> Hyper-threading is enabled
+Using Read-only traffic <span class="token builtin class-name">type</span>
+Inject	Latency	Bandwidth
+<span class="token comment"># 不同带宽点的延迟</span>
+Delay	<span class="token punctuation">(</span>ns<span class="token punctuation">)</span>	MB/sec
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+ 00000	<span class="token number">455.70</span>	 <span class="token number">161519.3</span>
+ 00002	<span class="token number">458.47</span>	 <span class="token number">161556.4</span>
+ 00008	<span class="token number">454.24</span>	 <span class="token number">161501.8</span>
+ 00015	<span class="token number">448.57</span>	 <span class="token number">161506.9</span>
+ 00050	<span class="token number">405.38</span>	 <span class="token number">161417.2</span>
+ 00100	<span class="token number">396.14</span>	 <span class="token number">161388.8</span>
+ 00200	<span class="token number">135.20</span>	 <span class="token number">152952.1</span>
+ 00300	 <span class="token number">62.77</span>	 <span class="token number">116188.2</span>
+ 00400	 <span class="token number">53.61</span>	  <span class="token number">88853.4</span>
+ 00500	 <span class="token number">51.12</span>	  <span class="token number">71974.5</span>
+ 00700	 <span class="token number">48.78</span>	  <span class="token number">52310.7</span>
+ 01000	 <span class="token number">47.38</span>	  <span class="token number">37255.9</span>
+ 01300	 <span class="token number">46.68</span>	  <span class="token number">29088.7</span>
+ 01700	 <span class="token number">45.94</span>	  <span class="token number">22646.6</span>
+ 02500	 <span class="token number">45.75</span>	  <span class="token number">15891.3</span>
+ 03500	 <span class="token number">45.14</span>	  <span class="token number">11785.4</span>
+ 05000	 <span class="token number">44.83</span>	   <span class="token number">8691.3</span>
+ 09000	 <span class="token number">44.16</span>	   <span class="token number">5489.5</span>
+ <span class="token number">20000</span>	 <span class="token number">42.18</span>	   <span class="token number">3338.6</span>
+ 
+ <span class="token comment"># 处理器中缓存之间的延迟。mlc --c2c_latency</span>
+Measuring cache-to-cache transfer latency <span class="token punctuation">(</span>in ns<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+Local Socket L2-<span class="token operator">&gt;</span>L2 HIT  latency	<span class="token number">35.8</span>
+Local Socket L2-<span class="token operator">&gt;</span>L2 HITM latency	<span class="token number">59.9</span>
+Remote Socket L2-<span class="token operator">&gt;</span>L2 HITM latency <span class="token punctuation">(</span>data address homed <span class="token keyword">in</span> writer socket<span class="token punctuation">)</span>
+			Reader Numa Node
+Writer Numa Node     <span class="token number">0</span>	     <span class="token number">1</span>	
+            <span class="token number">0</span>	     -	  <span class="token number">54.5</span>	
+            <span class="token number">1</span>	  <span class="token number">54.7</span>	     -	
+Remote Socket L2-<span class="token operator">&gt;</span>L2 HITM latency <span class="token punctuation">(</span>data address homed <span class="token keyword">in</span> reader socket<span class="token punctuation">)</span>
+			Reader Numa Node
+Writer Numa Node     <span class="token number">0</span>	     <span class="token number">1</span>	
+            <span class="token number">0</span>	     -	  <span class="token number">53.7</span>	
+            <span class="token number">1</span>	  <span class="token number">55.3</span>	     -	<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="10-使用SystemTap软件跟踪内核函数"><a href="#10-使用SystemTap软件跟踪内核函数" class="headerlink" title="10. 使用SystemTap软件跟踪内核函数"></a>10. 使用SystemTap软件跟踪内核函数</h2><p>衡量 TPH 如何影响性能和延迟的另一种有效方法是跟踪/探测 Linux 内核功能。为此使用<strong>SystemTap</strong>，它是“用于动态检测正在运行的生产Linux内核操作系统的工具”。这个工具有它自己的脚本语言，使用非常灵活。</p>
+<p>第一个函数是<code>__alloc_pages_slowpath</code>。当没有可用于分配的连续内存块时，将执行它。反过来，此函数调用可能导致延迟峰值的昂贵页面压缩和回收逻辑。第二个函数是<code>khugepaged_scan_mm_slot</code>。它由后台“khugepaged”内核线程执行。它扫描巨大的页面并试图将它们折叠成一个。<br>脚本如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#! /usr/bin/env stap</span>
+global start, intervals
+
+probe <span class="token variable">$1</span> <span class="token punctuation">{</span> start<span class="token punctuation">[</span>tid<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> gettimeofday_us<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+probe <span class="token variable">$1</span>.return
+<span class="token punctuation">{</span>
+  t <span class="token operator">=</span> gettimeofday_us<span class="token punctuation">(</span><span class="token punctuation">)</span>
+  old_t <span class="token operator">=</span> start<span class="token punctuation">[</span>tid<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>old_t<span class="token punctuation">)</span> intervals <span class="token operator">&lt;&lt;&lt;</span> t - old_t
+  delete start<span class="token punctuation">[</span>tid<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+probe timer.ms<span class="token punctuation">(</span><span class="token variable">$2</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>@count<span class="token punctuation">(</span>intervals<span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        printf<span class="token punctuation">(</span><span class="token string">"%-25s:<span class="token entity" title="\n">\n</span> min:%dus avg:%dus max:%dus count:%d <span class="token entity" title="\n">\n</span>"</span>, tz_ctime<span class="token punctuation">(</span>gettimeofday_s<span class="token punctuation">(</span><span class="token punctuation">))</span>,
+             @min<span class="token punctuation">(</span>intervals<span class="token punctuation">)</span>, @avg<span class="token punctuation">(</span>intervals<span class="token punctuation">)</span>, @max<span class="token punctuation">(</span>intervals<span class="token punctuation">)</span>, @count<span class="token punctuation">(</span>intervals<span class="token punctuation">))</span>
+        print<span class="token punctuation">(</span>@hist_log<span class="token punctuation">(</span>intervals<span class="token punctuation">))</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>__alloc_pages_slowpath</code>函数结果示例</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>~<span class="token punctuation">]</span><span class="token comment"># ./func_time_stats.stp 'kernel.function("__alloc_pages_slowpath")' 1000</span>
+
+Thu Aug <span class="token number">17</span> 09:37:19 <span class="token number">2017</span> CEST:
+ min:0us avg:1us max:23us count:1538
+value <span class="token operator">|</span>-------------------------------------------------- count
+    <span class="token number">0</span> <span class="token operator">|</span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  <span class="token number">549</span>
+    <span class="token number">1</span> <span class="token operator">|</span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  <span class="token number">541</span>
+    <span class="token number">2</span> <span class="token operator">|</span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                 <span class="token number">377</span>
+    <span class="token number">4</span> <span class="token operator">|</span>@@@@                                                <span class="token number">54</span>
+    <span class="token number">8</span> <span class="token operator">|</span>@                                                   <span class="token number">12</span>
+   <span class="token number">16</span> <span class="token operator">|</span>                                                     <span class="token number">5</span>
+   <span class="token number">32</span> <span class="token operator">|</span>                                                     <span class="token number">0</span>
+   <span class="token number">64</span> <span class="token operator">|</span>                                                     <span class="token number">0</span>
+<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a target="_blank" rel="noopener" href="https://sourceware.org/systemtap/getinvolved.html">SystemTap软件用于收集运行的Linux的信息</a></p>
 <h2 id="Over-View"><a href="#Over-View" class="headerlink" title="Over View"></a>Over View</h2><p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/cd67339d6b6a477e9587e4c5a3f43707.png"></p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/fbbab3ca9a084f5aa0986216daf20f38.png"></p>
 
@@ -1392,7 +1593,7 @@ no pid
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">156.8k</span>&nbsp;字
+                class="white-color">160.8k</span>&nbsp;字
             
             
             

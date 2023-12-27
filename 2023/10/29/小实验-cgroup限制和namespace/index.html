@@ -556,7 +556,7 @@ CONFIG_CGROUP_UNIFIED_SYSTEMD=y<span aria-hidden="true" class="line-numbers-rows
 
 <h2 id="2-1-创建一个有内存限制的cgroup"><a href="#2-1-创建一个有内存限制的cgroup" class="headerlink" title="2.1.创建一个有内存限制的cgroup"></a>2.1.创建一个有内存限制的cgroup</h2><p>为了创建、管理和监控cgroup，我们需要另一个名为cgroup-tools的包<code>sudo apt install cgroup-tools</code></p>
 <p>创建内存类型的cgroup命名为memhog-limiter<code>sudo cgcreate -g memory:memhog-limiter</code>实际操作是创建了一个目录。<code>ls -la /sys/fs/cgroup/memhog-limiter/</code></p>
-<p><img src="https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/4acc17383e0e4fb1b4cd544b495488f1.png" alt="系统不同目录位置会不同"></p>
 <p>设置内存限制，这里有新版的cgroup的软限制是memory.high,硬限制是menory.max<code>sudo cgset -r memory.max=50M memhog-limiter</code>设置完成后可以输出查看<code>cat  /sys/fs/cgroup/memhog-limiter/memory.max</code></p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/100b93b3167145538f316f4a5fe29082.png"></p>
 <h2 id="2-2-去限制内存"><a href="#2-2-去限制内存" class="headerlink" title="2.2. 去限制内存"></a>2.2. 去限制内存</h2><blockquote>
@@ -948,7 +948,7 @@ root          <span class="token number">12</span>       <span class="token numb
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">156.8k</span>&nbsp;字
+                class="white-color">160.8k</span>&nbsp;字
             
             
             

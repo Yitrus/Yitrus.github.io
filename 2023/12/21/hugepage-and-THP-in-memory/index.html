@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="hugepage and THP in memory, Yi&#39;s Blog">
+    <meta name="keywords" content="HugePage and THP in memory, Yi&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -27,7 +27,7 @@
 </script>
 
 
-    <title>hugepage and THP in memory | Yi&#39;s Blog</title>
+    <title>HugePage and THP in memory | Yi&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/medias/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -316,12 +316,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <!-- <h1 class="description center-align post-title">hugepage and THP in memory</h1> -->
+                    <!-- <h1 class="description center-align post-title">HugePage and THP in memory</h1> -->
                 </div>
             </div>
         </div>
@@ -435,12 +435,33 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/THP/">
+                                <span class="chip bg-color">THP</span>
+                            </a>
+                        
+                            <a href="/tags/HugePage/">
+                                <span class="chip bg-color">HugePage</span>
+                            </a>
+                        
+                            <a href="/tags/TLB/">
+                                <span class="chip bg-color">TLB</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Basics/" class="post-category">
+                                Basics
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -458,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    886
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    3 分
                 </div>
                 
 
@@ -488,7 +509,27 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <blockquote>
+<p>PS. huge page 到底怎么写好像没有明确的说法。</p>
+</blockquote>
+<ul>
+<li>参考<a target="_blank" rel="noopener" href="https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/">Transparent Hugepages: measuring the performance impact</a>解释了透明大页的优缺点，但是主要还是讲了3个测量大页性能的方法。最后面有一个测试案列不错。</li>
+<li>了解透明巨页支持的最佳处是<a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/vm/transhuge.txt">Linux内核网站上的官方文档</a>。</li>
+<li>/proc/buddyinfo 让你<a target="_blank" rel="noopener" href="http://andorian.blogspot.com/2014/03/making-sense-of-procbuddyinfo.html">了解 Linux 机器上的可用内存碎片</a>。您可以查看每个可用订单的空闲片段，每个numa节点的不同区域。</li>
+</ul>
+<h2 id="0-大页面"><a href="#0-大页面" class="headerlink" title="0. 大页面"></a>0. 大页面</h2><p><strong>地址转换</strong>逻辑（页表遍历）由<strong>CPU的内存管理单元（MMU）</strong> 实现。MMU还具有最近使用的页面的<strong>缓存</strong>。此缓存称为转换后备缓冲区（TLB） 。</p>
+<p>虚拟地址需要转换为物理地址时，<strong>首先搜索TLB</strong>。如果找到匹配项（TLB命中），则返回物理地址，并且可以继续内存访问。但是，如果没有匹配项（称为TLB未命中），MMU通常会在<strong>页表中查找地址映射</strong>，以查看映射是否存在。<strong>页表遍历很昂贵</strong>，因为它可能<strong>需要多次内存访问</strong>（但它们可能会命中CPUL1/L2/L3缓存）。另一方面，<strong>TLB缓存大小有限，通常可以容纳数百页</strong>。</p>
+<blockquote>
+<p>在任何分页系统中，都需要考虑两个主要问题:<br>1)虚拟地址到物理地址的映射必须非常快。<br>2)如果虚拟地址空间很大，页表也会很大。<br>第一个问题是由于每次访向内存都需要进行虚拟地址到物理地址的映射，所有的指令最终都必须来自内存，并且很多指令也会访问内存中的操作数。因此，每条指令进行一两次或更多页表访问是必要的。如果执行一条指令需要1ns，页表查询必须在0.2ns之内完成，以避免映射成为一个主要瓶颈。<br>第二个问题来自现代计算机使用64位变得越来越普遍。假设页面大小为4KB，32位的地址空间将有100万页，而64位地址空间简直多到超乎想象。如果虚拟地址空间中有100万页，那么页表必然有100万条表项。另外请记住，每个进程都需要自己的页表（因为它有自己的虚拟地址空间）。（《现代操作系统》第4版，还有很多很清晰的讨论P114）<br>第一个是增加TLB大小，这很昂贵，而且不会有很大帮助（因为页表项增加后查找将变慢）。另一个是增加页面大小，因此要映射的页面更少。现代操作系统和CPU支持2MB甚至1GB的大页面。使用2MB的大页面，128GB内存变为64000页。</p>
+</blockquote>
+<p>使用更大的内存页作为映射单位有如下好处：</p>
+<ol>
+<li>减少 TLB（Translation Lookaside Buffer） 的失效情况（或者说减少page walk）。</li>
+<li>减少 页表 的内存消耗。</li>
+<li>减少 PageFault（缺页中断）的次数。</li>
+</ol>
+<p>有两个因素可以作为选择小页面的理由。随便选择一个数据很可能不会恰好装满整数个页面，多余的空间就被浪费掉了，这种浪费称为<strong>内存膨胀</strong>。另外分配大页需要连续的物理地址空间，多次分配后造成<strong>内部碎片</strong>（internal fragmentation）使得大页分配困难，需要额外后台线程做内存规整。 </p>
+<h2 id="1-THP设置"><a href="#1-THP设置" class="headerlink" title="1. THP设置"></a>1. THP设置</h2>
                 
             </div>
             <hr/>
@@ -551,7 +592,19 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/THP/">
+                                    <span class="chip bg-color">THP</span>
+                                </a>
+                            
+                                <a href="/tags/HugePage/">
+                                    <span class="chip bg-color">HugePage</span>
+                                </a>
+                            
+                                <a href="/tags/TLB/">
+                                    <span class="chip bg-color">TLB</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -600,8 +653,7 @@
                 <a href="/2023/12/22/FlexHM/">
                     <div class="card-image">
                         
-                        
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="FlexHM">
+                        <img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/3f7a437b0f0e4d81b480441ba52d12e1.png" class="responsive-img" alt="FlexHM">
                         
                         <span class="card-title">FlexHM</span>
                     </div>
@@ -631,12 +683,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
                     <a href="/tags/Hybrid-Memory-Systems/">
                         <span class="chip bg-color">Hybrid Memory Systems</span>
+                    </a>
+                    
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
                     </a>
                     
                     <a href="/tags/Cloud/">
@@ -832,6 +884,13 @@
 </main>
 
 
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
 
 
     <footer class="page-footer bg-color">
@@ -849,7 +908,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">156.8k</span>&nbsp;字
+                class="white-color">160.8k</span>&nbsp;字
             
             
             
