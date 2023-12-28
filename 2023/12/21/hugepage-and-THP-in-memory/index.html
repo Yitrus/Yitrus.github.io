@@ -479,14 +479,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    886
+                    3.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    14 分
                 </div>
                 
 
@@ -510,7 +510,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>PS. huge page 到底怎么写好像没有明确的说法。</p>
+<p>虽然大页一直被人嫌弃，因为内存碎片化带来的页面规整开销和大页面分配困难、访问倾斜等。但是“存在即合理”。大页还是有些优势的比如在大内存中增加TLB的覆盖等。许多针对TLB和页面粒度大小的研究也一直没停过。PS. huge page 到底怎么写好像没有明确的说法。</p>
 </blockquote>
 <ul>
 <li>参考<a target="_blank" rel="noopener" href="https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/">Transparent Hugepages: measuring the performance impact</a>解释了透明大页的优缺点，但是主要还是讲了3个测量大页性能的方法。最后面有一个测试案列不错。</li>
@@ -529,7 +529,207 @@
 <li>减少 PageFault（缺页中断）的次数。</li>
 </ol>
 <p>有两个因素可以作为选择小页面的理由。随便选择一个数据很可能不会恰好装满整数个页面，多余的空间就被浪费掉了，这种浪费称为<strong>内存膨胀</strong>。另外分配大页需要连续的物理地址空间，多次分配后造成<strong>内部碎片</strong>（internal fragmentation）使得大页分配困难，需要额外后台线程做内存规整。 </p>
-<h2 id="1-THP设置"><a href="#1-THP设置" class="headerlink" title="1. THP设置"></a>1. THP设置</h2>
+<h2 id="1-static-huge-page静态大页面"><a href="#1-static-huge-page静态大页面" class="headerlink" title="1. static huge page静态大页面"></a>1. static huge page静态大页面</h2><p>静态huge page是<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/70964551">不支持swap操作</a>的，不能被换出到外部存储介质上。页面大小小于MAX_ORDER的大页称之为huge page，大于等于MAX_ORDER的大页称之为gigantic page，拿常用的举例，2MB是huge page，1GB是gigantic page。</p>
+<p>huge page和gigantic page走的是不同的分配路径。huge page相对较小，所以通过伙伴系统来分配（注意：虽然走伙伴系统，但最终它的元数据设置和普通伙伴系统页面的设置是分开处理的）。分配走的是伙伴系统核心都是<code>alloc_huge_page</code>，在大页系统初始化的时候，也会通过<code>alloc_huge_page</code>接口，提前分配物理页。</p>
+<p>在向伙伴系统申请一个大页时，如果是巨页，则优先通过CMA（Contiguous Memory Allocator）分配器分配，如果不支持CMA或者CMA内存不足，则通过指定范围连续物理页申请接口（<code>alloc_contig_pages</code>）而gigantic page页面较大，伙伴系统无法满足分配要求，所以通过连续内存分配接口<code>alloc_contig_range()</code></p>
+<blockquote>
+<p>标准大页存在两个严重的问题：<br>1、需要提前预分配好大页内存池，通过内核启动参数或者虚拟文件系统的方式。<br>2、对代码进行嵌入修改，例如使用mmap时，需要添加MAP_HUGETLB配置；或者需要挂载大页文件系统；或者使用libhugetlbfs提供的方法等。</p>
+</blockquote>
+<p>针对64位的x86-64系统，huge page的大小是2MB或者1GB，初始数目由启动时的”<code>vm.nr_hugepages</code>“ 内核参数确定，对于2MB的huge page，运行过程中可通过”<code>/proc/sys/vm/nr_hugepages</code>“修改。但对于1GB的huge page，就只能在启动时分配（且分配后不能释放），而不支持在运行时修改（系统起来后再要倒腾出1GB连续的物理内存，也怪难为内核的）</p>
+<p><strong>预留大页面</strong>的方式需要在启动内核时应用配置优点是开机时就通过bootmem分配大页，不存在因为内存碎片导致分不出大页的情况，从而保证预留的成功。需要指出的是，系统能否支持大页，支持大页的大小为多少是由其使用的处理器决定的。通过在bootargs传参在系统启动过程中预留大页，bootargs参数：预分配大页数量hugepages= 和 预分配大页的大小hugepagesz= ，更详细的使用可参看内核文档kernel-parameters.txt</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 假如我们想保留64个大页面，每个2MB，就用下面的配置：</span>
+hugepagesz <span class="token operator">=</span> 2MB， hugepages <span class="token operator">=</span> <span class="token number">64</span>
+<span class="token comment"># 还可以指定默认的大页大小。比如，我们想预留4GB内存作为大页使用，大页的大小为1GB，那么可以用以下的命令行：</span>
+<span class="token assign-left variable">default_hugepagesz</span><span class="token operator">=</span>1G <span class="token assign-left variable">hugepagesz</span><span class="token operator">=</span>1G <span class="token assign-left variable">hugepages</span><span class="token operator">=</span><span class="token number">4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在Linux启动之后，如果想预留大页，则可以使用以下的方法来预留内存。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 在非NUMA系统中，可以使用以下方法预留2MB大小的大页。</span>
+<span class="token builtin class-name">echo</span> <span class="token number">24</span> <span class="token operator">&gt;</span> /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+<span class="token comment"># 该命令预留24个大小为2MB的大页，也就是预留了2GB内存。</span>
+<span class="token comment"># 如果是在NUMA系统中，假设有两个NODE的系统中，则可以用以下的命令：</span>
+<span class="token builtin class-name">echo</span> <span class="token number">24</span> <span class="token operator">&gt;</span> /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
+<span class="token builtin class-name">echo</span> <span class="token number">24</span> <span class="token operator">&gt;</span> /sys/devices/system/node/node1/hugepages/hugepages-2048kB/nr_hugepages
+<span class="token comment"># 或者</span>
+<span class="token builtin class-name">echo</span> <span class="token number">20</span> <span class="token operator">&gt;</span> /proc/sys/vm/nr_hugepages <span class="token comment">#设置20页大页</span>
+<span class="token comment">#或者</span>
+<span class="token builtin class-name">echo</span> <span class="token number">5</span> <span class="token operator">&gt;</span> /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages 
+/**
+ * 含义：通过sysfs下的文件节点申请和释放大页，保持系统中1GB的大页有5个。
+ * 若已经存在5个大页则什么都不做；若少于5个则分配够5个；
+ * 若多于5个则释放多余的大页<span class="token punctuation">(</span>前提是未被使用<span class="token punctuation">)</span>。
+**/ 
+<span class="token function">cat</span> /sys/kernel/mm/hugepages/hugepages-2048kB/free_hugepages
+// 含义：查看系统中空闲的的2MB大页的数量<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="2-THP"><a href="#2-THP" class="headerlink" title="2. THP"></a>2. THP</h2><p>复合页（Compound Page）就是将物理上连续的两个或多个页看成一个独立的大页，它能够用来创建hugetlbfs中使用的大页（hugepage）。也能够用来创建透明大页（transparent huge page）。可是它不能用在页缓存（page cache）中，这是由于页缓存中管理的都是单个页。分配一个复合页的方式是：使用<code>alloc_pages</code>函数，參数order至少为1，且设置<code>__GFP_COMP</code>标记。由于依据复合页的定义，它通常包含2个或多个连续的物理内存页，这是由它的实现决定的，因而order参数不可能为0。</p>
+<p>transparent huge page透明大页。在Linux中自2.6.38版本开始支持THP。在应用需要huge page的时候，可通过memory compaction（内存规整）操作移动页面，以形成一个huge page，因为该过程不会被应用感知到，所以被称为”transparent”。</p>
+<p>THP采用常规(“高阶”)内存分配路径，它<strong>要求操作系统能够找到连续且对齐的内存块</strong>。它与常规页面存在相同的问题，即碎片化。如果操作系统<strong>找不到连续的内存块，它将尝试压缩、回收或分页其他页面</strong>。**该过程成本高昂，可能会导致延迟峰值(长达几秒钟)**。此问题已在4.6 内核中得到解决(通过”延迟”选项)，如果操作系统无法分配大页面，则会回退到常规页面。</p>
+<p>维护。即使应用程序只接触1字节的内存，它也会占用整个2MB的大页面。这显然是浪费内存。所以有一个名为<strong>khugepaged的后台内核线程</strong>。它<strong>扫描页面</strong>并尝试对其<strong>进行碎片整理并折叠成一个巨大的页面</strong>。尽管它是一个后台线程，<strong>但它会锁定它使用的页面</strong>，因此也可能导致<strong>延迟峰值</strong>。另一个陷阱在于<strong>大页面拆分</strong>，并非操作系统的所有部分都适用于大页面，例如Swap。操作系统将大页面拆分为常规页面。它还可能<strong>降低性能并增加内存碎片</strong>。</p>
+<p>实现THP作为一个整体被swap out和swap in（<a href="https://link.zhihu.com/?target=https://lwn.net/Articles/758677/">参考这篇文章</a>）</p>
+<p>运行以下命令检查透明大页的状态：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> /sys/kernel/mm/transparent_hugepage/enabled<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果输出为 <code>[always] madvise never</code>，则透明大页功能已经开启。<br>如果输出为 <code>always madvise [never]</code>，则透明大页功能已经关闭。</p>
+<p>如果透明大页功能未开启，可以通过以下命令启用它（需要管理员权限）</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> always <span class="token operator">&gt;</span> /sys/kernel/mm/transparent_hugepage/enabled<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>调整透明大页配置，有两个可用的配置选项，分别是 <code>transparent_hugepage/defrag</code> 和 <code>transparent_hugepage/enabled</code>。<br><code>transparent_hugepage/defrag</code>：用于设置大页碎片整理的方式。<br><code>transparent_hugepage/enabled</code>：用于设置大页的启用方式。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> always <span class="token operator">&gt;</span> /sys/kernel/mm/transparent_hugepage/defrag
+<span class="token builtin class-name">echo</span> always <span class="token operator">&gt;</span> /sys/kernel/mm/transparent_hugepage/enabled<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>参考<a target="_blank" rel="noopener" href="http://cenalulu.github.io/linux/huge-page-on-numa/">Huge Page 是否是拯救性能的万能良药？</a>可以有参考。<br>参考<a target="_blank" rel="noopener" href="https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/">透明巨页：衡量性能影响</a></p>
+<h2 id="3-TLB"><a href="#3-TLB" class="headerlink" title="3. TLB"></a>3. TLB</h2><p>通过编译优化来将频繁被访问的指令汇总到一起，放在二进制文件中的同一个地方，以提高空间局部性，这样就可以提高iTLB命中。这块放置频繁访问指令的区域，就叫热区域（Hot Text）。</p>
+<p>通过在大页面上放置热文本，可以进一步提升iTLB命中率。使用大页面iTLB条目时，单个TLB条目覆盖的代码是标准4K页面的512倍。更重要的是，当代的CPU体系结构，通常为大页面提供一些单独的TLB条目，如果我们不使用大页面，这些条目将处于空闲状态。（是吗？待考证）所以，通过使用大页面，也可以充分利用那些TLB条目。</p>
+<p>关于<a target="_blank" rel="noopener" href="https://blog.csdn.net/hanzefeng/article/details/82893317">分支预测</a>的基础知识。如果从运行的二进制文件来优化iTLB，可以考虑<a target="_blank" rel="noopener" href="https://lwn.net/Articles/680985/">LBR（Last Branch Record，最后分支记录）</a>为热函数创建优化表单<a target="_blank" rel="noopener" href="https://github.com/facebook/hhvm/tree/master/hphp/tools/hfsort">HFSort</a>工具。</p>
+<p>事实上，perf只支持所有事件的一个小子集，而CPU有数百个不同的计数器来监测性能。<br><strong>在页表中遍历所花费的 CPU 周期数</strong></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>~<span class="token punctuation">]</span><span class="token comment"># perf stat -e cycles \</span>
+<span class="token operator">&gt;</span>   <span class="token parameter variable">-e</span> cpu/event<span class="token operator">=</span>0x08,umask<span class="token operator">=</span>0x10,name<span class="token operator">=</span>dcycles/ <span class="token punctuation">\</span>
+<span class="token operator">&gt;</span>   <span class="token parameter variable">-e</span> cpu/event<span class="token operator">=</span>0x85,umask<span class="token operator">=</span>0x10,name<span class="token operator">=</span>icycles/ <span class="token punctuation">\</span>
+<span class="token operator">&gt;</span>   <span class="token parameter variable">-a</span> <span class="token parameter variable">-I</span> <span class="token number">1000</span>
+<span class="token comment">#           time             counts unit events</span>
+     <span class="token number">1.005079845</span>        <span class="token number">227,119</span>,840      cycles
+     <span class="token number">1.005079845</span>          <span class="token number">2,605</span>,237      dcycles
+     <span class="token number">1.005079845</span>            <span class="token number">806,076</span>      icycles<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>由 TLB 未命中引起的主内存读取次数</strong>;这些读取会错过 CPU 缓存，因此非常昂贵</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@PRCAPISV0003L01 ~<span class="token punctuation">]</span><span class="token comment"># perf stat -e cache-misses \</span>
+<span class="token operator">&gt;</span>   <span class="token parameter variable">-e</span> cpu/event<span class="token operator">=</span>0xbc,umask<span class="token operator">=</span>0x18,name<span class="token operator">=</span>dreads/ <span class="token punctuation">\</span>
+<span class="token operator">&gt;</span>   <span class="token parameter variable">-e</span> cpu/event<span class="token operator">=</span>0xbc,umask<span class="token operator">=</span>0x28,name<span class="token operator">=</span>ireads/ <span class="token punctuation">\</span>
+<span class="token operator">&gt;</span>   <span class="token parameter variable">-a</span> <span class="token parameter variable">-I</span> <span class="token number">1000</span>
+<span class="token comment">#           time             counts unit events</span>
+     <span class="token number">1.007177568</span>             <span class="token number">25,322</span>      cache-misses
+     <span class="token number">1.007177568</span>                 <span class="token number">23</span>      dreads
+     <span class="token number">1.007177568</span>                  <span class="token number">5</span>      ireads<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="4-伙伴系统内存分配的碎片"><a href="#4-伙伴系统内存分配的碎片" class="headerlink" title="4. 伙伴系统内存分配的碎片"></a>4. 伙伴系统内存分配的碎片</h2><p>随着时间的推移，分配请求将拆分、合并、拆分…这个池，直到我们到达由于缺少连续内存块而可能不得不使请求失败的地步。在这种情况下，buddyinfo proc 文件将允许您查看内存的当前碎片状态。这是一个快速的python脚本。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/usr/bin/env python</span>
+<span class="token comment"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 textwidth=79 autoindent</span>
+
+<span class="token triple-quoted-string string">"""
+Python source code
+Last modified: 15 Feb 2014 - 13:38
+Last author: lmwangi at gmail  com
+Displays the available memory fragments
+by querying /proc/buddyinfo
+Example:
+# python buddyinfo.py
+"""</span>
+<span class="token keyword">import</span> optparse
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> re
+<span class="token keyword">from</span> collections <span class="token keyword">import</span> defaultdict
+<span class="token keyword">import</span> logging
+
+
+<span class="token keyword">class</span> <span class="token class-name">Logger</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> log_level<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>log_level <span class="token operator">=</span> log_level
+
+    <span class="token keyword">def</span> <span class="token function">get_formatter</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> logging<span class="token punctuation">.</span>Formatter<span class="token punctuation">(</span><span class="token string">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_handler</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> logging<span class="token punctuation">.</span>StreamHandler<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_logger</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""Returns a Logger instance for the specified module_name"""</span>
+        logger <span class="token operator">=</span> logging<span class="token punctuation">.</span>getLogger<span class="token punctuation">(</span><span class="token string">'main'</span><span class="token punctuation">)</span>
+        logger<span class="token punctuation">.</span>setLevel<span class="token punctuation">(</span>self<span class="token punctuation">.</span>log_level<span class="token punctuation">)</span>
+        log_handler <span class="token operator">=</span> self<span class="token punctuation">.</span>get_handler<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        log_handler<span class="token punctuation">.</span>setFormatter<span class="token punctuation">(</span>self<span class="token punctuation">.</span>get_formatter<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        logger<span class="token punctuation">.</span>addHandler<span class="token punctuation">(</span>log_handler<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> logger
+
+
+<span class="token keyword">class</span> <span class="token class-name">BuddyInfo</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""BuddyInfo DAO"""</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> logger<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span>BuddyInfo<span class="token punctuation">,</span> self<span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>log <span class="token operator">=</span> logger
+        self<span class="token punctuation">.</span>buddyinfo <span class="token operator">=</span> self<span class="token punctuation">.</span>load_buddyinfo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">parse_line</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> line<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        line <span class="token operator">=</span> line<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>log<span class="token punctuation">.</span>debug<span class="token punctuation">(</span><span class="token string">"Parsing line: %s"</span> <span class="token operator">%</span> line<span class="token punctuation">)</span>
+        parsed_line <span class="token operator">=</span> re<span class="token punctuation">.</span><span class="token keyword">match</span><span class="token punctuation">(</span><span class="token string">"Node\s+(?P&lt;numa_node&gt;\d+).*zone\s+(?P&lt;zone&gt;\w+)\s+(?P&lt;nr_free&gt;.*)"</span><span class="token punctuation">,</span> line<span class="token punctuation">)</span><span class="token punctuation">.</span>groupdict<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>log<span class="token punctuation">.</span>debug<span class="token punctuation">(</span><span class="token string">"Parsed line: %s"</span> <span class="token operator">%</span> parsed_line<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> parsed_line
+
+    <span class="token keyword">def</span> <span class="token function">read_buddyinfo</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        buddyhash <span class="token operator">=</span> defaultdict<span class="token punctuation">(</span><span class="token builtin">list</span><span class="token punctuation">)</span>
+        buddyinfo <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"/proc/buddyinfo"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>readlines<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> line <span class="token keyword">in</span> <span class="token builtin">map</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>parse_line<span class="token punctuation">,</span> buddyinfo<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            numa_node <span class="token operator">=</span>  <span class="token builtin">int</span><span class="token punctuation">(</span>line<span class="token punctuation">[</span><span class="token string">"numa_node"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            zone <span class="token operator">=</span> line<span class="token punctuation">[</span><span class="token string">"zone"</span><span class="token punctuation">]</span>
+            free_fragments <span class="token operator">=</span> <span class="token builtin">map</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">,</span> line<span class="token punctuation">[</span><span class="token string">"nr_free"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            max_order <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>free_fragments<span class="token punctuation">)</span>
+            fragment_sizes <span class="token operator">=</span> self<span class="token punctuation">.</span>get_order_sizes<span class="token punctuation">(</span>max_order<span class="token punctuation">)</span>
+            usage_in_bytes <span class="token operator">=</span>  <span class="token punctuation">[</span>block<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">*</span> block<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> block <span class="token keyword">in</span> <span class="token builtin">zip</span><span class="token punctuation">(</span>free_fragments<span class="token punctuation">,</span> fragment_sizes<span class="token punctuation">)</span><span class="token punctuation">]</span>
+            buddyhash<span class="token punctuation">[</span>numa_node<span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                <span class="token string">"zone"</span><span class="token punctuation">:</span> zone<span class="token punctuation">,</span>
+                <span class="token string">"nr_free"</span><span class="token punctuation">:</span> free_fragments<span class="token punctuation">,</span>
+                <span class="token string">"sz_fragment"</span><span class="token punctuation">:</span> fragment_sizes<span class="token punctuation">,</span>
+                <span class="token string">"usage"</span><span class="token punctuation">:</span> usage_in_bytes <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> buddyhash
+
+    <span class="token keyword">def</span> <span class="token function">load_buddyinfo</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        buddyhash <span class="token operator">=</span> self<span class="token punctuation">.</span>read_buddyinfo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>log<span class="token punctuation">.</span>info<span class="token punctuation">(</span>buddyhash<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> buddyhash
+
+    <span class="token keyword">def</span> <span class="token function">page_size</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> os<span class="token punctuation">.</span>sysconf<span class="token punctuation">(</span><span class="token string">"SC_PAGE_SIZE"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_order_sizes</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> max_order<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>self<span class="token punctuation">.</span>page_size<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token operator">**</span>order <span class="token keyword">for</span> order <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> max_order<span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">def</span> <span class="token function">__str__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        ret_string <span class="token operator">=</span> <span class="token string">""</span>
+        width <span class="token operator">=</span> <span class="token number">20</span>
+        <span class="token keyword">for</span> node <span class="token keyword">in</span> self<span class="token punctuation">.</span>buddyinfo<span class="token punctuation">:</span>
+            ret_string <span class="token operator">+=</span> <span class="token string">"Node: %s\n"</span> <span class="token operator">%</span> node
+            <span class="token keyword">for</span> zoneinfo <span class="token keyword">in</span> self<span class="token punctuation">.</span>buddyinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                ret_string <span class="token operator">+=</span> <span class="token string">" Zone: %s\n"</span> <span class="token operator">%</span> zoneinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"zone"</span><span class="token punctuation">)</span>
+                ret_string <span class="token operator">+=</span> <span class="token string">" Free KiB in zone: %.2f\n"</span> <span class="token operator">%</span> <span class="token punctuation">(</span><span class="token builtin">sum</span><span class="token punctuation">(</span>zoneinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"usage"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1024.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                ret_string <span class="token operator">+=</span> <span class="token string">'\t{0:{align}{width}} {1:{align}{width}} {2:{align}{width}}\n'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>
+                        <span class="token string">"Fragment size"</span><span class="token punctuation">,</span> <span class="token string">"Free fragments"</span><span class="token punctuation">,</span> <span class="token string">"Total available KiB"</span><span class="token punctuation">,</span>
+                        width<span class="token operator">=</span>width<span class="token punctuation">,</span>
+                        align<span class="token operator">=</span><span class="token string">"&lt;"</span><span class="token punctuation">)</span>
+                <span class="token keyword">for</span> idx <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>zoneinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"sz_fragment"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                    ret_string <span class="token operator">+=</span> <span class="token string">'\t{order:{align}{width}} {nr:{align}{width}} {usage:{align}{width}}\n'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>
+                        width<span class="token operator">=</span>width<span class="token punctuation">,</span>
+                        align<span class="token operator">=</span><span class="token string">"&lt;"</span><span class="token punctuation">,</span>
+                        order <span class="token operator">=</span> zoneinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"sz_fragment"</span><span class="token punctuation">)</span><span class="token punctuation">[</span>idx<span class="token punctuation">]</span><span class="token punctuation">,</span>
+                        nr <span class="token operator">=</span> zoneinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"nr_free"</span><span class="token punctuation">)</span><span class="token punctuation">[</span>idx<span class="token punctuation">]</span><span class="token punctuation">,</span>
+                        usage <span class="token operator">=</span> zoneinfo<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"usage"</span><span class="token punctuation">)</span><span class="token punctuation">[</span>idx<span class="token punctuation">]</span> <span class="token operator">/</span> <span class="token number">1024.0</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">return</span> ret_string
+
+<span class="token keyword">def</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""Main function. Called when this file is a shell script"""</span>
+    usage <span class="token operator">=</span> <span class="token string">"usage: %prog [options]"</span>
+    parser <span class="token operator">=</span> optparse<span class="token punctuation">.</span>OptionParser<span class="token punctuation">(</span>usage<span class="token punctuation">)</span>
+    parser<span class="token punctuation">.</span>add_option<span class="token punctuation">(</span><span class="token string">"-s"</span><span class="token punctuation">,</span> <span class="token string">"--size"</span><span class="token punctuation">,</span> dest<span class="token operator">=</span><span class="token string">"size"</span><span class="token punctuation">,</span> choices<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"B"</span><span class="token punctuation">,</span><span class="token string">"K"</span><span class="token punctuation">,</span><span class="token string">"M"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                      action<span class="token operator">=</span><span class="token string">"store"</span><span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token string">"choice"</span><span class="token punctuation">,</span> <span class="token builtin">help</span><span class="token operator">=</span><span class="token string">"Return results in bytes, kib, mib"</span><span class="token punctuation">)</span>
+
+    <span class="token punctuation">(</span>options<span class="token punctuation">,</span> args<span class="token punctuation">)</span> <span class="token operator">=</span> parser<span class="token punctuation">.</span>parse_args<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    logger <span class="token operator">=</span> Logger<span class="token punctuation">(</span>logging<span class="token punctuation">.</span>DEBUG<span class="token punctuation">)</span><span class="token punctuation">.</span>get_logger<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    logger<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token string">"Starting...."</span><span class="token punctuation">)</span>
+    logger<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token string">"Parsed options: %s"</span> <span class="token operator">%</span> options<span class="token punctuation">)</span>
+    <span class="token keyword">print</span> logger
+    buddy <span class="token operator">=</span> BuddyInfo<span class="token punctuation">(</span>logger<span class="token punctuation">)</span>
+    <span class="token keyword">print</span> buddy
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    main<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
                 
             </div>
             <hr/>
@@ -908,7 +1108,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">160.8k</span>&nbsp;字
+                class="white-color">163.7k</span>&nbsp;字
             
             
             

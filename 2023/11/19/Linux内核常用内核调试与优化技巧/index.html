@@ -437,12 +437,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/proc/">
-                                <span class="chip bg-color">proc</span>
+                            <a href="/tags/%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+                                <span class="chip bg-color">虚拟文件系统</span>
                             </a>
                         
-                            <a href="/tags/%E4%BC%AA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
-                                <span class="chip bg-color">伪文件系统</span>
+                            <a href="/tags/proc/">
+                                <span class="chip bg-color">proc</span>
                             </a>
                         
                             <a href="/tags/memoey/">
@@ -479,7 +479,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    7.8k
+                    7.9k
                 </div>
                 
 
@@ -1069,7 +1069,7 @@ no pid
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">perf <span class="token function">stat</span> <span class="token parameter variable">-e</span> dTLB-loads,dTLB-load-misses,iTLB-load-misses,cpu-cycles,cache-misses,cache-references,page-faults,major-faults,minor-faults,LLC-loads,LLC-loads-misses <span class="token parameter variable">-a</span> ./test.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
-<p>确定 CPU 繁忙的原因是一项性能分析的例行任务，这通常涉及分析堆栈跟踪。火焰图是采样堆栈跟踪的可视化，可以快速识别热代码路径。<a target="_blank" rel="noopener" href="https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">火焰图可以与任何操作系统上的任何 CPU 分析器一起使用</a>。我在这里的例子使用Linux perf （perf_events），DTrace，SystemTap和ktap。有关其他探查器示例，<a target="_blank" rel="noopener" href="https://www.brendangregg.com/flamegraphs.html#Updates">请参阅更新列表</a>，有关火焰图软件，<a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">请参阅 github</a>。<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xuxh120/p/15990446.html">火焰图使用</a></p>
+<p>确定 CPU 繁忙的原因是一项性能分析的例行任务，这通常涉及分析堆栈跟踪。火焰图是采样堆栈跟踪的可视化，可以快速识别热代码路径。<a target="_blank" rel="noopener" href="https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">火焰图可以与任何操作系统上的任何 CPU 分析器一起使用</a>。我在这里的例子使用Linux perf （perf_events），DTrace，SystemTap和ktap。有关其他探查器示例，<a target="_blank" rel="noopener" href="https://www.brendangregg.com/flamegraphs.html#Updates">请参阅更新列表</a>，有关火焰图软件，<a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">请参阅 github</a>。<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xuxh120/p/15990446.html">火焰图使用</a>不同工具获得的信息在生成火焰图时命令不同，<a target="_blank" rel="noopener" href="https://blog.csdn.net/SaberJYang/article/details/123964439">参考博客</a>。</p>
 <p><strong>y轴</strong>表示<strong>调用栈</strong>， 每一层都是一个函数。 调用栈越深， 火焰就越高， 顶部就是正在执行的函数， 下方都是它的父函数。<br><strong>x轴</strong>表示<strong>抽样数</strong>， 如果一个函数在x轴占据的宽度越宽， 就表示它被抽到的次数多， <strong>即执行的时间长</strong>。 注意x轴不代表时间， 而是所有的调用栈合并后， 按字母顺序排列的。<br>火焰图就是看<strong>顶层的哪个函数占据的宽度最大</strong>。 只要有 “平顶”(plateaus)， 就表示该函数可能存在性能问题。<br>颜色没有特殊含义， 因为火焰图表示的是CPU的繁忙程度， 所以一般选择暖色调。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 采样，1s10次</span>
 <span class="token function">sudo</span> perf recoed <span class="token parameter variable">-F</span> <span class="token number">10</span> <span class="token parameter variable">-o</span> <span class="token variable">${LOG_DIR}</span>/perf.data <span class="token parameter variable">-a</span> <span class="token parameter variable">-g</span> <span class="token variable">${BENCH_RUN}</span>
@@ -1281,12 +1281,12 @@ value <span class="token operator">|</span>-------------------------------------
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/proc/">
-                                    <span class="chip bg-color">proc</span>
+                                <a href="/tags/%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+                                    <span class="chip bg-color">虚拟文件系统</span>
                                 </a>
                             
-                                <a href="/tags/%E4%BC%AA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
-                                    <span class="chip bg-color">伪文件系统</span>
+                                <a href="/tags/proc/">
+                                    <span class="chip bg-color">proc</span>
                                 </a>
                             
                                 <a href="/tags/memoey/">
@@ -1593,7 +1593,7 @@ value <span class="token operator">|</span>-------------------------------------
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">160.8k</span>&nbsp;字
+                class="white-color">163.7k</span>&nbsp;字
             
             
             
