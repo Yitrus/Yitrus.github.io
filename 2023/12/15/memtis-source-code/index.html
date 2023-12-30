@@ -478,7 +478,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    11 分
+                    12 分
                 </div>
                 
 
@@ -777,7 +777,7 @@
 	attr <span class="token operator">=</span> <span class="token operator">*</span>attr_ptr<span class="token punctuation">;</span>
 	……
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>从结果来看，这里只有一个区别，指针赋值方式。重点在于作者将系统调用放在用户态了。</p>
+<p>从结果来看，这里只有一个区别，指针赋值方式。重点在于这个函数没有被系统调用了，少了软中断，由原来的内核态切换到用户态执行。但是系统调用不是说拿到用户态就可以的吧。接着分析一下整个后台线程中其他的操作</p>
 
                 
             </div>

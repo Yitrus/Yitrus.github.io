@@ -554,7 +554,7 @@
 <li>(c) 热页升级到本地节点，</li>
 <li>(d) 页面类型感知内存分配。</li>
 </ul>
-<p> 一般来所NUMA系统的回收顺序是：首先回收本地节点上不活跃的页面；然后回收远程节点上不活跃的页面；如果还不够,才考虑回收本地节点上最近最少使用的页面。所以在图的上面①会将本地回收候选页面迁移到XCL节点的降级列表中，除非本地节点的容量小于工作集大小的热部分，否则在回收期间热页面迁移到 CXL 节点的机会非常低。如果降级期间的迁移失败（例如，由于 CXL 节点上的内存不足），我们将回退到该失败页面的默认回收机制。</p>
+<p> 一般来说NUMA系统的回收顺序是：首先回收本地节点上不活跃的页面；然后回收远程节点上不活跃的页面；如果还不够,才考虑回收本地节点上最近最少使用的页面。所以在图的上面①会将本地回收候选页面迁移到CXL节点的降级列表中，除非本地节点的容量小于工作集大小的热部分，否则在回收期间热页面迁移到 CXL 节点的机会非常低。如果降级期间的迁移失败（例如，由于 CXL 节点上的内存不足），我们将回退到该失败页面的默认回收机制。</p>
 <p> Linux为节点内的每个内存区域维护三个watermakes（最小、低、高）。如果节点的空闲页面总数低于low_watermark，Linux会认为该节点面临内存压力并启动该节点的页面回收。在我们的例子中，TPP将它们降级为CXL节点。对本地节点的新分配将停止，直到回收器释放足够的内存以满足high_watermark。<span class="label info">由于分配率较高，回收可能无法跟上</span>，本地内存分配频繁停止，<span class="label info">更多页面最终出现在CXL节点中</span>，最终降低应用程序性能。所以现在将回收和分配化为不同的门槛②，回收和驱逐会提早发生，而禁止页面分配会在内存饱和度更高一步的时候。</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/d51196b572b849d48550379551aa0801.png"></p>
 <p>NUMA系统中CPU访问另一节点页面时,生成缺页异常提醒内核进行页面迁移。不常访问的页面产生的升级流量很容易填满本地节点的空闲空间，并为CXL节点产生更高的降级流量。于是通过页面在LRU列表中的位置来检查页面的年龄。如果故障页面处于非活动LRU状态，我们不会立即考虑该页面进行升级，因为它可能是不经常访问的页面。仅当在活动 LRU 中找到故障页面（图13中的①）时，我们才将其视为升级候选页面。这大大减少了升级流量。</p>
@@ -589,7 +589,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/">http://ytirus.github.io/2023/08/19/Transparent-Page-Placement-for-CXL-Enabled-Tiered-Memory/</a>
+                    <a href="http://ytirus.github.io/2023/08/19/TPP/">http://ytirus.github.io/2023/08/19/TPP/</a>
                 </span>
             </div>
             <div class="reprint__notice">
