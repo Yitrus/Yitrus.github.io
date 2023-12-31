@@ -471,14 +471,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.8k
+                    3.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    12 分
+                    13 分
                 </div>
                 
 
@@ -501,7 +501,10 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="1-硬件计数器采样"><a href="#1-硬件计数器采样" class="headerlink" title="1. 硬件计数器采样"></a>1. 硬件计数器采样</h1><h2 id="1-1-内核perf架构"><a href="#1-1-内核perf架构" class="headerlink" title="1.1 内核perf架构"></a>1.1 内核perf架构</h2><p><img src="https://terenceli.github.io/assets/img/perf/1.png" alt="the perf subsystem componenet"></p>
+                <blockquote>
+<p>memtis的源码分为很多个部分，对页表的修改，支持混合页面，硬件计数器采样，采样开销控制，页面迁移等。</p>
+</blockquote>
+<h1 id="1-硬件计数器采样"><a href="#1-硬件计数器采样" class="headerlink" title="1. 硬件计数器采样"></a>1. 硬件计数器采样</h1><h2 id="1-1-内核perf架构"><a href="#1-1-内核perf架构" class="headerlink" title="1.1 内核perf架构"></a>1.1 内核perf架构</h2><p><img src="https://terenceli.github.io/assets/img/perf/1.png" alt="the perf subsystem componenet"></p>
 <p>写硬件计数器采样程序，涉及这幅图的软件、硬件事件，以及用户空间中的ring buffer.</p>
 <p>唯一的用户态系统调用会返回一个perf事件的句柄，这样这个<code>perf_event</code>结构可以通过<code>read/write/ioctl/mmap</code>通用文件接口来操作。<code>perf_event_open(2)</code>的调用也是挺复杂的，详细操作可以看<a target="_blank" rel="noopener" href="https://www.man7.org/linux/man-pages/man2/perf_event_open.2.html">perf_event_open(2) Linux manual page</a>，后面写采样后台线程用到了会详细说。</p>
 <p><code>perf_event</code>也是内核中比较核心的结构体，性能事件有多种类型，例如跟踪点、软件、硬件。这些又具体表现为PMU结构体，每一个事件都有一个，比如software pmu：</p>
@@ -777,7 +780,32 @@
 	attr <span class="token operator">=</span> <span class="token operator">*</span>attr_ptr<span class="token punctuation">;</span>
 	……
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>从结果来看，这里只有一个区别，指针赋值方式。重点在于这个函数没有被系统调用了，少了软中断，由原来的内核态切换到用户态执行。但是系统调用不是说拿到用户态就可以的吧。接着分析一下整个后台线程中其他的操作</p>
+<p>从结果来看，这里只有一个区别，指针赋值方式。重点在于这个函数没有被系统调用了，少了软中断，由原来的内核态切换到用户态执行。但是系统调用不是说拿到用户态就可以的，接着分析一下整个后台线程中其他的操作。发现作者还有添加新的系统调用：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/* CONFIG_HTMM */</span>
+asmlinkage <span class="token keyword">long</span> <span class="token function">sys_htmm_start</span><span class="token punctuation">(</span><span class="token class-name">pid_t</span> pid<span class="token punctuation">,</span> <span class="token keyword">int</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+asmlinkage <span class="token keyword">long</span> <span class="token function">sys_htmm_end</span><span class="token punctuation">(</span><span class="token class-name">pid_t</span> pid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">/***************/</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+<span class="token function">SYSCALL_DEFINE2</span><span class="token punctuation">(</span>htmm_start<span class="token punctuation">,</span>
+		<span class="token class-name">pid_t</span><span class="token punctuation">,</span> pid<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">ksamplingd_init</span><span class="token punctuation">(</span>pid<span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">SYSCALL_DEFINE1</span><span class="token punctuation">(</span>htmm_end<span class="token punctuation">,</span>
+		<span class="token class-name">pid_t</span><span class="token punctuation">,</span> pid<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">ksamplingd_exit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也就是说虽然这里perf采样不是单独被系统调用的，但是整个后台的采样线程的启动都是被系统调用的，都是运行在内核态的。</p>
+<p>这上面这段只是说清楚了采样这个行为的实现。采样结果的读取和计数也非常不一样，采样的每次触发先放一放。首先采样信息由BPF环形缓冲区（ringbuf）记录，这是一个共享内存,一个多生产者单消费者（MPSC）队列。</p>
+<p>环形缓冲区的头是<code>struct perf_event_mmap_page</code>，记录共享环形缓冲区的特点，</p>
+<p>好吧剩下这部分要放到后台线程里去说了可能。我先打个草稿。</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 
                 
             </div>
@@ -1149,7 +1177,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">164k</span>&nbsp;字
+                class="white-color">165.1k</span>&nbsp;字
             
             
             
