@@ -305,7 +305,7 @@
     (function() {
         let pwd = '';
         if (pwd && pwd.length > 0) {
-            if (pwd !== CryptoJS.SHA256(prompt('the password')).toString(CryptoJS.enc.Hex)) {
+            if (pwd !== CryptoJS.SHA256(prompt('Oops! the password')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
                 location.href = '/';
             }
@@ -316,7 +316,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -510,6 +510,11 @@
         
 
         
+        <!-- 代码块折行 -->
+        <style type="text/css">
+            code[class*="language-"], pre[class*="language-"] { white-space: pre-wrap !important; }
+        </style>
+        
 
         <div class="card-content article-card-content">
             <div id="articleContent">
@@ -694,7 +699,7 @@
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="通过PTE统计页面访问次数">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="通过PTE统计页面访问次数">
                         
                         <span class="card-title">通过PTE统计页面访问次数</span>
                     </div>
@@ -743,7 +748,7 @@
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="X86架构下64位的用户空间和内核空间">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="X86架构下64位的用户空间和内核空间">
                         
                         <span class="card-title">X86架构下64位的用户空间和内核空间</span>
                     </div>
@@ -841,7 +846,7 @@
             contentSelector: '#articleContent',
             headingsOffset: -($(window).height() * 0.4 - 45),
             collapseDepth: Number('4'),
-            headingSelector: 'h2, h3, h4'
+            headingSelector: 'h3, h4'
         });
 
         // modify the toc link href to support Chinese.
@@ -853,7 +858,7 @@
 
         // modify the heading title id to support Chinese.
         i = 0;
-        $('#articleContent').children('h2, h3, h4').each(function () {
+        $('#articleContent').children('h3, h4').each(function () {
             $(this).attr('id', tocHeading + (++i));
         });
 
@@ -929,9 +934,9 @@
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2019-2023</span>
+                <span id="year">2023</span>
             
-            <span id="year">2019</span>
+            <span id="year">2023</span>
             <a href="/about" target="_blank">易百分</a>
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
