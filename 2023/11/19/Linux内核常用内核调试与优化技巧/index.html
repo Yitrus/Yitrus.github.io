@@ -921,11 +921,11 @@ no pid
 <span class="token comment"># cat trace</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>frace还支持种更为直观的跟踪器，名为function_gaph,使用方法和function跟踪器类似。</p>
 <p><strong>动态ftrace</strong>：<br>只要在配置内核时打开CONFIG_DYNAMIC_FTRACE选项，就可以支持动态ftrace功能。set_ftrace_filter和set_ftrace_notrace这两个文件可以配对使用，其中，前者设置要跟踪的函数，后者指定不要跟踪的函数。如果函数太多,需要设置跟踪函数的过滤器,过滤器还支持通配符。available_filter_functions文件可以列出当前系统支持的所有函数，假如现在我们只想关注sys_nanosleep()和hrtimer_interrupt()这两个函数。</p>
-<pre class="line-numbers language-none"><code class="language-none"># cd /sys/kernel/debug/tracing/
-# echo sys_nanosleep hrtimer_interrupt &gt; set_ftrace_filter
-# echo function &gt; current_tracer
-# echo 1 &gt; tracing_on
-# usleep 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># cd /sys/kernel/debug/tracing/</span>
+<span class="token comment"># echo sys_nanosleep hrtimer_interrupt &gt; set_ftrace_filter</span>
+<span class="token comment"># echo function &gt; current_tracer</span>
+<span class="token comment"># echo 1 &gt; tracing_on</span>
+<span class="token comment"># usleep 1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也可以将要跟踪的事件添加到相应文件，差不多的方式。例子在samples/trace_events目录里面。</p>
 <p><strong>kernelshark图形化工具</strong><br><code>sudo apt-get install trace-cmd kernelshark</code><br>分析ftrace数据用</p>
 <h2 id="6-kdump"><a href="#6-kdump" class="headerlink" title="6. kdump"></a>6. kdump</h2><p>内核转储工具。kdump核心实现基于kexec, kexec 的全称是kernel execution,非常类似于Linux内核中的exec系统调用。kexec可以快速启动新的内核，并且跳过BIOS或bootloader等引导程序的初始化阶段。这个特性可以让系统上崩溃时快速切换到备份的内核，这样第一个内核的内存就得到了保留。在第二个内核中，可以对第一个内核产生的崩溃数据进行继续分析。</p>
@@ -1002,19 +1002,20 @@ no pid
 <blockquote>
 <p><strong>跟踪点</strong>是放置在代码中的逻辑位置的检测点，例如用于系统调用、TCP/IP 事件、文件系统操作等。这些在不使用时开销可以忽略不计，并且可以通过 perf 命令启用以收集包括时间戳和堆栈跟踪在内的信息。Perf 还可以使用 kprobes 和 uprobes 框架动态创建跟踪点，用于内核和用户空间动态跟踪。</p>
 </blockquote>
-<p>perf 功能强大：它可以检测 CPU 性能计数器、跟踪点、kprobes 和 uprobes（动态跟踪）。它能够进行轻量级分析。它包含在 Linux 内核中的 tools/perf 下，并且经常更新和增强。对于perf子系统更深入的剖析在笔者另一篇读源码的文章中。这里主要讲怎么使用封装好的用户空间的perf工具。以page fault为例子：<br>``bash</p>
-<h1 id="I-1000-每1000ms输出一次，"><a href="#I-1000-每1000ms输出一次，" class="headerlink" title="-I 1000 每1000ms输出一次，"></a>-I 1000 每1000ms输出一次，</h1><h1 id="a-采集全部CPU上的事件"><a href="#a-采集全部CPU上的事件" class="headerlink" title="-a 采集全部CPU上的事件"></a>-a 采集全部CPU上的事件</h1><h1 id="p-可以指定进程"><a href="#p-可以指定进程" class="headerlink" title="-p  可以指定进程"></a>-p <pid> 可以指定进程</pid></h1><blockquote>
-<p>perf stat -e page-faults -I 1000 -a<br>perf stat -e page-faults -I 1000 -a -p 10102</p>
-</blockquote>
-<pre class="line-numbers language-none"><code class="language-none">使用FlameGraph更加直观的看到各部分代码触发pagefault的比例
-```bash
-# 采集进程10102的30秒pagefault触发数据
-&gt; perf record -e page-faults -a -p 10102 -g -- sleep 30
-# 导出原始数据，此步必须在采集机器上进行，因为需要解析符号。
-&gt; perf script &gt; out.stacks
-# 下面的步骤就可以移动到其他机器上了
-&gt; ./FlameGraph/stackcollapse-perf.pl &lt; out.stacks | ./FlameGraph/flamegraph.pl --color=mem \
-    --title="Page Fault Flame Graph" --countname="pages" &gt; out.svg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>perf 功能强大：它可以检测 CPU 性能计数器、跟踪点、kprobes 和 uprobes（动态跟踪）。它能够进行轻量级分析。它包含在 Linux 内核中的 tools/perf 下，并且经常更新和增强。对于perf子系统更深入的剖析在笔者另一篇读源码的文章中。这里主要讲怎么使用封装好的用户空间的perf工具。以page fault为例子：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># -I 1000 每1000ms输出一次，</span>
+<span class="token comment"># -a 采集全部CPU上的事件</span>
+<span class="token comment"># -p &lt;pid&gt; 可以指定进程</span>
+<span class="token operator">&gt;</span> perf <span class="token function">stat</span> <span class="token parameter variable">-e</span> page-faults <span class="token parameter variable">-I</span> <span class="token number">1000</span> <span class="token parameter variable">-a</span>
+<span class="token operator">&gt;</span> perf <span class="token function">stat</span> <span class="token parameter variable">-e</span> page-faults <span class="token parameter variable">-I</span> <span class="token number">1000</span> <span class="token parameter variable">-a</span> <span class="token parameter variable">-p</span> <span class="token number">10102</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用FlameGraph更加直观的看到各部分代码触发pagefault的比例</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 采集进程10102的30秒pagefault触发数据</span>
+<span class="token operator">&gt;</span> perf record <span class="token parameter variable">-e</span> page-faults <span class="token parameter variable">-a</span> <span class="token parameter variable">-p</span> <span class="token number">10102</span> <span class="token parameter variable">-g</span> -- <span class="token function">sleep</span> <span class="token number">30</span>
+<span class="token comment"># 导出原始数据，此步必须在采集机器上进行，因为需要解析符号。</span>
+<span class="token operator">&gt;</span> perf script <span class="token operator">&gt;</span> out.stacks
+<span class="token comment"># 下面的步骤就可以移动到其他机器上了</span>
+<span class="token operator">&gt;</span> ./FlameGraph/stackcollapse-perf.pl <span class="token operator">&lt;</span> out.stacks <span class="token operator">|</span> ./FlameGraph/flamegraph.pl <span class="token parameter variable">--color</span><span class="token operator">=</span>mem <span class="token punctuation">\</span>
+    <span class="token parameter variable">--title</span><span class="token operator">=</span><span class="token string">"Page Fault Flame Graph"</span> <span class="token parameter variable">--countname</span><span class="token operator">=</span><span class="token string">"pages"</span> <span class="token operator">&gt;</span> out.svg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li>stat 收集性能计数器的统计数据</li>
@@ -1576,7 +1577,7 @@ value <span class="token operator">|</span>-------------------------------------
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">165.1k</span>&nbsp;字
+                class="white-color">165.7k</span>&nbsp;字
             
             
             

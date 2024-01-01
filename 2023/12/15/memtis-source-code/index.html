@@ -449,14 +449,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.1k
+                    3.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    13 分
+                    16 分
                 </div>
                 
 
@@ -689,25 +689,25 @@
 				<span class="token keyword">continue</span><span class="token punctuation">;</span>
 	    	<span class="token punctuation">}</span>
 
-	    	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">__perf_event_open</span><span class="token punctuation">(</span><span class="token function">get_pebs_event</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> cpu<span class="token punctuation">,</span> event<span class="token punctuation">,</span> pid<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">//这一步是实际去采样</span>
+	    	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">__perf_event_open</span><span class="token punctuation">(</span><span class="token function">get_pebs_event</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> cpu<span class="token punctuation">,</span> event<span class="token punctuation">,</span> pid<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">//这一步获得每个perf事件对应的文件描述符</span>
 				<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-	    	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">htmm__perf_event_init</span><span class="token punctuation">(</span>mem_event<span class="token punctuation">[</span>cpu<span class="token punctuation">]</span><span class="token punctuation">[</span>event<span class="token punctuation">]</span><span class="token punctuation">,</span> BUFFER_SIZE<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">//这一步在做收集工作</span>
+	    	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">htmm__perf_event_init</span><span class="token punctuation">(</span>mem_event<span class="token punctuation">[</span>cpu<span class="token punctuation">]</span><span class="token punctuation">[</span>event<span class="token punctuation">]</span><span class="token punctuation">,</span> BUFFER_SIZE<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">//这一步将每个事件和ring buffer对应</span>
 				<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
 		<span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这一步就是要去做perf操作了，这里重写了一个名为<code>htmm__perf_event_open</code>的<code>perf_event_open</code>，但是核心操作一个道理。从调用入口来看，传入的参数依次是<code>要采样事件的宏定义</code>，<code>0</code>这里值config2不用，<code>第几个cpu</code>，<code>第几个perf event</code>，<code>进程的pid</code></p>
+<p>这一步就是要创建perf文件描述符，这里重写了一个名为<code>htmm__perf_event_open</code>的<code>perf_event_open</code>，但是核心操作是差不多的。从调用入口来看，传入的参数依次是<code>要采样事件的宏定义</code>，<code>0</code>这里值config2不用，<code>第几个cpu</code>，<code>第几个perf event</code>，<code>进程的pid</code></p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/********************/</span>
 <span class="token comment">/*传入要采样事件的宏定义，config1=0，cpu个数，事件个数，pid（为0就监控所有）；因为这里是在循环时open，每个cpu都有一个文件操作符在做这件事*/</span>
 <span class="token comment">/*******************/</span>
 <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">__perf_event_open</span><span class="token punctuation">(</span>__u64 config<span class="token punctuation">,</span> __u64 config1<span class="token punctuation">,</span> __u64 cpu<span class="token punctuation">,</span>
 	__u64 type<span class="token punctuation">,</span> __u32 pid<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
-    <span class="token keyword">struct</span> <span class="token class-name">perf_event_attr</span> attr<span class="token punctuation">;</span> <span class="token comment">// 核心函数需要的结构体</span>
+    <span class="token keyword">struct</span> <span class="token class-name">perf_event_attr</span> attr<span class="token punctuation">;</span> <span class="token comment">// 函数需要的结构体，告诉这个文件描述符该怎么创建，因为采样不同的事件最后传回的perf_event结构体也不一样。</span>
   
-    <span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">;</span> <span class="token comment">// 已打开的文件在内核中用file结构体表示，文件描述符表中的指针指向file结构体。</span>
     <span class="token keyword">int</span> event_fd<span class="token punctuation">,</span> __pid<span class="token punctuation">;</span> <span class="token comment">// 我们要接收的文件句柄</span>
 
     <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>attr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">perf_event_attr</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -742,17 +742,16 @@
 		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
-    <span class="token comment">// 这里的读句柄的方式和上面计数用到的不一样。</span>
+    <span class="token comment">// 这里的读句柄的方式和上面计数用到的不一样。判断是不是写入到了文件，然后保留这个文件的private_data成员指针。private_data指针的指向会根据驱动不同而不同，这里可以获得perf_event指针。</span>
     file <span class="token operator">=</span> <span class="token function">fget</span><span class="token punctuation">(</span>event_fd<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
 		<span class="token function">printk</span><span class="token punctuation">(</span><span class="token string">"invalid file\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
     mem_event<span class="token punctuation">[</span>cpu<span class="token punctuation">]</span><span class="token punctuation">[</span>type<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">fget</span><span class="token punctuation">(</span>event_fd<span class="token punctuation">)</span><span class="token operator">-&gt;</span>private_data<span class="token punctuation">;</span> 
-    <span class="token comment">//通过文件描述符用句柄去访问。主要还是要看那个文件描述符写了什么。后续都是通过这个句柄去访问相关数据。</span>
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在解释上一段代码末尾句柄的使用之前，需要分析作者自己封装的<code>htmm__perf_event_open</code>函数，到底有什么区别，因为封装前的<code>__NR_perf_event_open</code>这个系统调用才是主角。但是这里作者封装后的代码并没有这个主角。所以笔者尝试<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/487648323">对比一下这个系统调用</a>。</p>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分析作者自己封装的<code>htmm__perf_event_open</code>函数，到底有什么区别，因为封装前的<code>__NR_perf_event_open</code>这个系统调用才是主角。但是这里作者封装后的代码并没有这个主角。所以笔者尝试<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/487648323">对比一下这个系统调用</a>。</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">htmm__perf_event_open</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">perf_event_attr</span> <span class="token operator">*</span>attr_ptr<span class="token punctuation">,</span> <span class="token class-name">pid_t</span> pid<span class="token punctuation">,</span>
 	<span class="token keyword">int</span> cpu<span class="token punctuation">,</span> <span class="token keyword">int</span> group_fd<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> flags<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
@@ -784,10 +783,159 @@ asmlinkage <span class="token keyword">long</span> <span class="token function">
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也就是说虽然这里perf采样不是单独被系统调用的，但是整个后台的采样线程的启动都是被系统调用的，都是运行在内核态的。</p>
-<p>这上面这段只是说清楚了采样这个行为的实现。采样结果的读取和计数也非常不一样，采样的每次触发先放一放。首先采样信息由BPF环形缓冲区（ringbuf）记录，这是一个共享内存,一个多生产者单消费者（MPSC）队列。</p>
-<p>环形缓冲区的头是<code>struct perf_event_mmap_page</code>，记录共享环形缓冲区的特点，</p>
-<p>好吧剩下这部分要放到后台线程里去说了可能。我先打个草稿。</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="https://img-blog.csdnimg.cn/direct/d2fa3fb0e7784a43b931f86abb6f61e4.png" alt="后台采样线程流程图"><br>到目前为止，后台采样线程的文件描述符已经实现了。采样值的读取需要使用<code>mmap()</code>直接在用户空间操作，少一次复制，因为采样有异步性，需要一个环形队列，这是一个共享内存,一个多生产者单消费者（MPSC）队列。环形缓冲区的头是<code>struct perf_event_mmap_page</code>，记录<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/tools/perf/design.txt">共享环形缓冲区</a>的特点，这个头大小是一个页面大小。</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
+ * Structure of the page that can be mapped via mmap
+ */</span>
+<span class="token keyword">struct</span> <span class="token class-name">perf_event_mmap_page</span> <span class="token punctuation">{</span>
+        __u32   version<span class="token punctuation">;</span>                <span class="token comment">/* version number of this structure */</span>
+        __u32   compat_version<span class="token punctuation">;</span>         <span class="token comment">/* lowest version this is compat with */</span>
+
+        <span class="token comment">/*
+         * Bits needed to read the hw counters in user-space.
+         *
+         *   u32 seq;
+         *   s64 count;
+         *
+         *   do {
+         *     seq = pc-&gt;lock;
+         *
+         *     barrier()
+         *     if (pc-&gt;index) {
+         *       count = pmc_read(pc-&gt;index - 1);
+         *       count += pc-&gt;offset;
+         *     } else
+         *       goto regular_read;
+         *
+         *     barrier();
+         *   } while (pc-&gt;lock != seq);
+         *
+         * NOTE: for obvious reason this only works on self-monitoring
+         *       processes.
+         */</span>
+        __u32   lock<span class="token punctuation">;</span>                   <span class="token comment">/* seqlock for synchronization */</span>
+        __u32   index<span class="token punctuation">;</span>                  <span class="token comment">/* hardware counter identifier */</span>
+        __s64   offset<span class="token punctuation">;</span>                 <span class="token comment">/* add to hardware counter value */</span>
+
+        <span class="token comment">/*
+         * Control data for the mmap() data buffer.
+         *
+         * User-space reading this value should issue an rmb(), on SMP capable
+         * platforms, after reading this value -- see perf_event_wakeup().
+         */</span>
+        __u32   data_head<span class="token punctuation">;</span>              <span class="token comment">/* head in the data section */</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后来看ring buffer结构体的信息：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PERF_RECORD_MISC_KERNEL</span>          <span class="token expression"><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PERF_RECORD_MISC_USER</span>            <span class="token expression"><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">1</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PERF_RECORD_MISC_OVERFLOW</span>        <span class="token expression"><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span></span></span>
+
+<span class="token keyword">struct</span> <span class="token class-name">perf_event_header</span> <span class="token punctuation">{</span>
+        __u32   type<span class="token punctuation">;</span>
+        __u16   misc<span class="token punctuation">;</span>
+        __u16   size<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">enum</span> <span class="token class-name">perf_event_type</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">/*
+         * The MMAP events record the PROT_EXEC mappings so that we can
+         * correlate userspace IPs to code. They have the following structure:
+         *
+         * struct {
+         *      struct perf_event_header        header;
+         *
+         *      u32                             pid, tid;
+         *      u64                             addr;
+         *      u64                             len;
+         *      u64                             pgoff;
+         *      char                            filename[];
+         * };
+         */</span>
+        PERF_RECORD_MMAP                 <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        PERF_RECORD_MUNMAP               <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span>
+
+        <span class="token comment">/*
+         * struct {
+         *      struct perf_event_header        header;
+         *
+         *      u32                             pid, tid;
+         *      char                            comm[];
+         * };
+         */</span>
+        PERF_RECORD_COMM                 <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span>
+
+        <span class="token comment">/*
+         * When header.misc &amp; PERF_RECORD_MISC_OVERFLOW the event_type field
+         * will be PERF_RECORD_*
+         *
+         * struct {
+         *      struct perf_event_header        header;
+         *
+         *      { u64                   ip;       } &amp;&amp; PERF_RECORD_IP
+         *      { u32                   pid, tid; } &amp;&amp; PERF_RECORD_TID
+         *      { u64                   time;     } &amp;&amp; PERF_RECORD_TIME
+         *      { u64                   addr;     } &amp;&amp; PERF_RECORD_ADDR
+         *
+         *      { u64                   nr;
+         *        { u64 event, val; }   cnt[nr];  } &amp;&amp; PERF_RECORD_GROUP
+         *
+         *      { u16                   nr,
+         *                              hv,
+         *                              kernel,
+         *                              user;
+         *        u64                   ips[nr];  } &amp;&amp; PERF_RECORD_CALLCHAIN
+         * };
+         */</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接下来将文件描述符和ring buffer相关联。</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">htmm__perf_event_init</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">perf_event</span> <span class="token operator">*</span>event<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> nr_pages<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> <span class="token class-name">perf_buffer</span> <span class="token operator">*</span>rb <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> ret <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> flags <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>event<span class="token operator">-&gt;</span>cpu <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">&amp;&amp;</span> event<span class="token operator">-&gt;</span>attr<span class="token punctuation">.</span>inherit<span class="token punctuation">)</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span>EINVAL<span class="token punctuation">;</span>
+
+    ret <span class="token operator">=</span> <span class="token function">security_perf_event_read</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ret<span class="token punctuation">)</span>
+		<span class="token keyword">return</span> ret<span class="token punctuation">;</span>
+	
+	<span class="token comment">// 采用伙伴系统分配的话得是2的幂次方</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nr_pages <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">is_power_of_2</span><span class="token punctuation">(</span>nr_pages<span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span>EINVAL<span class="token punctuation">;</span>
+
+    <span class="token function">WARN_ON_ONCE</span><span class="token punctuation">(</span>event<span class="token operator">-&gt;</span>ctx<span class="token operator">-&gt;</span>parent_ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 加上互斥锁，避免被并发访问</span>
+    <span class="token function">mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>event<span class="token operator">-&gt;</span>mmap_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">WARN_ON</span><span class="token punctuation">(</span>event<span class="token operator">-&gt;</span>rb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 分配一个环形缓冲区</span>
+    rb <span class="token operator">=</span> <span class="token function">rb_alloc</span><span class="token punctuation">(</span>nr_pages<span class="token punctuation">,</span>
+	    event<span class="token operator">-&gt;</span>attr<span class="token punctuation">.</span>watermark <span class="token operator">?</span> event<span class="token operator">-&gt;</span>attr<span class="token punctuation">.</span>wakeup_watermark <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+	    event<span class="token operator">-&gt;</span>cpu<span class="token punctuation">,</span> flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>rb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		ret <span class="token operator">=</span> <span class="token operator">-</span>ENOMEM<span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> unlock<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+	
+	<span class="token comment">// 这三个是perf子系统自带的函数，用于实现既定的功能</span>
+	<span class="token comment">// 将分配的环形缓冲区与 event 结构体关联起来。主要实现是rcu_assign_pointer(event-&gt;rb, rb);</span>
+    <span class="token function">ring_buffer_attach</span><span class="token punctuation">(</span>event<span class="token punctuation">,</span> rb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 用于初始化环形缓冲区的头就是初始化perf_event_mmap_page。</span>
+    <span class="token function">perf_event_init_userpage</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 更新环形缓冲区头的信息，其中包括对性能事件的统计信息的更新。</span>
+    <span class="token function">perf_event_update_userpage</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+unlock<span class="token operator">:</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ret<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    	<span class="token comment">// 增加 event-&gt;mmap_count 的计数。</span>
+		<span class="token function">atomic_inc</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>event<span class="token operator">-&gt;</span>mmap_count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 解锁</span>
+    <span class="token function">mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>event<span class="token operator">-&gt;</span>mmap_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> ret<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
                 
@@ -1160,7 +1308,7 @@ asmlinkage <span class="token keyword">long</span> <span class="token function">
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">165.1k</span>&nbsp;字
+                class="white-color">165.7k</span>&nbsp;字
             
             
             
