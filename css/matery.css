@@ -1673,7 +1673,7 @@ thead {
 }
 
 #aboutme .introduction {
-    margin: 1.5rem auto 3rem;
+    margin: 0.5rem auto 0.5rem;
     max-width: 600px;
     color: #999;
 }
