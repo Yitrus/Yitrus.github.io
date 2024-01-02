@@ -457,14 +457,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.9k
+                    4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    13 分
+                    14 分
                 </div>
                 
 
@@ -537,7 +537,7 @@
 <h3 id="4-7-TLB-Misses-and-Huge-Pages"><a href="#4-7-TLB-Misses-and-Huge-Pages" class="headerlink" title="4.7 TLB Misses and Huge Pages"></a>4.7 TLB Misses and Huge Pages</h3><p>大页面（例如2MB）可以减轻4KB页面带来的虚拟到物理地址转换延迟和TLB覆盖问题。但这些大小给基于页面迁移的分层内存系统带来了新的挑战。由于地址映射的更改，迁移会导致TLB失效。此外，大页面中的小热区域会导致整个页面显得很热。</p>
 <p>在当前的实现中，对象最初分配在tier1中。如果TMTS将大页识别为降级候选，则该页首先被拆分为4KB页面，然后降级。这允许未来的访问提升单独的4KB页面，并减少迁移成本和不必要的tier1占用。并非原始大页面的所有降级4KB页面都可以升级，从而阻止它们成功地重新组合成大页面。由于系统的DRAM容量较低，我们看到DRAM压力增加，这会导致tier1碎片化。</p>
 <p>我们进行了两项实验，这两项实验都以最小的副作用提高了TLB 命中率。<br>首先，我们尝试完整迁移大页面，而不是在降级时将其分解为4KB页面。这使TLB未命中平均减少了4.7%，并将平均性能提高了0.5%。升级带宽按预期增加，但增幅&lt;1%，并且带宽拥塞事件没有增加。平均STRR降低 &lt;1%。<br>其次，我们提高了内存压缩的积极性，目标是提高tier1中4KB页面的重组率。我们发现大页覆盖率提高了25%，平均性能提高了0.5%。额外的CPU成本微不足道，&lt; 0.1%。</p>
-<div class="note warning no-icon">但是，兄弟你说拆就拆吗？页表怎么转换，页表转了TLB的缓存还要一致性。两种页面混合你要怎么做地址转换？wow，amazing.而且所以最后要使用哪种策略呢？</div> 
+<div class="note warning no-icon">但是，兄弟你说拆就拆吗？页表怎么转换，页表转了TLB的缓存还要一致性。两种页面混合你要怎么做地址转换？笔者感觉可能是因为大家默认了现在也有大页TLB了？最近有看见一篇文章说，反正大页TLB不用也就空在那里。如果使用透明大页的话，还是很好实现混合页面的。但是如果使用静态的大页面（就是开机前就分配好），从运行方式来看，不做点改变一个程序运行用两种页面还是有困难的。</div> 
 
 <h2 id="5-评估"><a href="#5-评估" class="headerlink" title="5. 评估"></a>5. 评估</h2><p>在Optane PM上做的。这里只记录感兴趣的。<br>作者们首先说加入PM后的情况和只使用DRAM差不多；然后说明了冷页面控制的很好：</p>
 <p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/37b3a657a7fa48d6a39d0c8b3f687177.png"><br>图5（a）是STRR，（b）是将冷内存覆盖率定义为存储在tier2中的2分钟冷页的比例。一个重要的参考点是地址空间中可用冷页的相对数量，在图3（a）的实验中观察到在28%到42%之间变化。</p>
@@ -915,7 +915,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">165.7k</span>&nbsp;字
+                class="white-color">166.1k</span>&nbsp;字
             
             
             

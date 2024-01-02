@@ -783,7 +783,7 @@ asmlinkage <span class="token keyword">long</span> <span class="token function">
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>也就是说虽然这里perf采样不是单独被系统调用的，但是整个后台的采样线程的启动都是被系统调用的，都是运行在内核态的。</p>
-<p><img src="https://img-blog.csdnimg.cn/direct/d2fa3fb0e7784a43b931f86abb6f61e4.png" alt="后台采样线程流程图"><br>到目前为止，后台采样线程的文件描述符已经实现了。采样值的读取需要使用<code>mmap()</code>直接在用户空间操作，少一次复制，因为采样有异步性，需要一个环形队列，这是一个共享内存,一个多生产者单消费者（MPSC）队列。环形缓冲区的头是<code>struct perf_event_mmap_page</code>，记录<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/tools/perf/design.txt">共享环形缓冲区</a>的特点，这个头大小是一个页面大小。</p>
+<p><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/direct/d2fa3fb0e7784a43b931f86abb6f61e4.png" alt="后台采样线程流程图"><br>到目前为止，后台采样线程的文件描述符已经实现了。采样值的读取需要使用<code>mmap()</code>直接在用户空间操作，少一次复制，因为采样有异步性，需要一个环形队列，这是一个共享内存,一个多生产者单消费者（MPSC）队列。环形缓冲区的头是<code>struct perf_event_mmap_page</code>，记录<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/tools/perf/design.txt">共享环形缓冲区</a>的特点，这个头大小是一个页面大小。</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
  * Structure of the page that can be mapped via mmap
  */</span>
@@ -1308,7 +1308,7 @@ unlock<span class="token operator">:</span>
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">165.7k</span>&nbsp;字
+                class="white-color">166.1k</span>&nbsp;字
             
             
             
