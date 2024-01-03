@@ -449,7 +449,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    536
+                    545
                 </div>
                 
 
@@ -494,6 +494,9 @@
 <h3 id="struct-page里有-count和-mapcount，这个和PTE的A位有什么关系吗？"><a href="#struct-page里有-count和-mapcount，这个和PTE的A位有什么关系吗？" class="headerlink" title="struct page里有_count和_mapcount，这个和PTE的A位有什么关系吗？"></a><span class="label primary">struct page里有_count和_mapcount，这个和PTE的A位有什么关系吗？</span></h3><p>_count字段表示这个物理页框被多少个虚拟页映射和共享。它反映了一个页框的引用数量。<br>_mapcount字段表示这个页框被多少个PTE映射。<br>也就是说:_count和_mapcount表示页面的映射关系,而PTE中的A位表示页面的访问状态。struct page和PTE中的信息反映了不同的内存管理需要。<br>两者也有联系,比如在回收内存页时,只有_mapcount为0时,表示没有PTE指向该页,才可以安全回收。</p>
 <p>基于4.15内核通过PTE统计页面访问次数代码流程图：<br><img src="https://images.weserv.nl/?url=https://img-blog.csdnimg.cn/6660cc59f6994938a01bd9ff25569339.png"></p>
 <p>为了保证每个进程里内存映射的独立进行，所以每个进程都会有独立的页表，而页表的起始地址就存放在 struct mm_struct 结构中的 pgd 属性中。</p>
+<blockquote>
+<p>后续会补充代码解读</p>
+</blockquote>
 
                 
             </div>
@@ -859,7 +862,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">166.1k</span>&nbsp;字
+                class="white-color">166k</span>&nbsp;字
             
             
             
