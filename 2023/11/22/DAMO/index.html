@@ -568,7 +568,7 @@ optional arguments:
 <blockquote>
 <p>执行指定的监控程序有3种方式，首先在命令后面使用command 比如”sleep 5”; 第二种方式获取pid（比较好奇MPI程序那么多进程会怎样）; 第三种方式指定的物理地址（监视目标区域默认为 /proc/iomem 文件中指定的最大“System RAM”区域。）。</p>
 </blockquote>
-<h3 id="report"><a href="#report" class="headerlink" title="report"></a>report</h3><h4 id="heats"><a href="#heats" class="headerlink" title="heats"></a>heats</h4><p><code>sudo damo report heats --heatmap 图片名</code><br>好的这个直接将可视化的都展示了，完全OK了，It supports pdf, png, jpeg, and svg.如果需要指定区域，那么可以使用–resol组合来做。<code>--time_ range &lt;time&gt; &lt;time&gt;</code>和<code>--address_ range &lt;address&gt; &lt;address&gt;</code>都可以指定更细节的范围。如果想要显示绝对地址和时间作为横纵坐标，那么可以使用<code>--abs_time</code>和<code>--abs_addr</code>.设置图片主题颜色有3种可选gray、flame、emotion<code>--stdout_heatmap_color</code>. <code>-i</code> 选择指定文件名。</p>
+<h3 id="report"><a href="#report" class="headerlink" title="report"></a>report</h3><h4 id="heats"><a href="#heats" class="headerlink" title="heats"></a>heats</h4><p><code>sudo damo report heats --heatmap 图片名</code><br>好的这个直接将可视化的都展示了，完全OK了，It supports pdf, png, jpeg, and svg.如果需要指定区域，那么可以使用–resol组合来做。<code>--time_range &lt;time&gt; &lt;time&gt;</code>和<code>--address_range &lt;address&gt; &lt;address&gt;</code>都可以指定更细节的范围。如果想要显示绝对地址和时间作为横纵坐标，那么可以使用<code>--abs_time</code>和<code>--abs_addr</code>.设置图片主题颜色有3种可选gray、flame、emotion<code>--stdout_heatmap_color</code>. <code>-i</code> 选择指定文件名。</p>
 <p><code>sudo damo report heats --resol 2 4</code><br>–resol是指分辨率，具体来说后面根的两个参数表示<strong>输出时间段只有2段，输出地址范围有4个</strong>，会按照总的时间和地址范围大概平均分的亚子。<br><strong>输出依次表示以纳秒为单位的时间、以字节为单位的地址、观察到的访问频率</strong>。<br><strong>这个命令输出的数据可以支持画热图</strong>。</p>
 <p><code>sudo damo report heats --heatmap stdout</code><br><strong>需要和damon.data在一个文件夹下</strong>就能直接运行(x-axis) what memory region (y-axis) is how frequently accessed (color)</p>
 <h4 id="wss（working-set-size）"><a href="#wss（working-set-size）" class="headerlink" title="wss（working set size）"></a>wss（working set size）</h4><p><code>sudo damo report wss --range 0 101 1</code><br>the distribution of the working set size.这个是终端打印出来的图像，不太行。而且这个统计图横纵坐标也不太清楚。</p>
@@ -915,12 +915,12 @@ ff000000-ffffffff : pnp 00:01
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/A/">
-                        <span class="chip bg-color">A</span>
-                    </a>
-                    
                     <a href="/tags/Hybrid-Memory-Systems/">
                         <span class="chip bg-color">Hybrid Memory Systems</span>
+                    </a>
+                    
+                    <a href="/tags/A/">
+                        <span class="chip bg-color">A</span>
                     </a>
                     
                     <a href="/tags/Virtual-Machines/">
@@ -1137,7 +1137,7 @@ ff000000-ffffffff : pnp 00:01
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">164.1k</span>&nbsp;字
+                class="white-color">173.2k</span>&nbsp;字
             
             
             
