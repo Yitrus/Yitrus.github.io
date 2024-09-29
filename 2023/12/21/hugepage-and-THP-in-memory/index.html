@@ -457,14 +457,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.7k
+                    3.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    14 分
+                    15 分
                 </div>
                 
 
@@ -544,6 +544,15 @@ hugepagesz <span class="token operator">=</span> 2MB， hugepages <span class="t
 <span class="token function">cat</span> /sys/kernel/mm/hugepages/hugepages-2048kB/free_hugepages
 // 含义：查看系统中空闲的的2MB大页的数量<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<p>如果希望在不修改源码的情况下运行一个程序（如 <code>redis-server</code>）并让它使用静态大页（HugeTLB），可以通过以下方式实现：<br>确保系统中已经安装了 <code>libhugetlbfs</code> 库。<br>    </p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> libhugetlbfs-bin
+<span class="token function">sudo</span> yum <span class="token function">install</span> libhugetlbfs
+<span class="token function">sudo</span> <span class="token function">find</span> / <span class="token parameter variable">-name</span> <span class="token string">"libhugetlbfs.so"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><br>查看是否已经按照之前的方式分配了大页面<code>grep Hugepagesize /proc/meminfo</code><br>在运行希望使用大页面的程序时：<p></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token assign-left variable">LD_PRELOAD</span><span class="token operator">=</span>/usr/lib/libhugetlbfs.so <span class="token assign-left variable">HUGETLB_MORECORE</span><span class="token operator">=</span>yes XXX程序运行命令<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ul>
+<li><code>LD_PRELOAD=/usr/lib/libhugetlbfs.so</code>：通过预加载 <code>libhugetlbfs</code> 库，强制应用程序使用静态大页。</li>
+<li><code>HUGETLB_MORECORE=yes</code>：该环境变量告诉 <code>libhugetlbfs</code> 将 <code>malloc</code> 分配的大内存使用静态大页。</li>
+</ul>
+<p>使用 <code>libhugetlbfs</code> 结合 <code>LD_PRELOAD</code>，可以在不修改程序源码的情况下让程序使用静态大页。这种方式适用于大多数需要使用静态大页的应用场景。</p>
 <h2 id="2-THP"><a href="#2-THP" class="headerlink" title="2. THP"></a>2. THP</h2><p>复合页（Compound Page）就是将物理上连续的两个或多个页看成一个独立的大页，它能够用来创建hugetlbfs中使用的大页（hugepage）。也能够用来创建透明大页（transparent huge page）。可是它不能用在页缓存（page cache）中，这是由于页缓存中管理的都是单个页。分配一个复合页的方式是：使用<code>alloc_pages</code>函数，參数order至少为1，且设置<code>__GFP_COMP</code>标记。由于依据复合页的定义，它通常包含2个或多个连续的物理内存页，这是由它的实现决定的，因而order参数不可能为0。</p>
 <p>transparent huge page透明大页。在Linux中自2.6.38版本开始支持THP。在应用需要huge page的时候，可通过memory compaction（内存规整）操作移动页面，以形成一个huge page，因为该过程不会被应用感知到，所以被称为”transparent”。</p>
 <p>THP采用常规(“高阶”)内存分配路径，它<strong>要求操作系统能够找到连续且对齐的内存块</strong>。它与常规页面存在相同的问题，即碎片化。如果操作系统<strong>找不到连续的内存块，它将尝试压缩、回收或分页其他页面</strong>。**该过程成本高昂，可能会导致延迟峰值(长达几秒钟)**。此问题已在4.6 内核中得到解决(通过”延迟”选项)，如果操作系统无法分配大页面，则会回退到常规页面。</p>
@@ -1091,7 +1100,7 @@ Example:
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">173.1k</span>&nbsp;字
+                class="white-color">175.9k</span>&nbsp;字
             
             
             
